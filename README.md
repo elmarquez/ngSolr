@@ -40,6 +40,10 @@ Thanks:
 Version History
 ---------------
 
+0.5.0
+x Document each controller and add information about what the controller 
+  expects and how it should be wired up in the environment.
+
 0.4.0
 x Collection dashboard controller to provide a visual overview of the whole set
 x Collector controller to grab particular items and keep them in a temporary 

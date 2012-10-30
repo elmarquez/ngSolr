@@ -39,6 +39,7 @@
         <script type="text/javascript" src="assets/js/eac-search/app.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.search.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.search.searchbox.js"></script>
+        <script type="text/javascript" src="assets/js/eac-search/ctrl.search.history.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.selection.js"></script>
 
@@ -102,9 +103,10 @@
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
                     
-               			<ul class="facet-panel unstyled" ng-show="selected" ng-controller="facetSelectionCtrl">
-             				<li ng-repeat="facet in facets">
-                                <i class="icon-tag"></i> <a href="#">Facet</a>
+               			<ul class="facet-panel" ng-controller="facetSelectionCtrl" ng-init="watch($parent)" ng-show="facets">
+                            <li><b>Filtering By</b></li>
+             				<li ng-repeat="item in items">
+                                <i class="icon-tag"></i> <a ng-click="remove($index)">{{item.fieldname}}</a>
                             </li>
                			</ul>
 
@@ -113,7 +115,7 @@
                      		<li>
                        			<ul class="facets unstyled">
                      				<li ng-repeat="item in items" ng-show="items">
-                                        <a href="#">{{item.name}}</a>
+                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
                                         ({{item.score}})
                                     </li>
                        			</ul>
@@ -125,7 +127,7 @@
                      		<li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#">{{item.name}}</a>
+                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>
@@ -146,12 +148,13 @@
                             </li>
                        	</ul>
 
-                        <ul class="facet-panel">
+                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch($parent)">
                             <li><b>Search History</b></li>
                             <li>
-                                <ul>
-                                    <li>Cook</li>
-                                    <li>Roberts</li>
+                                <ul class="unstyled">
+                                    <li ng-repeat="query in queries">
+                                        <a ng-href="{{query.url}}">{{query.userQuery}}</a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>

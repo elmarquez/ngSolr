@@ -57,18 +57,28 @@ function parse(FacetList,Limit) {
 /* Controllers                                                               */
 
 /**
- * EAC Facet Controller
+ * Facet Controller
+ * @todo Consider renaming this a FieldFacetCtrl, then implementing Range, etc. facet controls 
  */
 function facetCtrl($scope, $http, CONSTANTS) {
     // parameters
+    $scope.items = [];
     $scope.fieldname = '';   // facet field name
-    $scope.items = null;     // results
-    $scope.maxresults = 5;  // max number of results to display
-    // query 
-    var query = new SearchQuery(CONSTANTS.SOLRBASE);
+    $scope.maxresults = 7;   // max number of results to display
+
+    // query
+    var query = new SearchQuery(CONSTANTS.SOLR_BASE);
     query.setOption("facet","true");
     query.setOption("wt","json");
-    // Update the result set
+
+    // Add the selected facet to the facet constraint list.
+    $scope.add = function(Index) {
+      var facet = new Facet($scope.items[Index]);
+      $scope.facets.push(facet);
+      // $scope.$parent.updateResults();
+    }
+
+    // Get the facet list
     $scope.update = function() {
         $scope.error = null;
         $scope.message = null;
@@ -85,5 +95,6 @@ function facetCtrl($scope, $http, CONSTANTS) {
                 console.log("Could not load facet results for '" + $scope.fieldname + "'");
             });
     }
+
 }
 facetCtrl.$inject = ['$scope','$http','CONSTANTS'];

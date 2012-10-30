@@ -11,17 +11,20 @@ var app = angular.module('eac-search-app', []);
 
 // constants
 app.constant("CONSTANTS", {
-  SOLRBASE:"http://dev02.internal:8080/EOAS",
+  DEFAULT_QUERY :"*:*",
+  MAX_FIELD_LENGTH : 256,
+  SOLR_BASE : "http://dev02.internal:8080/EOAS",
+  SOLR_VERSION : 2.2,
 });
 
-// directive to support Bootstrap typeahead
+// Directive to support Bootstrap typeahead
 // @see http://twitter.github.com/bootstrap/javascript.html#typeahead
 // @see http://jsfiddle.net/DNjSM/17/
 app.directive('autoComplete', function ($timeout) {
   return function (scope, iElement, iAttrs) {
     var autocomplete = iElement.typeahead();
     scope.$watch(iAttrs.uiItems, function(values) {
-      console.log(values);
+      // console.log(values);
       autocomplete.data('typeahead').source = values;
     }, true);
   };

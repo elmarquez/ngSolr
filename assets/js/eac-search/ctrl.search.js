@@ -136,24 +136,24 @@ function updateLocation($scope) {
 /* Controllers                                                               */
 
 /**
- * Search controller. Executes a keyword search against a Solr index.
+ * Executes a keyword search against a Solr index.
  */
 function searchCtrl($scope, $http, CONSTANTS) {
     // public
+    $scope.facets = [];
     $scope.highlighting = true;
     $scope.highlightingParameters = "";
     $scope.itemsPerPage = 10;
-    $scope.maxTextFieldLength = 512;
     $scope.page = 0;
     $scope.pages = [];
     $scope.pagesPerSet = 10;
     $scope.previousQuery = '';
     $scope.queryMaxScore = 1;
     $scope.queryNumFound = 1;
-    $scope.userQuery = "*:*"; // default query is all documents
+    $scope.userQuery = CONSTANTS.DEFAULT_QUERY;
 
     // query
-    var query = new SearchQuery(CONSTANTS.SOLRBASE);
+    var query = new SearchQuery(CONSTANTS.SOLR_BASE);
     query.setOption("start",$scope.page);
     query.setOption("rows",$scope.itemsPerPage);
     query.setOption("fl","uri,title,text");
@@ -161,9 +161,9 @@ function searchCtrl($scope, $http, CONSTANTS) {
     query.setOption("explainOther","");
     query.setOption("hl.fl",$scope.highlightingParameters);
     query.setOption("indent","on");
-    query.setOption("version","2.2");
+    query.setOption("version",CONSTANTS.SOLR_VERSION);
     
-    // update the result set
+    // update search results
     $scope.updateResults = function() {
       	// reset result state
       	$scope.error = null;
@@ -185,7 +185,7 @@ function searchCtrl($scope, $http, CONSTANTS) {
             }
         } else {
             // use the default search 
-            query.setOption("q","*:*");
+            query.setOption("q",CONSTANTS.DEFAULT_QUERY);
         }
         // query.setOption("callback","JSON_CALLBACK");
         console.log("GET " + query.getQuery());
@@ -203,7 +203,7 @@ function searchCtrl($scope, $http, CONSTANTS) {
                 // if there are search results
                 if (data.response && data.response.docs && data.response.docs.length > 0) {
                   	// reformat data for presenation
-                  	$scope.results = truncateDocuments(data.response.docs,$scope.maxTextFieldLength);
+                  	$scope.results = truncateDocuments(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
                 		// update the pagination index
                     $scope.pages = buildPageIndex($scope);
                 } else {

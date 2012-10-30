@@ -16,31 +16,31 @@
 /* Controllers                                                               */
 
 /**
- * EAC facet selection controller. Manages the current set 
- * of user selected facets, filters.
+ * Manages the current set of user selected facets, filters.
  */
-function facetSelectionCtrl($scope, $http, CONSTANTS) {
-    // public
-    $scope.items = [];
-    // private
-    var fieldname = "function";
-    var query = new SearchQuery(CONSTANTS.SOLRBASE);
-    query.setOption("wt","json");
-    query.setOption("facet","true");
-    // update the result set
-    $scope.update = function() {
-        $scope.error = null;
-        $scope.message = null;
-        $scope.results.facets = [];
-        console.log("GET " + query.getQuery());
-        $http.get(query.getQuery())
-          .success(function(data) {
-                $scope.items = facet_counts.facet_fields[fieldname];
-            })
-          .error(function(data,status,headers,config) {
-            // could not load facet list
-          });
+function facetSelectionCtrl($scope) {
+
+	$scope.items = [];
+
+    // remove the facet at the specified index
+    $scope.remove = function(Index) {
+        
     }
 
+    /**
+     * Update the list of facets displayed.
+     */
+    $scope.update = function() {
+    	// delete all items from the list
+    	$scope.items.splice(0,$scope.items.length);
+    	// add items from list
+    }
+
+    /**
+     * Watch the specified scope for changes on the named variable.
+     */
+    $scope.watch = function($myscope,variable) {
+    	$myscope.$watch(variable,$scope.update);
+    }
 }
-facetSelectionCtrl.$inject = ['$scope','$http','CONSTANTS'];
+facetSelectionCtrl.$inject = ['$scope'];

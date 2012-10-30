@@ -5,9 +5,6 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
-
-/*---------------------------------------------------------------------------*/
 /* Functions                                                                 */
 
 /** 
@@ -36,7 +33,7 @@ function searchBoxCtrl($scope, $http, CONSTANTS) {
     var minSearchLength = 1;
     var userQuery = "";
     
-    var query = new SearchQuery(CONSTANTS.SOLRBASE);
+    var query = new SearchQuery(CONSTANTS.SOLR_BASE);
     query.setOption("wt","json");
     query.setOption("facet","true");
     query.setOption("facet.limit","-1");
@@ -55,7 +52,7 @@ function searchBoxCtrl($scope, $http, CONSTANTS) {
             }
         })
         .error(function(data,status,headers,config) {
-            console.log("Could not load autocomplete results. Server returned error code " + status + ".");
+            console.log("Could not load search hints. Server returned error code " + status + ".");
         });
     
     // update the presented autocomplete list
