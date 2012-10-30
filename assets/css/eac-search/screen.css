@@ -1,0 +1,182 @@
+/*--------------------------------------------------------*/
+/* EAC AJAX Interface to Solr                             */
+
+/*--------------------------------------------------------*/
+/* Page Layout                                            */
+
+body {
+  background: #efefef;	
+}
+#page-header {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar-inverse {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar-inner {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+}
+#page-header .form-inline {
+  margin: 0;
+  padding-top: 5px;
+}
+#search-bar {
+  background: #efefef;
+  border-bottom:1px solid #DEDEDE;
+  margin: 0;
+  padding: 0;
+}
+#search-bar form {
+  margin: 10px 0 10px 0;
+  padding: 0;
+}
+#search-bar #userquery {
+  font-weight: bold;
+}
+#content {
+  background: white;
+  margin: 0;
+  padding-top: 20px;
+}
+#search-panel {
+  min-width: 240px;
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+.facet-panel {
+	border: 1px solid #E5E5E5;
+	border-radius: 4px;
+	list-style: none;
+  margin-bottom: 20px;
+	margin-left: 0;
+	padding: 0;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+.facet-panel>li {
+	border-bottom: 1px solid #E5E5E5;
+  padding: 8px 15px;
+  padding-right: 8px;
+}
+.facet-panel>li:first-child {
+  color: #333;
+  font-weight: bold;
+}
+.facet-panel>li:last-child {
+  border-bottom: none;
+}
+#result-panel {
+}
+#metadata-panel {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 20px;
+}
+#footer {
+  border-top: 1px solid #dedede;
+  color: #666;
+  font-size: small;
+  min-height: 40px;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+/*--------------------------------------------------------*/
+/* Search Results                                         */
+
+.reading-column {
+  max-width: 512px;
+}
+.document {
+  margin-bottom: 10px;
+}
+.document .title {
+  display: table;
+  font-size: medium;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.document .uri {
+  color: green;
+  font-size: small;
+}
+.document .text {
+  font-size: small;
+  line-height: 1.25em;
+}
+.document .text em {
+  background: yellow;
+}
+.document .facets {
+  color: light-gray;
+  display: none;
+  font-size: small;
+}
+.document .existdates {
+  color: #666;
+  font-size: small;
+  font-style: normal;
+}
+.document .existdates:before {
+  /* content: "Exist dates: "; */
+}
+.document .more {
+  font-size: small;
+}
+
+
+/*--------------------------------------------------------*/
+/* Metadata Panel                                         */
+
+
+
+
+/*--------------------------------------------------------*/
+/* Graphics Panel                                         */
+
+.chart div {
+   font: 10px sans-serif;
+   background-color: #ddd;
+   text-align: right;
+   padding: 3px;
+   margin: 1px;
+   color: white;
+}
+.chart div:hover {
+    background-color: steelblue;
+}
+
+/*--------------------------------------------------------*/
+/* Other Styles                                           */
+
+.column-240 {
+  /* max-width: 240px; */
+}
+.column-320 {
+  max-width: 320px;
+  overflow: hide;
+}
+.column-512 {
+  max-width: 512px;
+  overflow: hide;
+}
+.column-620 {
+  max-width: 640px;
+  overflow: hide;
+}
+.text-medium {
+    font-size: medium;
+}
+.text-small {
+    font-size: small;
+}
+.text-xsmall {
+    font-size: x-small;
+}

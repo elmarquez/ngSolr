@@ -1,0 +1,77 @@
+Key Facets
+
+- Existence dates
+- Occupation/Function
+- Location
+    - ex. place of birth, place of death, other locations from within the description
+    
+
+Show existence dates, when available, in the search listings
+Add visual context panel
+
+-------------------------------------------------------------------------------
+Date Picker
+
+http://www.eyecon.ro/bootstrap-datepicker/
+
+-------------------------------------------------------------------------------
+Facet Query
+
+http://dev02.internal:8080/EOAS/select?wt=json&facet=true&facet.field=function
+
+select?
+    wt=json&
+    facet=true&
+    facet.field=function
+
+facet_counts: {
+    facet_queries: { }
+    facet_fields: {
+        function: [ â€¦ ]
+    }
+    facet_dates: { }
+    facet_ranges: { }
+}
+
+-------------------------------------------------------------------------------
+Results Query
+
+http://evolvingweb.ca/solr/reuters/select?facet=true&q=*%3A*&facet.field=topics&facet.field=organisations&facet.field=exchanges&facet.field=countryCodes&facet.limit=20&facet.mincount=1&f.topics.facet.limit=50&f.countryCodes.facet.limit=-1&facet.date=date&facet.date.start=1987-02-26T00%3A00%3A00.000Z%2FDAY&facet.date.end=1987-10-20T00%3A00%3A00.000Z%2FDAY%2B1DAY&facet.date.gap=%2B1DAY&json.nl=map&wt=json&json.wrf=jQuery182011972916638478637_1349995840448&_=1349995840515
+
+select?
+    facet=true&
+    q=*%3A*&
+    facet.field=topics&
+    facet.field=organisations&
+    facet.field=exchanges&
+    facet.field=countryCodes&
+    facet.limit=20&
+    facet.mincount=1&
+    f.topics.facet.limit=50&
+    f.countryCodes.facet.limit=-1&
+    facet.date=date&
+    facet.date.start=1987-02-26T00%3A00%3A00.000Z%2FDAY&
+    facet.date.end=1987-10-20T00%3A00%3A00.000Z%2FDAY%2B1DAY&
+    facet.date.gap=%2B1DAY&
+    json.nl=map&
+    wt=json&
+    json.wrf=jQuery182011972916638478637_1349995840448&_=1349995840515
+
+
+This query retrieves the list of facets:
+
+http://evolvingweb.ca/solr/reuters/select?rows=0&facet=true&facet.limit=-1&facet.mincount=1&json.nl=map&facet.field=topics&facet.field=organisations&facet.field=exchanges&q=*:*&wt=json&json.wrf=jQuery182011972916638478637_1349995840448&_=1349995841331
+
+select?
+    rows=0&
+    facet=true&
+    facet.limit=-1&
+    facet.mincount=1&
+    json.nl=map&
+    facet.field=topics&
+    facet.field=organisations&
+    facet.field=exchanges&
+    q=*:*&
+    wt=json&
+    json.wrf=jQuery182011972916638478637_1349995840448&_=1349995841331
+
