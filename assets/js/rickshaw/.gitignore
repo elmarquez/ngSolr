@@ -1,3 +1,13 @@
 *.log
 *swp
+LICENSE
+Makefile
 node_modules
+package.json
+README.md
+
+examples/
+src/
+tests/
+tutorial/
+vendor/

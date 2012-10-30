@@ -67,9 +67,20 @@ function buildPageIndex($scope) {
 /**
  * Get the current search parameters from the local portion of the location 
  * URL.
+ * @todo should be using routes/views to manage this part
  */
 function getLocation() {
 
+}
+
+/**
+ * Determine if a user query is valid.
+ */
+function isValidQuery(Val) {
+  if (Val && Val != '' && Val != ' ') {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -139,6 +150,8 @@ function searchCtrl($scope, $http, CONSTANTS) {
     $scope.previousQuery = '';
     $scope.queryMaxScore = 1;
     $scope.queryNumFound = 1;
+    $scope.userQuery = "*:*"; // default query is all documents
+
     // query
     var query = new SearchQuery(CONSTANTS.SOLRBASE);
     query.setOption("start",$scope.page);
@@ -149,6 +162,7 @@ function searchCtrl($scope, $http, CONSTANTS) {
     query.setOption("hl.fl",$scope.highlightingParameters);
     query.setOption("indent","on");
     query.setOption("version","2.2");
+    
     // update the result set
     $scope.updateResults = function() {
       	// reset result state
@@ -156,12 +170,12 @@ function searchCtrl($scope, $http, CONSTANTS) {
       	$scope.message = null;
       	$scope.pages = [];
       	$scope.results = [];
-        // if the query is valid
-        if ($scope.query != '' || $scope.query != ' ') {
-            // if the query has changed, reset some of the search values
-            if ($scope.query != $scope.previousQuery) {
-              query.setOption("q",$scope.query);
-              $scope.previousQuery = $scope.query;
+        // if the user query is valid
+        if (isValidQuery($scope.userQuery)) {
+            // if the query has changed, update query parameters
+            if ($scope.userQuery != $scope.previousQuery) {
+              query.setOption("q",$scope.userQuery);
+              $scope.previousQuery = $scope.userQuery;
               $scope.page = 0;
               query.setOption("start",$scope.page);
             } else {
@@ -203,5 +217,4 @@ function searchCtrl($scope, $http, CONSTANTS) {
 
 }
 
-// bind the controller to the variables
 searchCtrl.$inject = ['$scope','$http','CONSTANTS'];

@@ -46,7 +46,7 @@
         <script type="text/javascript" src="assets/js/d3/d3.layout.min.js"></script> 
         <script type="text/javascript" src="assets/js/rickshaw/rickshaw.min.js"></script> 
     </head>
-    <body ng-controller="searchCtrl" ng-init="query='*:*';updateResults()">
+    <body ng-controller="searchCtrl" ng-init="updateResults()">
 
         <!-- page-header -->
         <header id="page-header">
@@ -81,9 +81,9 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                        <form name="searchBox" class="form-inline" ng-controller="searchBoxCtrl" ng-submit="updateResults()">
-                            <div id="search" class="input-append" >
-                                <input type="text" id="userquery" name="q" ng-model="query" placeholder="Enter keywords to search for" ui-items="getHints(query)" auto-complete autocomplete="off" style="width:380px" />
+                        <form class="form-inline" ng-submit="updateResults()">
+                            <div id="search-box" class="input-append" ng-controller="searchBoxCtrl">
+                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-submit="$parent.updateResults()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
                         </form>

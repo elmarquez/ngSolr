@@ -9,8 +9,10 @@
 
 var app = angular.module('eac-search-app', []);
 
-//constants
-app.constant("CONSTANTS", {SOLRBASE:"http://dev02.internal:8080/EOAS"});
+// constants
+app.constant("CONSTANTS", {
+  SOLRBASE:"http://dev02.internal:8080/EOAS",
+});
 
 // directive to support Bootstrap typeahead
 // @see http://twitter.github.com/bootstrap/javascript.html#typeahead
@@ -31,6 +33,7 @@ app.directive('autoComplete', function ($timeout) {
 /**
  * A Solr search query
  * @param Base Solr core URL
+ * @todo This should likely be converted into an Angular service
  */
 function SearchQuery(Base) {
   this.base = Base + "/select?";    // URL for the Solr core

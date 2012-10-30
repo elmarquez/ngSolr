@@ -13,42 +13,11 @@ and detailed documentation are available at:
 
   http://www.github.com/esrc/solr-eac/ 
 
-
-Install EAC Solr
-----------------
-
-Install EAC Crawler
--------------------
-
-Install EAC AJAX
-----------------
-
-1. Download the ESRC EAC package from the source repository. The package will 
-   include two subpackages:
-
-	- Solr configuration files for EAC indexing (Solr EAC)
-	- Solr Feeder script (Solr Feeder)
-	- Solr AJAX web search interface (Solr AJAX)
-
-2. Install and configure a web server and Apache Solr search engine for your
-   content.
-3. Copy the Solr EAC configuration files in to your Solr site.
-4. Use the Index your data and use the Solr administration interface to 
-   verify that data has been indexed.
-5. Copy the Solr-AJAX package to the web server where your web interface will 
-   reside.
-6. Edit the assets/js/eac-search/app.js file. Replace the SOLRBASE value with 
-   the URL to your Solr search engine interface.  Here are some examples:
-   
-     http://www.mycompany.org/solrcorename/
-
-
 Credits
 -------
 
-Solr-EAC is a project of the eScholarship Research Center 
-at the University of Melbourne. For more information 
-about the project, please contact us at:
+Solr-EAC is a project of the eScholarship Research Center at the University of 
+Melbourne. For more information about the project, please contact us at:
 
   eScholarship Research Center
   University of Melbourne
@@ -58,8 +27,8 @@ about the project, please contact us at:
 
 Authors:
 
-  Marco La Rosa <marco@larosa.org.au>
   Davis Marques <davis.marques@unimelb.edu.au>
+  Marco La Rosa <marco@larosa.org.au>
   
 Thanks:
 
@@ -87,7 +56,9 @@ Current:
 x Facet controller for basic text field search
 x Selection controller to display and manage the set of facets, constraints
 x Updated EAC to Solr transform: Added keywords field to support autocomplete search
+
 >> Stuck on scoping issues around searchCtrl vs searchBoxCtrl 
+
 - Autocomplete search hints in keyword search box
 
 0.2.1

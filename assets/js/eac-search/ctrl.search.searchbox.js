@@ -27,18 +27,22 @@ function startsWith(s1,s2) {
  * Provides autocomplete and extended search support aids. This is a 
  * rudimentary, non-optimal implementation.
  * @see http://jsfiddle.net/DNjSM/17/
+ * @todo Reimplement with a proper data structure for search set
  */
-function searchBoxCtrl($scope,$http,CONSTANTS) {
+function searchBoxCtrl($scope, $http, CONSTANTS) {
     // private
     var fieldname = "title";
     var tokens = new Array();
-    var query = new SearchQuery(CONSTANTS.SOLRBASE);
     var minSearchLength = 1;
+    var userQuery = "";
+    
+    var query = new SearchQuery(CONSTANTS.SOLRBASE);
     query.setOption("wt","json");
     query.setOption("facet","true");
     query.setOption("facet.limit","-1");
     query.setOption("facet.field",fieldname);
-    // get the term list
+
+    // get the hints list once
     $http.get(query.getQuery())
         .success(function(data) {
             // get the term list, which we expect is already 
@@ -53,24 +57,25 @@ function searchBoxCtrl($scope,$http,CONSTANTS) {
         .error(function(data,status,headers,config) {
             console.log("Could not load autocomplete results. Server returned error code " + status + ".");
         });
+    
     // update the presented autocomplete list
-    $scope.getHints = function (term) {
+    $scope.getHints = function(userQuery) {
         var items = new Array();
-        if (term.length>= minSearchLength) {
+        if (userQuery.length>= minSearchLength) {
             for (var i=0;i<tokens.length;i++) {
                 var token = tokens[i];
-                if (startsWith(token,term)) {
+                if (startsWith(token,userQuery)) {
                     items.push(token);
                 }
             }
         }
         return items;
     }
-    // update the search results
-    $scope.update = function() {
-        // this needs to be fixed somehow ... very sloppy
-        $rootScope.query = $scope.query;
-        $rootScope.updateResults();
+    
+    // update the user query value
+    $scope.updateQuery = function(userQuery) {
+        $scope.$parent.userQuery = userQuery;
     }
 }
+
 searchBoxCtrl.$inject = ['$scope','$http','CONSTANTS'];

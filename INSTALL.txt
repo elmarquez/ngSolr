@@ -1,0 +1,28 @@
+
+Install EAC Solr
+----------------
+
+Install EAC Crawler
+-------------------
+
+Install EAC AJAX
+----------------
+
+1. Download the ESRC EAC package from the source repository. The package will 
+   include two subpackages:
+
+	- Solr configuration files for EAC indexing (Solr EAC)
+	- Solr Feeder script (Solr Feeder)
+	- Solr AJAX web search interface (Solr AJAX)
+
+2. Install and configure a web server and Apache Solr search engine for your
+   content.
+3. Copy the Solr EAC configuration files in to your Solr site.
+4. Use the Index your data and use the Solr administration interface to 
+   verify that data has been indexed.
+5. Copy the Solr-AJAX package to the web server where your web interface will 
+   reside.
+6. Edit the assets/js/eac-search/app.js file. Replace the SOLRBASE value with 
+   the URL to your Solr search engine interface.  Here are some examples:
+   
+     http://www.mycompany.org/solrcorename/

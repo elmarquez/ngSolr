@@ -37,7 +37,7 @@ body {
   margin: 10px 0 10px 0;
   padding: 0;
 }
-#search-bar #userquery {
+#search-box #query {
   font-weight: bold;
 }
 #content {
