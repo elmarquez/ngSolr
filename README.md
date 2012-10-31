@@ -41,6 +41,7 @@ Version History
 ---------------
 
 0.5.0
+x Organized code into proper namespaces
 x Document each controller and add information about what the controller 
   expects and how it should be wired up in the environment.
 
@@ -61,8 +62,8 @@ x Facet controller for basic text field search
 x Selection controller to display and manage the set of facets, constraints
 x Updated EAC to Solr transform: Added keywords field to support autocomplete search
 
->> Stuck on scoping issues around searchCtrl vs searchBoxCtrl 
-
+- Add/remove 
+- Query history panel displays the last N queries
 - Autocomplete search hints in keyword search box
 
 0.2.1

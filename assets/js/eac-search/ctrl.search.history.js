@@ -29,18 +29,19 @@ function Query(UserQuery,Url) {
 function searchHistoryCtrl($scope) {
     // fields
     $scope.maxQueries = 5;          // the maximum number of items to display
-    $scope.queries = new Array();   // list of prior queries
+    $scope.queries = new Array();   // reverse chronological list of prior queries
     // update the result set
     $scope.update = function() {
-        var query = new Query("Query","http://www.example.com");
-        $scope.queries.push(query);
-        if ($scope.queries.length > $scope.maxQueries) {
-            $scope.queries = $scope.queries.splice(0,1);
+        if ($scope.queries.length > $scope.maxQueries - 1) {
+            // remove the last item
+            $scope.queries = $scope.queries.splice($scope.maxQueries-1,1);
         }
+        var previous = $scope.previousQuery;
+        $scope.queries.splice(0,0,previous);
     }
     // watch the specified variable for chanages
-    $scope.watch = function(scope,variable) {
-        scope.$watch(variable,$scope.update);
+    $scope.watch = function(variable) {
+        $scope.$watch(variable,$scope.update);
     }
 }
 searchHistoryCtrl.$inject = ['$scope'];

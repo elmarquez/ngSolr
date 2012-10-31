@@ -40,7 +40,8 @@ function searchBoxCtrl($scope, $http, CONSTANTS) {
     query.setOption("facet.field",fieldname);
 
     // get the hints list once
-    $http.get(query.getQuery())
+    console.log("GET " + query.getUrl());
+    $http.get(query.getUrl())
         .success(function(data) {
             // get the term list, which we expect is already 
             // sorted and contains only unique terms

@@ -65,15 +65,26 @@ function Facet(Field,Score) {
  */
 function SearchQuery(Base) {
   this.base = Base + "/select?";    // URL for the Solr core
-  this.options = [];                // search parameters
+  this.options = {};                // search parameters
+  this.facets = [];
+  // get option value
+  this.getOption = function(Name) {
+    if (this.options[Name]) {
+      return this.options[Name];
+    }
+  }
   // get the query URL
-  this.getQuery = function() {
+  this.getUrl = function() {
     var query = this.base;
     for (var key in this.options) {
       query = query + "&" + key + "=" + encodeURIComponent(this.options[key]);
     }
     return query;
   };
+  // get the user query portion of the query
+  this.getUserQuery = function() {
+    return this.getOption('q');
+  }
   // set a query option
   this.setOption = function(Name,Value) {
     this.options[Name] = Value;

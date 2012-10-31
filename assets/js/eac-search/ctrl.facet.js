@@ -64,8 +64,8 @@ function facetCtrl($scope, $http, CONSTANTS) {
     $scope.update = function() {
         query.setOption("facet.field",$scope.field);
         query.setOption("facet.limit",$scope.maxresults);
-        console.log("GET " + query.getQuery());
-        $http.get(query.getQuery())
+        console.log("GET " + query.getUrl());
+        $http.get(query.getUrl())
             .success(function(data) {
                 $scope.items = parse(data.facet_counts.facet_fields[$scope.field]);
             })

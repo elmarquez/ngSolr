@@ -154,12 +154,12 @@
                         </ul>
 
                         <!-- search history panel -->
-                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch($parent,'previousQuery')">
+                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch('previousQuery')" ng-show="queries>0">
                             <li><b>Search History</b></li>
                             <li>
                                 <ul class="unstyled">
                                     <li ng-repeat="query in queries">
-                                        <a ng-href="{{query.url}}">{{query.userQuery}}</a>
+                                        <a ng-href="{{query.getUrl()}}">{{query.getUserQuery()}}</a>
                                     </li>
                                 </ul>
                             </li>
@@ -219,7 +219,7 @@
                                     <tr><td>Page (start)</td><td>{{ page }}</td></tr>
                                     <tr><td>Pages per Set</td><td>{{ pagesPerSet }}</td></tr>
                                     <tr><td>Query</td>
-                                        <td><a ng-href="{{queryURL}}" target="_blank">{{ query }}</a></td>
+                                        <td><a ng-href="{{query.getUrl()}}" target="_blank">{{ query.getUserQuery() }}</a></td>
                                     </tr>
                                     <tr><td>Query Time</td><td>{{ queryTime }}</td></tr>
                                     <tr><td>Total Items Found</td><td>{{ queryNumFound }}</td></tr>
