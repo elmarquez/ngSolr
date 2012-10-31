@@ -32,6 +32,31 @@ app.directive('autoComplete', function ($timeout) {
 
 /*---------------------------------------------------------------------------*/
 /* Global Classes                                                            */
+/* @todo these should likely be replaced with a service or something else?   */
+
+/**
+ * Search facet
+ * @see http://wiki.apache.org/solr/SimpleFacetParameters#rangefaceting
+ */
+function Facet(Field,Score) {
+  // basic faceting
+  this.field = Field;     // field name
+  this.sort = 'count';    // sort based on item count, lexicographi index
+  this.limit = 100;       // maximum instances to be returned
+  this.mincount = 0;      // minimum instance count for the facet to be returned
+  // range faceting
+  this.range = '';        // parameter name
+  this.range.start = '';  // start value
+  this.range.end = '';    // end value
+  // build a query fragment for this facet
+  this.getQueryFragment = function() {
+    var query = '';
+    for (var key in this) {
+      query = query + "&" + key + "=" + encodeURIComponent(this[key]);
+    }
+    return query;
+  }
+}
 
 /**
  * A Solr search query

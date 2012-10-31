@@ -11,7 +11,6 @@
 /*---------------------------------------------------------------------------*/
 /* Functions                                                                 */
 
-
 /*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
 
@@ -19,28 +18,23 @@
  * Manages the current set of user selected facets, filters.
  */
 function facetSelectionCtrl($scope) {
-
-	$scope.items = [];
-
+	// fields
+    $scope.items = [];  // the display list
     // remove the facet at the specified index
     $scope.remove = function(Index) {
-        
+        $scope.facets.splice(Index,1);
+        $scope.update();
     }
-
-    /**
-     * Update the list of facets displayed.
-     */
+    // update the display when a change occurs to the facet list
     $scope.update = function() {
-    	// delete all items from the list
     	$scope.items.splice(0,$scope.items.length);
-    	// add items from list
+    	for (var i=0;i<$scope.facets.length;i++) {
+    		$scope.items.push($scope.facets[i]);
+    	}
     }
-
-    /**
-     * Watch the specified scope for changes on the named variable.
-     */
-    $scope.watch = function($myscope,variable) {
-    	$myscope.$watch(variable,$scope.update);
+    // watch the specified variable for chanages
+    $scope.watch = function(variable) {
+        $scope.$watch(variable,$scope.update);
     }
 }
 facetSelectionCtrl.$inject = ['$scope'];

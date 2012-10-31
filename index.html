@@ -103,40 +103,45 @@
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
                     
-               			<ul class="facet-panel" ng-controller="facetSelectionCtrl" ng-init="watch($parent)" ng-show="facets">
+                        <ul class="facet-panel" ng-controller="facetSelectionCtrl" ng-init="watch('facets')" ng-show="facets.length>0">
                             <li><b>Filtering By</b></li>
-             				<li ng-repeat="item in items">
-                                <i class="icon-tag"></i> <a ng-click="remove($index)">{{item.fieldname}}</a>
-                            </li>
-               			</ul>
-
-                       	<ul class="facet-panel" ng-controller="facetCtrl" ng-init="fieldname='function';update();">
-                     		<li><b>Function</b></li>
-                     		<li>
-                       			<ul class="facets unstyled">
-                     				<li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
-                                        ({{item.score}})
+                            <li>
+                                <ul class="unstyled">
+                                    <li ng-repeat="facet in facets">
+                                        <i class="icon-tag"></i> 
+                                        <a ng-click="remove($index)">{{facet.field.name}} ({{facet.field.score}})</a>
                                     </li>
-                       			</ul>
-                     		</li>
-                       	</ul>
-                           
-                       	<ul class="facet-panel" ng-controller="facetCtrl" ng-init="fieldname='title';update();">
-                     		<li><b>Location</b></li>
-                     		<li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <ul class="facet-panel" ng-controller="facetCtrl" ng-init="facets=$parent.facets;field='function';update();">
+                            <li><b>Function</b></li>
+                            <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
                                         <a href="#" ng-click="add($index)">{{item.name}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>
-                           	</li>
-                       	</ul>
+                            </li>
+                        </ul>
+                           
+                        <ul class="facet-panel" ng-controller="facetCtrl" ng-init="facets=$parent.facets;field='title';update();">
+                            <li><b>Location</b></li>
+                            <li>
+                                <ul class="facets unstyled">
+                                    <li ng-repeat="item in items" ng-show="items">
+                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
+                                        ({{item.score}})
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
 
-                       	<ul class="facet-panel">
-                    		<li><b>Dates</b></li>
-                     		<li>
+                        <ul class="facet-panel">
+                            <li><b>Dates</b></li>
+                            <li>
                                 <div class="input-append date" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
                                     <input size="16" type="text" value="2012-10-20" style="min-width:120px;">
                                     <span class="add-on"><i class="icon-th"></i></span>
@@ -146,9 +151,10 @@
                                     <span class="add-on"><i class="icon-th"></i></span>
                                 </div>
                             </li>
-                       	</ul>
+                        </ul>
 
-                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch($parent)">
+                        <!-- search history panel -->
+                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch($parent,'previousQuery')">
                             <li><b>Search History</b></li>
                             <li>
                                 <ul class="unstyled">
@@ -158,13 +164,14 @@
                                 </ul>
                             </li>
                         </ul>
+                        <!-- /search history panel -->
 
                         <ul class="facet-panel">
                             <li>
                                 <i class="icon-plus"></i> 
                                 <a href="#" class="muted">Add Facet Panel</a>
                             </li>
-                       	</ul>
+                        </ul>
 
                     </div>
                     <!-- /search panel -->
@@ -185,13 +192,13 @@
                                 </div>
                                 <div class="existdates">Sep. 2009 - Mar. 2012</div>
                             </article>
-  	                    </div><!-- /search results -->
+                        </div><!-- /search results -->
                         <div class="pagination" ng-hide="error">
-  	                        <ul>
+                            <ul>
                                 <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
                                     <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();" ng-href="#/page/{{page.number}}">{{page.name}}</a>
                                 </li>
-  	                        </ul>
+                            </ul>
                         </div><!-- /pagination -->
                     </div><!-- result panel, center column -->
                     
@@ -225,7 +232,7 @@
                     </div>
                     <!-- /metadata panel -->
                     
-            	</div><!-- /row -->
+                </div><!-- /row -->
             </div><!-- /container -->
         </section>
         <!-- /content -->
@@ -236,10 +243,10 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                    	<div class="column-512">
-	                        EAC-CPF faceted search interface to Apache Solr.
-	                        A project of the 
-	                        <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
+                        <div class="column-512">
+                            EAC-CPF faceted search interface to Apache Solr.
+                            A project of the 
+                            <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
                         </div>
                     </div>
                     <div class="span5">&nbsp;</div>

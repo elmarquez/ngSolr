@@ -7,14 +7,15 @@
 /*---------------------------------------------------------------------------*/
 /* Classes                                                                   */
 
+// This should be removed and, instead, the original SearchQuery object
+// should be available in the previous query list
 function Query(UserQuery,Url) {
-	this.userQuery = UserQuery;
-	this.url = Url;
+    this.userQuery = UserQuery;
+    this.url = Url;
 }
 
 /*---------------------------------------------------------------------------*/
 /* Functions                                                                 */
-
 
 /*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
@@ -26,26 +27,20 @@ function Query(UserQuery,Url) {
  *       actual query URL that produced the results.
  */
 function searchHistoryCtrl($scope) {
-    
-    var fieldname = 'previousQuery';    // field to watch for queries
-    var maxQueries = 5;                 // the maximum number of items to display
-	$scope.queries = new Array();
-
+    // fields
+    $scope.maxQueries = 5;          // the maximum number of items to display
+    $scope.queries = new Array();   // list of prior queries
     // update the result set
     $scope.update = function() {
         var query = new Query("Query","http://www.example.com");
         $scope.queries.push(query);
-        if ($scope.queries.length > maxQueries) {
+        if ($scope.queries.length > $scope.maxQueries) {
             $scope.queries = $scope.queries.splice(0,1);
         }
     }
-
-    // watch the variable for chanages
-    $scope.watch = function($myscope) {
-        // @todo figure out how not to hard code the watched variable name into this
-        $myscope.$watch(fieldname,$scope.update);
+    // watch the specified variable for chanages
+    $scope.watch = function(scope,variable) {
+        scope.$watch(variable,$scope.update);
     }
-
 }
-
 searchHistoryCtrl.$inject = ['$scope'];
