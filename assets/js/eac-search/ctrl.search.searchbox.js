@@ -9,6 +9,8 @@
 
 /** 
  * Determine if the string s1 starts with the string s2
+ * @param s1 String 1
+ * @param s2 String 2
  */
 function startsWith(s1,s2) {
     if (s1 && s2) {
@@ -23,17 +25,20 @@ function startsWith(s1,s2) {
 /**
  * Provides autocomplete and extended search support aids. This is a 
  * rudimentary, non-optimal implementation.
+ * @param $scope Controller scope
+ * @param $http HTTP service
+ * @param CONSTANTS Application constants
  * @see http://jsfiddle.net/DNjSM/17/
  * @todo Reimplement with a proper data structure for search set
  */
-function searchBoxCtrl($scope, $http, CONSTANTS) {
+function SearchBoxController($scope,$http,CONSTANTS) {
     // private
     var fieldname = "title";
     var tokens = new Array();
     var minSearchLength = 1;
     var userQuery = "";
     
-    var query = new SearchQuery(CONSTANTS.SOLR_BASE);
+    var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
     query.setOption("wt","json");
     query.setOption("facet","true");
     query.setOption("facet.limit","-1");
@@ -56,7 +61,10 @@ function searchBoxCtrl($scope, $http, CONSTANTS) {
             console.log("Could not load search hints. Server returned error code " + status + ".");
         });
     
-    // update the presented autocomplete list
+    /**
+     * Update the list of search hints.
+     * @param userQuery Current user query fragment
+     */
     $scope.getHints = function(userQuery) {
         var items = new Array();
         if (userQuery.length>= minSearchLength) {
@@ -69,11 +77,21 @@ function searchBoxCtrl($scope, $http, CONSTANTS) {
         }
         return items;
     }
+
+    /**
+     * Initialize the controller.
+     */
+    $scope.init = function() {
+    }
     
-    // update the user query value
+    /**
+     * Update the user query value
+     * @param userQuery
+     */
     $scope.updateQuery = function(userQuery) {
         $scope.$parent.userQuery = userQuery;
     }
 }
 
-searchBoxCtrl.$inject = ['$scope','$http','CONSTANTS'];
+// inject controller dependencies
+SearchBoxController.$inject = ['$scope','$http','CONSTANTS'];

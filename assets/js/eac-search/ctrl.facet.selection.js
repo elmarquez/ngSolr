@@ -15,26 +15,54 @@
 /* Controllers                                                               */
 
 /**
- * Manages the current set of user selected facets, filters.
+ * Manages the current set of user selected facets.
+ * @param $scope Controller scope
  */
-function facetSelectionCtrl($scope) {
+function FacetSelectionController($scope) {
 	// fields
-    $scope.items = [];  // the display list
-    // remove the facet at the specified index
+    $scope.facets = [];  // list of query facets
+
+    /**
+     * Initialize the controller
+     * @param FacetList List of current search facets
+     */
+    $scope.init = function(FacetList) {
+        $scope.facets = FacetList;
+        $scope.watch(FacetList);
+    }
+
+    /**
+     * Remove the facet at the specified index.
+     * @param Index Index of facet to remove.
+     */
     $scope.remove = function(Index) {
         $scope.facets.splice(Index,1);
         $scope.update();
+        $scope.$parent.updateResults();
     }
-    // update the display when a change occurs to the facet list
+
+    /**
+     * update the display when a change occurs to the facet list
+     */
     $scope.update = function() {
-    	$scope.items.splice(0,$scope.items.length);
-    	for (var i=0;i<$scope.facets.length;i++) {
-    		$scope.items.push($scope.facets[i]);
-    	}
+        if ($scope.facets) {
+        /*
+            $scope.items.splice(0,$scope.items.length);
+            for (var i=0;i<$scope.facets.length;i++) {
+                $scope.items.push($scope.facets[i]);
+            }
+        */
+        }
     }
-    // watch the specified variable for chanages
+
+    /**
+     * Watch the specified variable for changes.
+     * @param variable Variable to watch
+     */
     $scope.watch = function(variable) {
         $scope.$watch(variable,$scope.update);
     }
 }
-facetSelectionCtrl.$inject = ['$scope'];
+
+// inject controller dependencies
+FacetSelectionController.$inject = ['$scope'];

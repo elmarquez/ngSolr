@@ -9,17 +9,29 @@
 
 var app = angular.module('eac-search-app', []);
 
-// constants
+/**
+ * Constants
+ * @constant DEFAULT_QUERY Default Solr query
+ * @constant MAX_FIELD_LENGTH Maximum length of a text string for display in search results
+ * @constant SOLR_BASE URL for Solr host
+ * @constant SOLR_CORE Name of Solr core (the search index)
+ * @constant SOLR_VERSION Version of Solr search interface, result format
+ */
 app.constant("CONSTANTS", {
   DEFAULT_QUERY :"*:*",
+  FACET_DELIMITER : '&&',
   MAX_FIELD_LENGTH : 256,
-  SOLR_BASE : "http://dev02.internal:8080/EOAS",
+  QUERY_DELIMITER : '?',
+  SOLR_BASE : "http://dev02.internal:8080",
+  SOLR_CORE : "EOAS",
   SOLR_VERSION : 2.2,
 });
 
-// Directive to support Bootstrap typeahead
-// @see http://twitter.github.com/bootstrap/javascript.html#typeahead
-// @see http://jsfiddle.net/DNjSM/17/
+/**
+ * Directive to support Bootstrap typeahead.
+ * @see http://twitter.github.com/bootstrap/javascript.html#typeahead
+ * @see http://jsfiddle.net/DNjSM/17/
+ */
 app.directive('autoComplete', function ($timeout) {
   return function (scope, iElement, iAttrs) {
     var autocomplete = iElement.typeahead();
@@ -35,58 +47,156 @@ app.directive('autoComplete', function ($timeout) {
 /* @todo these should likely be replaced with a service or something else?   */
 
 /**
- * Search facet
+ * Search facet.
+ * @class Search facet
+ * @param Field Field name
+ * @param Value Field value
  * @see http://wiki.apache.org/solr/SimpleFacetParameters#rangefaceting
  */
-function Facet(Field,Score) {
+function Facet(Field,Value) {
   // basic faceting
   this.field = Field;     // field name
-  this.sort = 'count';    // sort based on item count, lexicographi index
-  this.limit = 100;       // maximum instances to be returned
-  this.mincount = 0;      // minimum instance count for the facet to be returned
-  // range faceting
-  this.range = '';        // parameter name
-  this.range.start = '';  // start value
-  this.range.end = '';    // end value
-  // build a query fragment for this facet
-  this.getQueryFragment = function() {
-    var query = '';
-    for (var key in this) {
-      query = query + "&" + key + "=" + encodeURIComponent(this[key]);
-    }
-    return query;
-  }
-}
+  this.value = Value;     // field value
+  this.options = {};      // additional filtering options
 
-/**
- * A Solr search query
- * @param Base Solr core URL
- * @todo This should likely be converted into an Angular service
- */
-function SearchQuery(Base) {
-  this.base = Base + "/select?";    // URL for the Solr core
-  this.options = {};                // search parameters
-  this.facets = [];
-  // get option value
+  /**
+   * Get option value.
+   * @param Name Option name
+   */
   this.getOption = function(Name) {
     if (this.options[Name]) {
       return this.options[Name];
     }
-  }
-  // get the query URL
-  this.getUrl = function() {
-    var query = this.base;
-    for (var key in this.options) {
-      query = query + "&" + key + "=" + encodeURIComponent(this.options[key]);
+  };
+
+  /**
+   * Get the query Url fragment for this facet.
+   */
+  this.getUrlFragment = function() {
+    // this is used to delimit the start of the facet query in the URL and aid parsing
+    var query = '&&';
+    query += '&fq=' + this.field + ':' + this.value;
+    for (var option in this.options) {
+      query = query + "&" + option + "=" + encodeURIComponent(this.options[option]);
     }
     return query;
   };
-  // get the user query portion of the query
-  this.getUserQuery = function() {
-    return this.getOption('q');
-  }
-  // set a query option
+
+  /**
+   * Set option.
+   * @param Name
+   * @param Value
+   */
   this.setOption = function(Name,Value) {
     this.options[Name] = Value;
   };
+
+  /**
+   * Set facet properties from Uri parameters.
+   * @param Url
+   */
+  this.setOptionsFromQuery = function(Query) {
+    var elements = Query.split('&');
+    for (var i=0;i<elements.length;i++) {
+      var element = elements[i];
+      if (element != null && element != '') {
+        var parts = element.split('=');
+        var name = parts[0].replace('&','');
+        if (name == 'fq') {
+          if (parts.length == 2) {
+            var subparts = parts[1].split(':');
+            this.field = subparts[0];
+            this.value = subparts[1];
+          }
+        } else {
+          (parts.length==2) ? this.setOption(name,parts[1]) : this.setOption(name,'');
+        }
+      }
+    }
+  };
+
+}
+
+/**
+ * A Solr search query.
+ * @class Solr search query
+ * @param Base URL to Solr host
+ * @param Core Name of Solr core
+ * @see [ref to Solr query page]
+ * @todo This should likely be converted into an Angular service
+ */
+function SearchQuery(Base,Core) {
+  // parameters
+  this.base = Base + "/" + Core + "/select?";   // URL for the Solr core
+  this.facets = [];                             // search facets
+  this.options = {};                            // search parameters
+
+  /**
+   * Get option value.
+   * @param Name Option name
+   */
+  this.getOption = function(Name) {
+    if (this.options[Name]) {
+      return this.options[Name];
+    }
+  };
+
+  /**
+   * Get the hash portion of the Solr query URL.
+   */
+  this.getHash = function() {
+    var query = '';
+    // append query parameters
+    for (var key in this.options) {
+      query = query + "&" + key + "=" + encodeURIComponent(this.options[key]);
+    }
+    // append faceting parameters
+    for (var i=0;i<this.facets.length;i++) {
+      var facet = this.facets[i];
+      query = query + facet.getUrlFragment();
+    }
+    // return results
+    return query;
+  };
+
+  /**
+   * Get the fully specified Solr query URL.
+   */
+  this.getUrl = function() {
+    return this.base + this.getHash();
+  };
+
+  /**
+   * Get the user query portion of the query.
+   */
+  this.getUserQuery = function() {
+    return this.getOption('q');
+  };
+
+  /**
+   * Set option.
+   * @param Name
+   * @param Value
+   */
+  this.setOption = function(Name,Value) {
+    this.options[Name] = Value;
+  };
+
+  /**
+   * Get a SearchQuery from the hash portion of the current 
+   * window location.
+   * @param Query Query fragment
+   */
+  this.setOptionsFromQuery = function(Query) {
+    var elements = Query.split('&');
+    for (var i=0;i<elements.length;i++) {
+      var element = elements[i];
+      if (element != null && element != '') {
+        var parts = element.split('=');
+        var name = parts[0].replace('&','');
+        (parts.length==2) ? this.setOption(name,parts[1]) : this.setOption(name,'');
+      }
+    }
+  };
+
 }

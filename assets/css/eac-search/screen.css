@@ -1,5 +1,6 @@
 /*--------------------------------------------------------*/
 /* EAC AJAX Interface to Solr                             */
+/* Screen Styles                                          */
 
 /*--------------------------------------------------------*/
 /* Page Layout                                            */
@@ -50,30 +51,6 @@ body {
   overflow: hidden;
   padding-bottom: 20px;
 }
-.facet-panel {
-	border: 1px solid #E5E5E5;
-	border-radius: 4px;
-	list-style: none;
-  margin-bottom: 20px;
-	margin-left: 0;
-	padding: 0;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-}
-.facet-panel>li {
-	border-bottom: 1px solid #E5E5E5;
-  padding: 8px 15px;
-  padding-right: 8px;
-}
-.facet-panel>li:first-child {
-  color: #333;
-  font-weight: bold;
-}
-.facet-panel>li:last-child {
-  border-bottom: none;
-}
-#result-panel {
-}
 #metadata-panel {
   margin: 0;
   padding: 0;
@@ -89,8 +66,44 @@ body {
 }
 
 /*--------------------------------------------------------*/
-/* Search Results                                         */
+/* Facet Panel                                            */
 
+.facet-panel {
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  list-style: none;
+  margin-bottom: 20px;
+  margin-left: 0;
+  padding: 0;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+.facet-panel>li {
+  border-bottom: 1px solid #E5E5E5;
+  padding: 8px 15px;
+  padding-right: 8px;
+}
+.facet-panel>li:first-child {
+  color: #333;
+  font-weight: bold;
+}
+.facet-panel>li:last-child {
+  border-bottom: none;
+}
+.facet-panel .items li:hover:after {
+  content: " remove";
+  font-style: italic;
+}
+.facet-panel .fieldname {
+  font-weight: bold;
+}
+.facet-panel .value {}
+
+/*--------------------------------------------------------*/
+/* Search Results Listing                                 */
+
+#result-panel {
+}
 .reading-column {
   max-width: 512px;
 }
@@ -131,12 +144,11 @@ body {
   font-size: small;
 }
 
+/*--------------------------------------------------------*/
+/* Search Results Map                                     */
 
 /*--------------------------------------------------------*/
 /* Metadata Panel                                         */
-
-
-
 
 /*--------------------------------------------------------*/
 /* Graphics Panel                                         */

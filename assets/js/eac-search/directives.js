@@ -5,7 +5,7 @@
 'use strict';
 
 // 
-angular.module('eac-search.directives', []).
+angular.module('eac-search-app', []).
   directive('appVersion', ['version', function(version) {
     return function(scope, elm, attrs) {
       elm.text(version);

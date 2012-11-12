@@ -40,14 +40,15 @@
         <script type="text/javascript" src="assets/js/eac-search/ctrl.search.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.search.searchbox.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.search.history.js"></script>
-        <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.js"></script>
+        <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.field.js"></script>
+        <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.range.js"></script>
         <script type="text/javascript" src="assets/js/eac-search/ctrl.facet.selection.js"></script>
 
         <script type="text/javascript" src="assets/js/d3/d3.min.js"></script> 
         <script type="text/javascript" src="assets/js/d3/d3.layout.min.js"></script> 
         <script type="text/javascript" src="assets/js/rickshaw/rickshaw.min.js"></script> 
     </head>
-    <body ng-controller="searchCtrl" ng-init="updateResults()">
+    <body ng-controller="SearchController" ng-init="init()">
 
         <!-- page-header -->
         <header id="page-header">
@@ -83,7 +84,7 @@
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
                         <form class="form-inline" ng-submit="updateResults()">
-                            <div id="search-box" class="input-append" ng-controller="searchBoxCtrl">
+                            <div id="search-box" class="input-append" ng-controller="SearchBoxController">
                                 <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-submit="$parent.updateResults()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
@@ -103,43 +104,53 @@
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
                     
-                        <ul class="facet-panel" ng-controller="facetSelectionCtrl" ng-init="watch('facets')" ng-show="facets.length>0">
+                        <!-- facet selection controller -->
+                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-init="init(query.facets)" ng-show="facets.length>0">
                             <li><b>Filtering By</b></li>
                             <li>
-                                <ul class="unstyled">
+                                <ul class="items unstyled">
                                     <li ng-repeat="facet in facets">
                                         <i class="icon-tag"></i> 
-                                        <a ng-click="remove($index)">{{facet.field.name}} ({{facet.field.score}})</a>
+                                        <a ng-click="remove($index)">
+                                            <span class="fieldname">{{facet.field}}:</span>
+                                            <span class="value">{{facet.value}}</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
+                        <!-- /facet selection controller -->
 
-                        <ul class="facet-panel" ng-controller="facetCtrl" ng-init="facets=$parent.facets;field='function';update();">
+                        <!-- function facet controller -->
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('identity_entityType',$parent.query.facets)">
                             <li><b>Function</b></li>
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
+                                        <a href="#" ng-click="add($index)">{{item.value}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>
                             </li>
                         </ul>
-                           
-                        <ul class="facet-panel" ng-controller="facetCtrl" ng-init="facets=$parent.facets;field='title';update();">
-                            <li><b>Location</b></li>
+                        <!-- function facet controller -->
+
+                        <!-- location facet controller -->                           
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('description_occupation',$parent.query.facets)">
+                            <li><b>Occupation</b></li>
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($index)">{{item.name}}</a>
+                                        <a href="#" ng-click="add($index)">{{item.value}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>
                             </li>
                         </ul>
+                        <!-- /location facet controller -->
 
-                        <ul class="facet-panel">
+                        <!-- date range facet controller -->
+                        <ul class="facet-panel" ng-controller="RangeFacetController">
                             <li><b>Dates</b></li>
                             <li>
                                 <div class="input-append date" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
@@ -152,9 +163,10 @@
                                 </div>
                             </li>
                         </ul>
+                        <!-- /date range facet controller -->
 
                         <!-- search history panel -->
-                        <ul class="facet-panel" ng-controller="searchHistoryCtrl" ng-init="watch('previousQuery')" ng-show="queries>0">
+                        <ul class="facet-panel" ng-controller="SearchHistoryController" ng-init="watch($parent,'previousQuery')">
                             <li><b>Search History</b></li>
                             <li>
                                 <ul class="unstyled">
@@ -166,12 +178,14 @@
                         </ul>
                         <!-- /search history panel -->
 
+                        <!-- add custom facet controller -->
                         <ul class="facet-panel">
                             <li>
                                 <i class="icon-plus"></i> 
                                 <a href="#" class="muted">Add Facet Panel</a>
                             </li>
                         </ul>
+                        <!-- /add custom facet controller -->
 
                     </div>
                     <!-- /search panel -->
@@ -182,7 +196,7 @@
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                             <article ng-repeat="doc in results" class="document">
-                                <a href="{{doc.uri}}" class="title">{{doc.title[0]}}</a>
+                                <a href="{{doc.uri}}" class="title">{{doc.title}}</a>
                                 <a href="{{doc.uri}}" class="uri">{{doc.uri}}</a>
                                 <div class="text">{{doc.text}}</div>
                                 <div class="facets">
@@ -203,7 +217,7 @@
                     </div><!-- result panel, center column -->
                     
                     <!-- metadata panel -->
-                    <div id="metadata-panel" class="span5">
+                    <div id="metadata-panel" class="span5" ng-show="sidebar">
 
                         <div class="column-320 pull-right">
                             <p>This is an optional metadata or document preview panel.</p>

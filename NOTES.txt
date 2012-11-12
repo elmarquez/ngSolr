@@ -17,6 +17,11 @@ http://www.eyecon.ro/bootstrap-datepicker/
 -------------------------------------------------------------------------------
 Facet Query
 
+http://wiki.apache.org/solr/SolrFacetingOverview
+- faceting is done on indexed values, not stored values
+- For the standard query handler, we add fq=<facet-field>:<quoted facet-value>
+
+
 http://dev02.internal:8080/EOAS/select?wt=json&facet=true&facet.field=function
 
 select?
