@@ -72,15 +72,17 @@ x Facet list is not currently updating the search in all cases
 x When a facet constraint is added, it should impact the typeahead filter
 x Location facet controller
 
-0.3.2
+0.3.3
 x Updates toward integration into the SAUL and FACP projects
-x Faceted search on date ranges
-x Date/date range facet controller
+? Stuck on updating fragment to reflect the current facet query -- facet query clears hash
 
 Current:
 
+0.3.2
+x Faceted search on date ranges
+- Created date range facet controller
+
 0.3.1
-? Stuck on updating fragment to reflect the current facet query -- facet query clears hash
 - Update the location fragment to reflect the current query
 - Hide pagination index when there are no results
 - Parse URL fragment to get starting query parameters
@@ -118,13 +120,25 @@ Current:
 Known Issues
 ------------
 
+- Clicking on a facet constraint causes the hash portion of the URL string to
+  disappear and the browser to throw a maximum recursions error on the $digest()
+  function. Removing the facet constraint causes the URL to be updated and 
+  displayed correctly. A temporary patch as described here has been applied to
+  the affected controllers:
+  @see https://github.com/angular/angular.js/issues/1179
+
 - Autocomplete does not provide the correct (full) string to the search query.
   Only the portion of the string entered up to the point at which a search 
   hint is recorded, is then passed on to the query function.
+
 - When the window resizes into a single column, there is a margin left on the
   right and left sides of the menu bar and content section that needs to be 
   changed.  The margin needs to be adjusted to improve the appearance.
   Otherwise, the background should be changed so that it hides this problem.
+
 - The date picker fields are too wide and do not adapt their sizes.
+
 - The metadata/graphics panel stays right aligned when in a single column
   layout.
+
+

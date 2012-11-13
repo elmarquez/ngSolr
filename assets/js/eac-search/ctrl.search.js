@@ -104,7 +104,7 @@ function getCurrentQuery($scope,Url,CONSTANTS) {
     view = view.replace(new RegExp('/','g'),'');
     // get the query component of the URL fragment
     var frag = Url.substring(i+1);
-    var elements = frag.split('&&');
+    var elements = frag.split(CONSTANTS.FACET_DELIMITER);
     if (elements.length > 0) {
       // the first element is the query
       var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
@@ -201,18 +201,18 @@ function makePageLinks(Pages,Start,Finish,Current) {
  * @param View View
  * @param Query Search query
  */
-function setLocation($scope,QueryDelimiter) {
+function setLocation(location,scope,QueryDelimiter) {
   var url = "/";
-  if ($scope.view) {
-    url = $scope.view;
+  if (scope.view) {
+    url = scope.view;
   }
-  if ($scope.query) {
-    url = url + "/" + QueryDelimiter + $scope.query.getHash();
+  if (scope.query) {
+    url = url + "/" + QueryDelimiter + scope.query.getHash();
   }
-  // console.log("Current view is " + url);
   // set the hash
+  console.log("Setting hash as: " + url);
   window.location.hash = url;
-  // var loc = $location.hash(url);
+  // var loc = location.hash(url);
 };
 
 /**
@@ -264,7 +264,7 @@ function truncateField(Document,FieldName,Length) {
  * @param CONSTANTS Application constants
  * @todo invoke an update when a change occurs to any of the key parameters or query facet list
  */
-function SearchController($http,$scope,CONSTANTS) {
+function SearchController($http,$location,$scope,CONSTANTS) {
     // parameters
     $scope.error = null;                // error message to user
     $scope.highlighting = true;         // result highlighing on/off
@@ -337,7 +337,7 @@ function SearchController($http,$scope,CONSTANTS) {
           $scope.previousQuery = $scope.query;
         }
         // update the browser location to reflect the query
-        setLocation($scope,CONSTANTS.QUERY_DELIMITER);
+        setLocation($location,$scope,CONSTANTS.QUERY_DELIMITER);
         // query.setOption("callback","JSON_CALLBACK");
         // log the current query
         console.log("GET " + $scope.query.getUrl());
@@ -381,4 +381,4 @@ function SearchController($http,$scope,CONSTANTS) {
 }
 
 // inject controller dependencies
-SearchController.$inject = ['$http','$scope','CONSTANTS'];
+SearchController.$inject = ['$http','$location','$scope','CONSTANTS'];

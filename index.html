@@ -127,7 +127,7 @@
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($index)">{{item.value}}</a>
+                                        <a href="#" ng-click="add($event,$index)">{{item.value}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>
@@ -141,7 +141,7 @@
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($index)">{{item.value}}</a>
+                                        <a href="#" ng-click="add($event,$index)">{{item.value}}</a>
                                         ({{item.score}})
                                     </li>
                                 </ul>

@@ -60,8 +60,9 @@ function FieldFacetController($scope, $http, CONSTANTS) {
     /**
      * Add the selected facet to the facet constraint list.
      * @param Index Index of user selected facet. This facet will be added to the search list.
+     * @see https://github.com/angular/angular.js/issues/1179
      */
-    $scope.add = function(Index) {
+    $scope.add = function($event,Index) {
       // @todo check to see if the selected facet is already in the list!
       // @todo once a facet from this controller has been added to a list, the controller should disappear
       if ($scope.facets && $scope.facets instanceof Array) {
@@ -70,8 +71,9 @@ function FieldFacetController($scope, $http, CONSTANTS) {
         // add the facet
         $scope.facets.push(facet);
         // update the search results
-        // @todo the search controller should probably watch the facet list for changes and invoke an update when it changes
         $scope.$parent.updateResults();
+        // @see https://github.com/angular/angular.js/issues/1179
+        $event.preventDefault();
       }
     }
 

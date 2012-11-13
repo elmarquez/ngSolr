@@ -9,6 +9,9 @@
 
 var app = angular.module('eac-search-app', []);
 
+// @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
+// $locationProvider.html5Mode(false).hashPrefix('');
+
 /**
  * Constants
  * @constant DEFAULT_QUERY Default Solr query
