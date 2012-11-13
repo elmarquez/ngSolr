@@ -42,17 +42,9 @@ function FacetSelectionController($scope) {
     }
 
     /**
-     * update the display when a change occurs to the facet list
+     * Update the display when a change occurs to the facet list.
      */
     $scope.update = function() {
-        if ($scope.facets) {
-        /*
-            $scope.items.splice(0,$scope.items.length);
-            for (var i=0;i<$scope.facets.length;i++) {
-                $scope.items.push($scope.facets[i]);
-            }
-        */
-        }
     }
 
     /**

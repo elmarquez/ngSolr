@@ -80,7 +80,8 @@ x Date/date range facet controller
 Current:
 
 0.3.1
-x Update the location fragment to reflect the current query
+? Stuck on updating fragment to reflect the current facet query -- facet query clears hash
+- Update the location fragment to reflect the current query
 - Hide pagination index when there are no results
 - Parse URL fragment to get starting query parameters
 - Prepended && to facet URLs to aid parsing

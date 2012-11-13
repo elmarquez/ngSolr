@@ -152,17 +152,6 @@ function getDefaultQuery($scope,CONSTANTS) {
 };
 
 /**
- * Get the query portion of a URL.
- * @param Url
- */
-function getQuery(Url) {
-  var i = Url.indexOf("?");
-  if (i != -1) {
-    return Url.substring(i);
-  }
-};
-
-/**
  * Determine if the current location URL has a query.
  * @param Url Fragment portion of url
  * @param Delimiter Query delimiter
@@ -212,15 +201,18 @@ function makePageLinks(Pages,Start,Finish,Current) {
  * @param View View
  * @param Query Search query
  */
-function setLocation(View,Query,QueryDelimiter) {
+function setLocation($scope,QueryDelimiter) {
   var url = "/";
-  if (View) {
-    url = url + View;
+  if ($scope.view) {
+    url = $scope.view;
   }
-  if (Query) {
-    url = url + "/" + QueryDelimiter + Query.getHash();
+  if ($scope.query) {
+    url = url + "/" + QueryDelimiter + $scope.query.getHash();
   }
-  location.hash = url;
+  // console.log("Current view is " + url);
+  // set the hash
+  window.location.hash = url;
+  // var loc = $location.hash(url);
 };
 
 /**
@@ -267,12 +259,12 @@ function truncateField(Document,FieldName,Length) {
 
 /**
  * Executes a search against a Solr index.
- * @param $scope Controller scope
  * @param $http HTTP service
+ * @param $scope Controller scope
  * @param CONSTANTS Application constants
  * @todo invoke an update when a change occurs to any of the key parameters or query facet list
  */
-function SearchController($scope, $http, CONSTANTS) {
+function SearchController($http,$scope,CONSTANTS) {
     // parameters
     $scope.error = null;                // error message to user
     $scope.highlighting = true;         // result highlighing on/off
@@ -301,9 +293,9 @@ function SearchController($scope, $http, CONSTANTS) {
      */
     $scope.init = function() {
       // if there is a query encoded in the starting url
-      if (hasQuery(location.hash,CONSTANTS.QUERY_DELIMITER)) {
+      if (hasQuery(window.location.hash,CONSTANTS.QUERY_DELIMITER)) {
         // use that to start the search
-        $scope.query = getCurrentQuery($scope,location.hash,CONSTANTS);
+        $scope.query = getCurrentQuery($scope,window.location.hash,CONSTANTS);
         $scope.userQuery = $scope.query.getUserQuery();
       } else {
         // use a default
@@ -323,71 +315,70 @@ function SearchController($scope, $http, CONSTANTS) {
         $scope.message = null;
         // if the query is invalid query return a default
         if (!isValidQuery($scope.userQuery)) {
-            $scope.message = "Invalid query '" + $scope.userQuery + "'. Using default '" + CONSTANTS.DEFAULT_QUERY + "'";
-            $scope.query = getDefaultQuery($scope,CONSTANTS);
-            $scope.previousQuery = $scope.query;
+          // $scope.message = "Invalid query '" + $scope.userQuery + "'. Using default '" + CONSTANTS.DEFAULT_QUERY + "'";
+          $scope.query = getDefaultQuery($scope,CONSTANTS);
+          $scope.previousQuery = $scope.query;
         } 
         // there is a previous query and the query has changed
         else if ($scope.previousQuery && $scope.userQuery != $scope.previousQuery.getUserQuery()) {
-            $scope.previousQuery = $scope.query;
-            $scope.query = getDefaultQuery($scope,CONSTANTS);
-            $scope.query.setOption("hl.fl",$scope.highlightingParameters);
-            $scope.query.setOption("q",$scope.userQuery);
-            $scope.query.setOption("rows",$scope.itemsPerPage);
+          $scope.previousQuery = $scope.query;
+          $scope.query = getDefaultQuery($scope,CONSTANTS);
+          $scope.query.setOption("hl.fl",$scope.highlightingParameters);
+          $scope.query.setOption("q",$scope.userQuery);
+          $scope.query.setOption("rows",$scope.itemsPerPage);
         } 
         // there is a previous query and the query has not changed
         else if ($scope.previousQuery && $scope.userQuery == $scope.previousQuery.getUserQuery()) {
-            $scope.query.setOption("rows",$scope.itemsPerPage);
-            $scope.query.setOption("start",$scope.page);
+          $scope.query.setOption("rows",$scope.itemsPerPage);
+          $scope.query.setOption("start",$scope.page);
         } 
         // else use the current query
         else {
           $scope.previousQuery = $scope.query;
         }
         // update the browser location to reflect the query
-        setLocation($scope.view,$scope.query,CONSTANTS.QUERY_DELIMITER);
+        setLocation($scope,CONSTANTS.QUERY_DELIMITER);
         // query.setOption("callback","JSON_CALLBACK");
         // log the current query
         console.log("GET " + $scope.query.getUrl());
         // fetch the search results
         $http.get($scope.query.getUrl()).success(
-            function (data) {
-                $scope.queryMaxScore = data.response.maxScore;
-                $scope.queryNumFound = data.response.numFound;
-                $scope.queryParams = data.responseHeader.params;
-                $scope.queryStatus = data.responseHeader.status;
-                $scope.queryTime = data.responseHeader.QTime;
-                $scope.totalPages = Math.ceil($scope.queryNumFound/$scope.itemsPerPage);
-                $scope.totalSets = Math.ceil($scope.totalPages/$scope.pagesPerSet);
-                // if there are search results
-                if (data.response && data.response.docs && data.response.docs.length > 0) {
-                  	// reformat data for presenation, build page navigation index
-                  	$scope.results = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
-                    $scope.pages = buildPageIndex($scope);
-                } else {
-                    $scope.pages = [];
-                    $scope.queryMaxScore = 0;
-                    $scope.queryNumFound = 0;
-                    $scope.queryTime = 0;
-                    $scope.results = [];
-                    $scope.totalPages = 0;
-                    $scope.totalSets = 0;
-                  	$scope.message = "No results found for query '" + $scope.query.getUserQuery() + "'";
-                }
+          function (data) {
+            $scope.queryMaxScore = data.response.maxScore;
+            $scope.queryNumFound = data.response.numFound;
+            $scope.queryParams = data.responseHeader.params;
+            $scope.queryStatus = data.responseHeader.status;
+            $scope.queryTime = data.responseHeader.QTime;
+            $scope.totalPages = Math.ceil($scope.queryNumFound/$scope.itemsPerPage);
+            $scope.totalSets = Math.ceil($scope.totalPages/$scope.pagesPerSet);
+            // if there are search results
+            if (data.response && data.response.docs && data.response.docs.length > 0) {
+            	// reformat data for presenation, build page navigation index
+            	$scope.results = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
+              $scope.pages = buildPageIndex($scope);
+            } else {
+              $scope.pages = [];
+              $scope.queryMaxScore = 0;
+              $scope.queryNumFound = 0;
+              $scope.queryTime = 0;
+              $scope.results = [];
+              $scope.totalPages = 0;
+              $scope.totalSets = 0;
+            	$scope.message = "No results found for query '" + $scope.query.getUserQuery() + "'.";
+            }
         }).error(
-            function(data, status, headers, config) {
-                $scope.queryMaxScore = 0;
-                $scope.queryNumFound = 0;
-                $scope.queryParams = '';
-                $scope.queryStatus = status;
-                $scope.queryTime = 0;
-                $scope.totalPages = 0;
-                $scope.totalSets = 0;
-                $scope.error = "Could not get search results from server. Server responded with status code " + status + ".";
+          function(data, status, headers, config) {
+            $scope.queryMaxScore = 0;
+            $scope.queryNumFound = 0;
+            $scope.queryParams = '';
+            $scope.queryStatus = status;
+            $scope.queryTime = 0;
+            $scope.totalPages = 0;
+            $scope.totalSets = 0;
+            $scope.error = "Could not get search results from server. Server responded with status code " + status + ".";
         });
     };
-    
 }
 
 // inject controller dependencies
-SearchController.$inject = ['$scope','$http','CONSTANTS'];
+SearchController.$inject = ['$http','$scope','CONSTANTS'];

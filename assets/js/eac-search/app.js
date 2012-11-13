@@ -21,7 +21,7 @@ app.constant("CONSTANTS", {
   DEFAULT_QUERY :"*:*",
   FACET_DELIMITER : '&&',
   MAX_FIELD_LENGTH : 256,
-  QUERY_DELIMITER : '?',
+  QUERY_DELIMITER : '!',
   SOLR_BASE : "http://dev02.internal:8080",
   SOLR_CORE : "EOAS",
   SOLR_VERSION : 2.2,
@@ -36,8 +36,8 @@ app.directive('autoComplete', function ($timeout) {
   return function (scope, iElement, iAttrs) {
     var autocomplete = iElement.typeahead();
     scope.$watch(iAttrs.uiItems, function(values) {
-      // console.log(values);
       autocomplete.data('typeahead').source = values;
+      // console.log(values);
     }, true);
   };
 });
@@ -77,7 +77,7 @@ function Facet(Field,Value) {
     var query = '&&';
     query += '&fq=' + this.field + ':' + this.value;
     for (var option in this.options) {
-      query = query + "&" + option + "=" + encodeURIComponent(this.options[option]);
+      query = query + "&" + option + "=" + this.options[option];
     }
     return query;
   };
@@ -109,7 +109,7 @@ function Facet(Field,Value) {
             this.value = subparts[1];
           }
         } else {
-          (parts.length==2) ? this.setOption(name,parts[1]) : this.setOption(name,'');
+          (parts.length==2) ? this.setOption(name,decodeURI(parts[1])) : this.setOption(name,'');
         }
       }
     }
@@ -119,7 +119,6 @@ function Facet(Field,Value) {
 
 /**
  * A Solr search query.
- * @class Solr search query
  * @param Base URL to Solr host
  * @param Core Name of Solr core
  * @see [ref to Solr query page]
@@ -148,7 +147,7 @@ function SearchQuery(Base,Core) {
     var query = '';
     // append query parameters
     for (var key in this.options) {
-      query = query + "&" + key + "=" + encodeURIComponent(this.options[key]);
+      query = query + "&" + key + "=" + this.options[key];
     }
     // append faceting parameters
     for (var i=0;i<this.facets.length;i++) {
@@ -194,7 +193,7 @@ function SearchQuery(Base,Core) {
       if (element != null && element != '') {
         var parts = element.split('=');
         var name = parts[0].replace('&','');
-        (parts.length==2) ? this.setOption(name,parts[1]) : this.setOption(name,'');
+        (parts.length==2) ? this.setOption(name,decodeURI(parts[1])) : this.setOption(name,'');
       }
     }
   };
