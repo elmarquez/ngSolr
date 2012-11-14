@@ -61,6 +61,7 @@ function Facet(Field,Value) {
   this.field = Field;     // field name
   this.value = Value;     // field value
   this.options = {};      // additional filtering options
+  //this.options['f'+this.field+'facet.mincount'] = 1;  // minimum item count required for result listing
 
   /**
    * Get option value.

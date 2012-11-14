@@ -4,24 +4,6 @@
  */
 'use strict';
 
-/*---------------------------------------------------------------------------*/
-/* Functions                                                                 */
-
-/** 
- * Determine if the string s1 starts with the string s2
- * @param s1 String 1
- * @param s2 String 2
- */
-function startsWith(s1,s2) {
-    if (s1 && s2) {
-        return s1.slice(0, s2.length) == s2;
-    }
-    return false;
-};
-
-/*---------------------------------------------------------------------------*/
-/* Controllers                                                               */
-
 /**
  * Provides autocomplete and extended search support aids. This is a 
  * rudimentary, non-optimal implementation.
@@ -44,22 +26,21 @@ function SearchBoxController($scope,$http,CONSTANTS) {
     query.setOption("facet.limit","-1");
     query.setOption("facet.field",fieldname);
 
-    // get the hints list once
-    console.log("GET " + query.getUrl());
-    $http.get(query.getUrl())
-        .success(function(data) {
-            // get the term list, which we expect is already 
-            // sorted and contains only unique terms
-            var result = data.facet_counts.facet_fields[fieldname];
-            // transform all results to lowercase, add to list
-            for (var i=0;i<result.length;i+=2) {
-                var item = result[i].toLowerCase();
-                tokens.push(item);
-            }
-        })
-        .error(function(data,status,headers,config) {
-            console.log("Could not load search hints. Server returned error code " + status + ".");
-        });
+    ///////////////////////////////////////////////////////////////////////////
+
+    /** 
+     * Determine if the string s1 starts with the string s2
+     * @param s1 String 1
+     * @param s2 String 2
+     */
+    function startsWith(s1,s2) {
+        if (s1 && s2) {
+            return s1.slice(0, s2.length) == s2;
+        }
+        return false;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
     
     /**
      * Update the list of search hints.
@@ -82,6 +63,22 @@ function SearchBoxController($scope,$http,CONSTANTS) {
      * Initialize the controller.
      */
     $scope.init = function() {
+        // get the hints list once
+        console.log("GET " + query.getUrl());
+        $http.get(query.getUrl())
+            .success(function(data) {
+                // get the term list, which we expect is already 
+                // sorted and contains only unique terms
+                var result = data.facet_counts.facet_fields[fieldname];
+                // transform all results to lowercase, add to list
+                for (var i=0;i<result.length;i+=2) {
+                    var item = result[i].toLowerCase();
+                    tokens.push(item);
+                }
+            })
+            .error(function(data,status,headers,config) {
+                console.log("Could not load search hints. Server returned error code " + status + ".");
+            });
     }
     
     /**

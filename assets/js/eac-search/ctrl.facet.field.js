@@ -18,24 +18,6 @@ function FacetResult(Value,Score) {
 }
 
 /*---------------------------------------------------------------------------*/
-/* Functions                                                                 */
-
-/**
- * Parse result list into a format that is easier to present.
- * @param FacetList List of facets
- */
-function parse(FacetList) {
-    var items = new Array();
-    if (FacetList) {
-        for (var i=0;i<FacetList.length;i+=2) {
-            var result = new FacetResult(FacetList[i],FacetList[i+1]);
-            items.push(result);
-        }
-    }
-    return items;
-}
-
-/*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
 
 /**
@@ -55,7 +37,29 @@ function FieldFacetController($scope, $http, CONSTANTS) {
     // query to get list of facet values
     var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
     query.setOption("facet","true");
+    query.setOption("facet.mincount","1");
+    query.setOption("facet.sort","count");
+    query.setOption("q","*:*");
     query.setOption("wt","json");
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Parse result list into a format that is easier to present.
+     * @param FacetList List of facets
+     */
+    function parse(FacetList) {
+        var items = new Array();
+        if (FacetList) {
+            for (var i=0;i<FacetList.length;i+=2) {
+                var result = new FacetResult(FacetList[i],FacetList[i+1]);
+                items.push(result);
+            }
+        }
+        return items;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Add the selected facet to the facet constraint list.
@@ -75,7 +79,7 @@ function FieldFacetController($scope, $http, CONSTANTS) {
         // @see https://github.com/angular/angular.js/issues/1179
         $event.preventDefault();
       }
-    }
+    };
 
     /**
      * Initialize the controller.
@@ -86,7 +90,7 @@ function FieldFacetController($scope, $http, CONSTANTS) {
         $scope.field = FieldName;
         $scope.facets = FacetList;
         $scope.update();
-    }
+    };
 
     /**
      * Update the list of facet values.
@@ -102,7 +106,7 @@ function FieldFacetController($scope, $http, CONSTANTS) {
             .error(function(data,status,headers,config) {
                 console.log("Could not load facet results for '" + $scope.field + "'");
             });
-    }
+    };
 
 }
 

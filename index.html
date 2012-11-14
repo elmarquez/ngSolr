@@ -85,7 +85,7 @@
                     <div class="span5">
                         <form class="form-inline" ng-submit="updateResults()">
                             <div id="search-box" class="input-append" ng-controller="SearchBoxController">
-                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-submit="$parent.updateResults()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
+                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.updateResults()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
                         </form>
@@ -122,7 +122,7 @@
                         <!-- /facet selection controller -->
 
                         <!-- function facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('identity_entityType',$parent.query.facets)">
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('fIdentity_entityType',$parent.query.facets)">
                             <li><b>Function</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -136,7 +136,7 @@
                         <!-- function facet controller -->
 
                         <!-- location facet controller -->                           
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('description_occupation',$parent.query.facets)">
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('fDescription_occupation',$parent.query.facets)">
                             <li><b>Occupation</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -153,12 +153,12 @@
                         <ul class="facet-panel" ng-controller="RangeFacetController">
                             <li><b>Dates</b></li>
                             <li>
-                                <div class="input-append date" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
-                                    <input size="16" type="text" value="2012-10-20" style="min-width:120px;">
+                                <div class="input-append" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
+                                    <input size="10" type="text">
                                     <span class="add-on"><i class="icon-th"></i></span>
                                 </div>
-                                <div class="input-append date" id="toDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
-                                    <input size="16" type="text" value="2012-10-20" style="min-width:120px;">
+                                <div class="input-append" id="toDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
+                                    <input size="10" type="text">
                                     <span class="add-on"><i class="icon-th"></i></span>
                                 </div>
                             </li>
@@ -210,7 +210,7 @@
                         <div class="pagination" ng-hide="error">
                             <ul>
                                 <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();" ng-href="#/page/{{page.number}}">{{page.name}}</a>
+                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
                                 </li>
                             </ul>
                         </div><!-- /pagination -->

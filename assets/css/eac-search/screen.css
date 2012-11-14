@@ -100,10 +100,12 @@ body {
 .facet-panel .value {}
 
 /*--------------------------------------------------------*/
-/* Search Results Listing                                 */
+/* Search Results Graphics                                */
 
-#result-panel {
-}
+/*--------------------------------------------------------*/
+/* Search Results List                                    */
+
+#result-panel {}
 .reading-column {
   max-width: 512px;
 }
@@ -148,7 +150,7 @@ body {
 /* Search Results Map                                     */
 
 /*--------------------------------------------------------*/
-/* Metadata Panel                                         */
+/* Sidebar Panel                                          */
 
 /*--------------------------------------------------------*/
 /* Graphics Panel                                         */

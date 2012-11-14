@@ -18,6 +18,30 @@ and detailed documentation are available at:
 
   http://www.github.com/esrc/eac-ajax/ 
 
+
+Setup
+-----
+
+1. Download the ESRC EAC package from the source repository. The package will 
+   include two subpackages:
+
+  - Solr configuration files for EAC indexing (Solr EAC)
+  - Solr Feeder script (Solr Feeder)
+  - Solr AJAX web search interface (Solr AJAX)
+
+2. Install and configure a web server and Apache Solr search engine for your
+   content.
+3. Copy the Solr EAC configuration files in to your Solr site.
+4. Use the Index your data and use the Solr administration interface to 
+   verify that data has been indexed.
+5. Copy the Solr-AJAX package to the web server where your web interface will 
+   reside.
+6. Edit the assets/js/eac-search/app.js file. Replace the SOLRBASE value with 
+   the URL to your Solr search engine interface.  Here are some examples:
+   
+     http://www.mycompany.org/solrcorename/
+
+
 Credits
 -------
 
@@ -47,8 +71,10 @@ Version History
 
 0.6.0
 x Map output for location entities
+x Add a "did you mean" result list on the "no results found" view
 
 0.5.0
+x Query parameter to override the Solr core being queried
 x Organize code into proper namespaces
 x Document each controller and add information about what the controller 
   expects and how it should be wired up in the environment.
@@ -72,15 +98,28 @@ x Facet list is not currently updating the search in all cases
 x When a facet constraint is added, it should impact the typeahead filter
 x Location facet controller
 
+x Consider adding "??? results found for term, facet, facet" at top of result listing
+x Consider replacing link based facet lists with checkboxes
+x How to create a "related searches: a, b, c" list of queries
+x Consider a facet or tabbed interface to filter results by media type: text, image, video, etc.
+x Query term highlighting in search results
+x Autocomplete should show phrases that include the current search term, rather than just showing literal matches
+x Move code into esrc namespace? @see https://github.com/openjsan/openjsan/wiki/Global-Namespaces
+
 0.3.3
 x Updates toward integration into the SAUL and FACP projects
 ? Stuck on updating fragment to reflect the current facet query -- facet query clears hash
+x Make all the various free floating methods members of the function prototype for each controller
 
 Current:
 
 0.3.2
+x Update the location URL when another page is selected
 x Faceted search on date ranges
+x Fix the search history controller so that listings point to pages, not query data
 - Created date range facet controller
+- Set minimum facet count threshold for facet list
+- Fixed missing facet counts
 
 0.3.1
 - Update the location fragment to reflect the current query
@@ -142,3 +181,7 @@ Known Issues
   layout.
 
 
+Reference
+---------
+
+- http://www.craftyfella.com/2010/01/faceting-and-multifaceting-syntax-in.html
