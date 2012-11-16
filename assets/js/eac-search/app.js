@@ -15,16 +15,20 @@ var app = angular.module('eac-search-app', []);
 /**
  * Constants
  * @constant DEFAULT_QUERY Default Solr query
+ * @constant FACET_DELIMITER Character string used to identify facet query boundary
+ * @constant GOOGLE_MAPS_API_KEY Key for Google Maps service
  * @constant MAX_FIELD_LENGTH Maximum length of a text string for display in search results
+ * @constant QUERY_DELIMITER Character string used to identify start of query string
  * @constant SOLR_BASE URL for Solr host
  * @constant SOLR_CORE Name of Solr core (the search index)
  * @constant SOLR_VERSION Version of Solr search interface, result format
  */
 app.constant("CONSTANTS", {
-  DEFAULT_QUERY :"*:*",
-  FACET_DELIMITER : '&&',
+  DEFAULT_QUERY : "*:*",
+  FACET_DELIMITER : "&&",
+  GOOGLE_MAPS_API_KEY : "AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M",
   MAX_FIELD_LENGTH : 256,
-  QUERY_DELIMITER : '!',
+  QUERY_DELIMITER : "!",
   SOLR_BASE : "http://dev02.internal:8080",
   SOLR_CORE : "EOAS",
   SOLR_VERSION : 2.2,
@@ -61,7 +65,6 @@ function Facet(Field,Value) {
   this.field = Field;     // field name
   this.value = Value;     // field value
   this.options = {};      // additional filtering options
-  //this.options['f'+this.field+'facet.mincount'] = 1;  // minimum item count required for result listing
 
   /**
    * Get option value.

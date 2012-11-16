@@ -1,5 +1,5 @@
 EAC-AJAX: Faceted Search Interface to Solr EAC Data Index
----------------------------------------------------------
+=========================================================
 
 EAC-AJAX is a single page, Javascript web application for searching EAC data in 
 Apache Solr. It is incredibly easy to customize, requires little to no 
@@ -13,14 +13,15 @@ the web. It comprises three packages:
   on the web, with Apache Solr/Lucene
 * EAC-AJAX - an AJAX interface for faceted search of EAC collections in Solr
 
-See the LICENSE.txt file for copyright and license information. Source code 
-and detailed documentation are available at:
 
-  http://www.github.com/esrc/eac-ajax/ 
+License
+-------
+
+See the LICENSE.txt file for copyright and license information. 
 
 
-Setup
------
+Installation
+------------
 
 1. Download the ESRC EAC package from the source repository. The package will 
    include two subpackages:
@@ -42,6 +43,11 @@ Setup
      http://www.mycompany.org/solrcorename/
 
 
+Setup & Customization
+---------------------
+
+
+
 Credits
 -------
 
@@ -56,14 +62,14 @@ Melbourne. For more information about the project, please contact us at:
 
 Authors:
 
-  Davis Marques <davis.marques@unimelb.edu.au>
-  Marco La Rosa <marco@larosa.org.au>
+ * Davis Marques <davis.marques@unimelb.edu.au>
+ * Marco La Rosa <marco@larosa.org.au>
   
 Thanks:
 
-  Angular.js - www.angularjs.org
-  Bootstrap - twitter.github.com/bootstrap
-  JQuery - www.jquery.com
+ * Angular.js - www.angularjs.org
+ * Bootstrap - twitter.github.com/bootstrap
+ * JQuery - www.jquery.com
   
 
 Version History
