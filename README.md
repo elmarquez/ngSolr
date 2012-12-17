@@ -2,21 +2,13 @@ EAC-AJAX: Faceted Search Interface to Solr EAC Data Index
 ---------------------------------------------------------
 
 EAC-AJAX is a single page, Javascript web application for searching EAC data in 
-Apache Solr. It is incredibly easy to customize, requires little to no 
-configuration after uploading it to your web server.
+Apache Solr. It is very easy to customize and requires little configuration to
+get started.
 
-EAC-Web is a collection of tools for managing and publishing EAC metadata on 
-the web. It comprises three packages:
 
-* EAC-Solr - an Apache Solr/Lucene configuration for indexing EAC-CPF data
-* EAC-Crawler - a web crawler for EAC harvesting, profiling, indexing EAC data 
-  on the web, with Apache Solr/Lucene
-* EAC-AJAX - an AJAX interface for faceted search of EAC collections in Solr
-
-See the LICENSE.txt file for copyright and license information. Source code 
-and detailed documentation are available at:
-
-  http://www.github.com/esrc/eac-ajax/ 
+License
+-------
+See the LICENSE.txt file for copyright and license information. 
 
 
 Setup
@@ -61,9 +53,10 @@ Authors:
   
 Thanks:
 
-  Angular.js - www.angularjs.org
-  Bootstrap - twitter.github.com/bootstrap
-  JQuery - www.jquery.com
+  Angular.js - http://www.angularjs.org
+  Bootstrap - http://twitter.github.com/bootstrap
+  Bootstrap Datepicker - http://www.eyecon.ro/bootstrap-datepicker/
+  JQuery - http://www.jquery.com
   
 
 Version History
@@ -87,7 +80,7 @@ x Collector controller to grab particular items and keep them in a temporary
 x Preview controller to provide a quick display of particular items
 x Placeholder for visual search aids
 
-0.4.0
+0.4.1
 x On page load, parse the fragment portion of the location URL to determine
    if there is a starting search query.  Execute that query.
 x Controller unit tests
@@ -98,25 +91,35 @@ x Facet list is not currently updating the search in all cases
 x When a facet constraint is added, it should impact the typeahead filter
 x Location facet controller
 
-x Consider adding "??? results found for term, facet, facet" at top of result listing
+x Consider adding "??? results found for term, facet, facet" at top of result 
+  listing
 x Consider replacing link based facet lists with checkboxes
 x How to create a "related searches: a, b, c" list of queries
-x Consider a facet or tabbed interface to filter results by media type: text, image, video, etc.
+x Consider a facet or tabbed interface to filter results by media type: text, 
+  image, video, etc.
 x Query term highlighting in search results
-x Autocomplete should show phrases that include the current search term, rather than just showing literal matches
-x Move code into esrc namespace? @see https://github.com/openjsan/openjsan/wiki/Global-Namespaces
-
-0.3.3
-x Updates toward integration into the SAUL and FACP projects
-? Stuck on updating fragment to reflect the current facet query -- facet query clears hash
-x Make all the various free floating methods members of the function prototype for each controller
+x Autocomplete should show phrases that include the current search term, rather 
+  than just showing literal matches
+x Move code into esrc namespace? 
+  @see https://github.com/openjsan/openjsan/wiki/Global-Namespaces
+? Stuck on updating fragment to reflect the current facet query -- facet query
+  clears hash
 
 Current:
 
-0.3.2
+0.4.0
 x Update the location URL when another page is selected
+x Fix the search history controller so that listings point to pages, not query 
+  data
 x Faceted search on date ranges
-x Fix the search history controller so that listings point to pages, not query data
+
+x Implemented document, image, location views
+x Reorganized application to match Angular Seed Project implementation
+
+- Made free floating methods members of the controller
+
+0.3.2
+- Revised pagination function
 - Created date range facet controller
 - Set minimum facet count threshold for facet list
 - Fixed missing facet counts

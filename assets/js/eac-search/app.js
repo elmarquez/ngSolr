@@ -13,6 +13,16 @@ var app = angular.module('eac-search-app', []);
 // $locationProvider.html5Mode(false).hashPrefix('');
 
 /**
+ * Define application routes.
+ */
+app.config(['$routeProvider', function($routeProvider) {
+  $routeProvider.
+      when('/images', { templateUrl: 'assets/partials/images.html',   controller: SearchController}).
+      when('/locations', {templateUrl: 'assets/partials/locations.html', controller: SearchController}).
+      otherwise({redirectTo: '/documents'});
+}]);
+
+/**
  * Constants
  * @constant DEFAULT_QUERY Default Solr query
  * @constant MAX_FIELD_LENGTH Maximum length of a text string for display in search results
@@ -78,7 +88,7 @@ function Facet(Field,Value) {
    */
   this.getUrlFragment = function() {
     // this is used to delimit the start of the facet query in the URL and aid parsing
-    var query = '&&';
+    var query = '&&'; // delimiter should come from the CONSTANTS field
     query += '&fq=' + this.field + ':' + this.value;
     for (var option in this.options) {
       query = query + "&" + option + "=" + this.options[option];
@@ -120,6 +130,18 @@ function Facet(Field,Value) {
   };
 
 }
+
+/**
+ * A page in a pagination list
+ * @param Name
+ * @param Num
+ */
+function Page(Name,Num) {
+    this.name = Name;
+    this.number = Num;
+    this.isActive = false;
+    this.isDisabled = false;
+};
 
 /**
  * A Solr search query.
@@ -182,7 +204,16 @@ function SearchQuery(Base,Core) {
    * @param Value
    */
   this.setOption = function(Name,Value) {
-    this.options[Name] = Value;
+    if (Name=="fq") {
+      var fq = this.getOption(Name);
+      if (fq == undefined || fq == null || fq == "") {
+        this.options[Name] = "+" + Value;
+      } else {
+        this.options[Name] = fq + " +" + Value;
+      }
+    } else {
+      this.options[Name] = Value;
+    }
   };
 
   /**

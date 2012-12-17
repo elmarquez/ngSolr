@@ -5,26 +5,6 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
-
-/**
- * A page in a pagination list
- * @param Name
- * @param Num
- */
-function Page(Name,Num) {
-    this.name = Name;
-    this.number = Num;
-    this.isActive = false;
-    this.isDisabled = false;
-};
-
-/*---------------------------------------------------------------------------*/
-/* Functions                                                                 */
-
-
-
-/*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
 
 /**
@@ -63,58 +43,54 @@ function SearchController($http,$location,$scope,CONSTANTS) {
      * @param $scope Controller scope
      */
     function buildPageIndex($scope) {
-      // define the page navigation set
-      var index = [];
-      var firstPageInSet = 0;
-      var lastPageInSet = $scope.pagesPerSet;
-      if ($scope.page!=0) {
-          firstPageInSet = Math.floor($scope.page/$scope.pagesPerSet) * $scope.pagesPerSet;
+      // the default page navigation set
+      var pages = [];
+      // determine the current page, current page set
+      var currentPage = Math.floor($scope.start/$scope.itemsPerPage);
+      var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
+      // determine the first and last page in the set
+      var firstPageInSet = currentSet * $scope.pagesPerSet;
+      var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
+      if (lastPageInSet>=$scope.totalPages) {
+        lastPageInSet = lastPageInSet - (lastPageInSet - $scope.totalPages) - 1;
       }
-      if (lastPageInSet > $scope.totalPages) {
-          lastPageInSet = $scope.totalPages;
-      } else {
-          lastPageInSet = firstPageInSet + $scope.pagesPerSet;
+      // link to previous set
+      if ($scope.totalSets>1 && currentSet!=0) {
+        var previousSet = (currentSet - 1) * $scope.itemsPerPage;
+        var prevPage = new Page("«",previousSet);
+        pages.push(prevPage);
       }
-      // previous set link
-      if ($scope.totalPages>$scope.pagesPerSet) {
-        if ($scope.page==0) {
-          var prev = new Page("«","#");
-          prev.isDisabled = true;
-          index.push(prev);
-        } else {
-          var prev = new Page("«",firstPageInSet-$scope.pagesPerSet);
-          index.push(prev);
+      // page links
+      for (var i=firstPageInSet;i<=lastPageInSet;i++) {
+        var page = new Page(i+1,i*$scope.itemsPerPage);
+        if (i==$scope.start) {
+          page.isActive = true;
         }
+        pages.push(page);
       }
-      // current page set links
-      makePageLinks(index,firstPageInSet,lastPageInSet,$scope.page);
-      // next set link
-      if ($scope.totalPages>$scope.pagesPerSet) {
-        if ($scope.page==lastPageInSet) {
-          var next = new Page("»","#");
-          next.isDisabled = true;
-          index.push(next);
-        } else {
-          var next = new Page("»",lastPageInSet);
-          index.push(next);
-        }
+      // link to next set
+      if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
+        var nextSet = (lastPageInSet*$scope.itemsPerPage) + $scope.itemsPerPage;
+        var nextPage = new Page("»",nextSet);
+        pages.push(nextPage);
       }
       // return results
-      return index;
+      return pages;
     };
 
     /**
      * Reformat a collection of document records for presentation. Truncate each 
      * field to the maximum length specified.
      * @param Items
+     * @param FieldName
      * @param Length
      * @todo consider merging this into a single function that can handle one or more objects. 
      */
-    function format(Items,Length) {
+    function format(Items,FieldName,Length) {
       // if the item is an array
       if (Items) {
         for (var i=0;i<Items.length;i++) {
-          truncateField(Items[i],'text',Length);
+          truncateField(Items[i],FieldName,Length);
         }
       }
       // if an item is an object
@@ -144,7 +120,6 @@ function SearchController($http,$location,$scope,CONSTANTS) {
         if (elements.length > 0) {
           // the first element is the query
           var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-          query.setOption("explainOther","");
           query.setOption("fl","uri,title,text");
           query.setOption("hl.fl",$scope.highlightingParameters);
           query.setOption("indent","on");
@@ -170,18 +145,11 @@ function SearchController($http,$location,$scope,CONSTANTS) {
 
     /**
      * Build a default query object.
-     * @param $scope Controller scope
      * @param CONSTANTS Application constants
      */
-    function getDefaultQuery($scope,CONSTANTS) {
+    function getDefaultQuery(CONSTANTS) {
       var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-      query.setOption("explainOther","");
-      query.setOption("fl","uri,title,text");
-      query.setOption("hl.fl",$scope.highlightingParameters);
-      query.setOption("indent","on");
-      query.setOption("rows",$scope.itemsPerPage);
-      query.setOption("start",0);
-      query.setOption("version",CONSTANTS.SOLR_VERSION);
+      query.setOption("fl","uri,title,summary");
       query.setOption("wt","json");
       query.setOption("q",CONSTANTS.DEFAULT_QUERY);  
       return query;
@@ -215,30 +183,13 @@ function SearchController($http,$location,$scope,CONSTANTS) {
     };
 
     /**
-     * Make result set page links in a pagination list. Highlight the current page.
-     * @param Pages The list of pages in the pagination set.
-     * @param Start The first page number.
-     * @param Finish The last page number.
-     * @param Current The current page number.
-     */
-    function makePageLinks(Pages,Start,Finish,Current) {
-      for (var i=Start;i<Finish;i++) {
-        var page = new Page(i+1,i);
-        if (i==Current) {
-          page.isActive = true;
-        }
-        Pages.push(page);
-      }
-    };
-
-    /**
      * Set the fragment portion of the window location to reflect the current 
      * search query.
      * @param View View
      * @param Query Search query
      */
     function setLocation(location,scope,QueryDelimiter) {
-      var url = "/";
+      var url = "";
       if (scope.view) {
         url = scope.view;
       }
@@ -247,7 +198,7 @@ function SearchController($http,$location,$scope,CONSTANTS) {
       }
       // set the hash
       console.log("Setting hash as: " + url);
-      //window.location.hash = url;
+      window.location.hash = url;
       // var loc = location.hash(url);
     };
 
@@ -270,22 +221,24 @@ function SearchController($http,$location,$scope,CONSTANTS) {
     };
 
     /**
-     * Truncate the field to the specified length. If the field does not exist, 
-     * add it and assign an empty value to ensure other operations do not fail.
+     * Truncate the field to the specified length.
      * @param Document Document
      * @param FieldName Field name to truncate
      * @param Length Maximum field length
      */
     function truncateField(Document,FieldName,Length) {
-      if (Document) {
-        if (Document[FieldName]) {
-          if (Document[FieldName] instanceof Array) {
-            Document[FieldName] = Document[FieldName][0].substring(0,Math.min(Length,Document[FieldName][0].length));
-          } else {
-            Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
+      if (Document && Document[FieldName]) {
+        if (Document[FieldName] instanceof Array) {
+          Document[FieldName] = Document[FieldName][0];
+        }
+        if (Document[FieldName].length > Length) {
+          // truncate the document to the specified length
+          Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
+          // find the last word and truncate after that
+          var i = Document[FieldName].lastIndexOf(" ");
+          if (i != -1) {
+            Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
           }
-        } else {
-          Document[FieldName] = " ";
         }
       }
     };
@@ -306,16 +259,16 @@ function SearchController($http,$location,$scope,CONSTANTS) {
       } else {
         // use a default
         $scope.userQuery = CONSTANTS.DEFAULT_QUERY;
-        $scope.query = getDefaultQuery($scope,CONSTANTS);
+        $scope.query = getDefaultQuery(CONSTANTS);
       }
       // update the search results
-      this.updateResults();
+      $scope.update();
     };
 
     /**
      * Update the search results.
      */
-    $scope.updateResults = function() {
+    $scope.update = function() {
         // reset messages
         $scope.error = null;
         $scope.message = null;
@@ -343,7 +296,7 @@ function SearchController($http,$location,$scope,CONSTANTS) {
           $scope.previousQuery = $scope.query;
         }
         // update the browser location to reflect the query
-        setLocation($location,$scope,CONSTANTS.QUERY_DELIMITER);
+        // setLocation($location,$scope,CONSTANTS.QUERY_DELIMITER);
         // query.setOption("callback","JSON_CALLBACK");
         // log the current query
         console.log("GET " + $scope.query.getUrl());
