@@ -12,7 +12,7 @@
  * @param $http HTTP service
  * @param CONSTANTS Application constants
  */
-function RangeFacetController($scope, $http, CONSTANTS) {
+function FacetRangeController($scope, $http, CONSTANTS) {
     // parameters
     $scope.field = '';      // facet field name
     $scope.type = '';       // date

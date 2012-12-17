@@ -8,13 +8,14 @@
 /* Controllers                                                               */
 
 /**
- * Executes a search against a Solr index.
+ * Executes a document search against a Solr index.
  * @param $http HTTP service
+ * @param $location 
  * @param $scope Controller scope
  * @param CONSTANTS Application constants
  * @todo invoke an update when a change occurs to any of the key parameters or query facet list
  */
-function SearchController($http,$location,$scope,CONSTANTS) {
+function DocumentSearchController($http,$location,$scope,CONSTANTS) {
     // parameters
     $scope.error = null;                // error message to user
     $scope.highlighting = true;         // result highlighing on/off
@@ -340,4 +341,4 @@ function SearchController($http,$location,$scope,CONSTANTS) {
 }
 
 // inject controller dependencies
-SearchController.$inject = ['$http','$location','$scope','CONSTANTS'];
+DocumentSearchController.$inject = ['$http','$location','$scope','CONSTANTS'];

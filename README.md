@@ -105,11 +105,12 @@ x Update the location URL when another page is selected
 x Fix the search history controller so that listings point to pages, not query 
   data
 x Faceted search on date ranges
+x Rename controllers throughout, systematically
 
-x Implemented document, image, location views
-x Reorganized application to match Angular Seed Project implementation
-
-- Made free floating methods members of the controller
+- Updated application routing for document, image, location searching
+- Created default document, image, location views
+- Reorganized application to match Angular Seed Project implementation
+- Made free floating methods members of the DocumentSearchController
 
 0.3.2
 - Revised pagination function
@@ -175,3 +176,17 @@ Known Issues
 
 - The metadata/graphics panel stays right aligned when in a single column
   layout.
+
+
+Notes
+-----
+
+-- rename controllers throughout
+-- 
+
+when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
+
+function Controller($scope, $routeParams) {
+  // some value from the url
+  $scope.paramName = $routeParams.paramName;
+};

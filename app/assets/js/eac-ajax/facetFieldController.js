@@ -18,15 +18,15 @@ function FacetResult(Value,Score) {
 }
 
 /*---------------------------------------------------------------------------*/
-/* Controllers                                                               */
+/* Controller                                                                */
 
 /**
- * Field facet controller.
+ * Facet field query controller.
  * @param $scope Controller scope
  * @param $http HTTP service
  * @param CONSTANTS Application constants
  */
-function FieldFacetController($scope, $http, CONSTANTS) {
+function FacetFieldController($scope, $http, CONSTANTS) {
     // parameters
     $scope.facets = [];         // list of current query facets
     $scope.field = '';          // facet field name

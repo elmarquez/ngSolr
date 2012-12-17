@@ -17,9 +17,12 @@ var app = angular.module('eac-ajax-app', []);
  */
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-      when('/documents', { templateUrl: 'assets/partials/documents.html', controller: SearchController}).
-      when('/images', { templateUrl: 'assets/partials/images.html', controller: SearchController}).
-      when('/locations', {templateUrl: 'assets/partials/locations.html', controller: SearchController}).
+      when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
+      when('/documents/:query', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
+      when('/images', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
+      when('/images/:query', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
+      when('/locations', {templateUrl: 'assets/partials/locations.html', controller: LocationSearchController}).
+      when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: LocationSearchController}).
       otherwise({redirectTo: '/documents'});
 }]);
 
@@ -130,7 +133,7 @@ function Facet(Field,Value) {
     }
   };
 
-}
+};
 
 /**
  * A page in a pagination list
@@ -234,4 +237,4 @@ function SearchQuery(Base,Core) {
     }
   };
 
-}
+};

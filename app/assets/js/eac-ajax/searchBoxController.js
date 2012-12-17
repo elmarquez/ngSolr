@@ -4,6 +4,9 @@
  */
 'use strict';
 
+/*---------------------------------------------------------------------------*/
+/* Controllers                                                               */
+
 /**
  * Provides autocomplete and extended search support aids. This is a 
  * rudimentary, non-optimal implementation.
@@ -20,6 +23,7 @@ function SearchBoxController($scope,$http,CONSTANTS) {
     var minSearchLength = 1;
     var userQuery = "";
     
+    // @todo why do we have this here??
     var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
     query.setOption("wt","json");
     query.setOption("facet","true");
