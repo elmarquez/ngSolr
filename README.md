@@ -6,32 +6,20 @@ Apache Solr. It is very easy to customize and requires little configuration to
 get started.
 
 
-License
--------
-See the LICENSE.txt file for copyright and license information. 
-
-
 Setup
 -----
 
-1. Download the ESRC EAC package from the source repository. The package will 
-   include two subpackages:
-
-  - Solr configuration files for EAC indexing (Solr EAC)
-  - Solr Feeder script (Solr Feeder)
-  - Solr AJAX web search interface (Solr AJAX)
-
-2. Install and configure a web server and Apache Solr search engine for your
-   content.
-3. Copy the Solr EAC configuration files in to your Solr site.
-4. Use the Index your data and use the Solr administration interface to 
-   verify that data has been indexed.
-5. Copy the Solr-AJAX package to the web server where your web interface will 
-   reside.
-6. Edit the assets/js/eac-search/app.js file. Replace the SOLRBASE value with 
-   the URL to your Solr search engine interface.  Here are some examples:
-   
-     http://www.mycompany.org/solrcorename/
+1. Install and configure a web server and Apache Solr search engine.
+2. Install EAC-Solr in your Apache Solr core. Index your EAC data using the 
+   EAC-Solr configuration. Use the Solr administration interface to ensure that 
+   search data is now available.
+3. Download and unzip the EAC-Ajax package. The unzipped archive will contain a 
+   number of subdirectories.  Copy the app subdirectory to your web server.
+4. Edit the assets/js/eac-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE 
+   values with the URL to your Solr search engine interface and the name of the 
+   Solr core respectively.
+5. Load the index.html page and attempt to execute searches against your
+   index. You should see search results appear.
 
 
 Credits
@@ -48,16 +36,21 @@ Melbourne. For more information about the project, please contact us at:
 
 Authors:
 
-  Davis Marques <davis.marques@unimelb.edu.au>
-  Marco La Rosa <marco@larosa.org.au>
+- Davis Marques <davis.marques@unimelb.edu.au>
+- Marco La Rosa <marco@larosa.org.au>
   
 Thanks:
 
-  Angular.js - http://www.angularjs.org
-  Bootstrap - http://twitter.github.com/bootstrap
-  Bootstrap Datepicker - http://www.eyecon.ro/bootstrap-datepicker/
-  JQuery - http://www.jquery.com
+- Angular.js - http://www.angularjs.org
+- Bootstrap - http://twitter.github.com/bootstrap
+- Bootstrap Datepicker - http://www.eyecon.ro/bootstrap-datepicker/
+- JQuery - http://www.jquery.com
   
+
+License
+-------
+See the LICENSE.txt file for copyright and license information. 
+
 
 Version History
 ---------------
@@ -182,10 +175,3 @@ Known Issues
 
 - The metadata/graphics panel stays right aligned when in a single column
   layout.
-
-
-Reference
----------
-
-- http://www.craftyfella.com/2010/01/faceting-and-multifaceting-syntax-in.html
-

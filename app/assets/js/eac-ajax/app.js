@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eac-search-app', []);
+var app = angular.module('eac-ajax-app', []);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');
@@ -17,7 +17,8 @@ var app = angular.module('eac-search-app', []);
  */
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-      when('/images', { templateUrl: 'assets/partials/images.html',   controller: SearchController}).
+      when('/documents', { templateUrl: 'assets/partials/documents.html', controller: SearchController}).
+      when('/images', { templateUrl: 'assets/partials/images.html', controller: SearchController}).
       when('/locations', {templateUrl: 'assets/partials/locations.html', controller: SearchController}).
       otherwise({redirectTo: '/documents'});
 }]);
