@@ -1,1 +1,161 @@
-<p>This is the images view.</p>
+<!-- 
+  This file is subject to the terms and conditions defined in the
+  'LICENSE.txt' file, which is part of this source code package.
+-->
+
+<!-- page-header -->
+<header id="page-header">
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">EAC-CPF Search</a>
+                <div class="nav-collapse collapse">
+                    <p class="navbar-text pull-right">
+                        Logged in as <a href="#" class="navbar-link">Username</a>
+                    </p>
+                    <ul class="nav">
+                        <li><a href="#documents">Documents</a></li>
+                        <li class="active"><a href="#images">Images</a></li>
+                        <li><a href="#locations">Locations</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+       </div>
+    </div>
+</header>
+<!-- /page-header -->
+
+<!-- image search controller -->
+<div ng-init="init()">
+
+    <!-- search bar -->
+    <section id="search-bar">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span2 column-240">&nbsp;</div>
+                <div class="span5">
+                    <form class="form-inline" ng-submit="$parent.update()">
+                        <div id="search-box" class="input-append" ng-controller="SearchBoxController">
+                            <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
+                            <button class="btn">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="span5">&nbsp;</div>
+            </div>
+        </div>
+    </section>
+    <!-- /search-bar -->
+
+    <!-- content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row-fluid">
+
+                <!-- search panel -->
+                <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
+                
+                    <!-- facet selection controller -->
+                    <ul class="facet-panel" ng-controller="FacetSelectionController" ng-init="init(query.facets)" ng-show="facets.length>0">
+                        <li><b>Filtering By</b></li>
+                        <li>
+                            <ul class="items unstyled">
+                                <li ng-repeat="facet in facets">
+                                    <i class="icon-tag"></i> 
+                                    <a ng-click="remove($index)">
+                                        <span class="fieldname">{{facet.field}}:</span>
+                                        <span class="value">{{facet.value}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- /facet selection controller -->
+
+                	Image facet controls go here
+
+                </div>
+                <!-- /search panel -->
+                
+                <!-- result panel -->
+                <div id="result-panel" class="span5">
+                    <div id="search-results" class="column-512" ng-cloak>
+                        <div class="alert alert-error" ng-show="error">{{error}}</div>
+                        <div class="alert alert-info" ng-show="message">{{message}}</div>
+
+                        Image search results go here
+
+                    </div><!-- /search results -->
+
+                    <div class="pagination" ng-hide="error">
+                        <ul>
+                            <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
+                                <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
+                            </li>
+                        </ul>
+                    </div><!-- /pagination -->
+
+                </div><!-- result panel, center column -->
+                
+                <!-- metadata panel -->
+                <div id="metadata-panel" class="span5" ng-show="sidebar">
+
+                    <div class="column-320 pull-right">
+                        <p>This is an optional metadata or document preview panel.</p>
+                        <div id="graphics">
+
+                        </div>
+                        <table class="table table-hover table-condensed" style="width:100%">
+                            <thead><tr><th>Option</th><th>Value</th></tr></thead>
+                            <tbody>
+                                <tr><td>Fields</td><td>{{ fields }}</td></tr>
+                                <tr><td>Items Per Page</td><td>{{ itemsPerPage }}</td></tr>
+                                <tr><td>Max Result Score</td><td>{{ queryMaxScore }}</td></tr>
+                                <tr><td>Page (start)</td><td>{{ page }}</td></tr>
+                                <tr><td>Pages per Set</td><td>{{ pagesPerSet }}</td></tr>
+                                <tr><td>Query</td>
+                                    <td><a ng-href="{{query.getUrl()}}" target="_blank">{{ query.getUserQuery() }}</a></td>
+                                </tr>
+                                <tr><td>Query Time</td><td>{{ queryTime }}</td></tr>
+                                <tr><td>Total Items Found</td><td>{{ queryNumFound }}</td></tr>
+                                <tr><td>Total Pages</td><td>{{ totalPages }}</td></tr>
+                                <tr><td>Total Sets</td><td>{{ totalSets }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- /metadata panel -->
+                
+            </div><!-- /row -->
+        </div><!-- /container -->
+
+    </div><!-- /content -->
+
+    <!-- view specific scripts -->
+    <script type="text/javascript">
+    </script>
+
+</div><!-- /image search controller -->
+
+<!-- footer -->
+<footer id="footer">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2 column-240">&nbsp;</div>
+            <div class="span5">
+                <div class="column-512">
+                    EAC-CPF faceted search interface to Apache Solr.
+                    A project of the 
+                    <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
+                </div>
+            </div>
+            <div class="span5">&nbsp;</div>
+        </div>
+    </div>
+</footer><!-- /footer -->

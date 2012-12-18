@@ -4,7 +4,7 @@
  */
  'use strict';
 
-angular.module('eac-search.filters', []).
+angular.module('eac-ajax-app.filters', []).
   filter('interpolate', ['version', function(version) {
     return function(text) {
       return String(text).replace(/\%VERSION\%/mg, version);

@@ -18,10 +18,10 @@ function FacetResult(Value,Score) {
 }
 
 /*---------------------------------------------------------------------------*/
-/* Controllers                                                               */
+/* Controller                                                                */
 
 /**
- * Field facet controller.
+ * Facet field query controller.
  * @param $scope Controller scope
  * @param $http HTTP service
  * @param CONSTANTS Application constants
