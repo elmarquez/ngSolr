@@ -47,7 +47,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
       // the default page navigation set
       var pages = [];
       // determine the current page, current page set
-      var currentPage = Math.floor($scope.start/$scope.itemsPerPage);
+      var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
       var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
       // determine the first and last page in the set
       var firstPageInSet = currentSet * $scope.pagesPerSet;
@@ -64,7 +64,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
       // page links
       for (var i=firstPageInSet;i<=lastPageInSet;i++) {
         var page = new Page(i+1,i*$scope.itemsPerPage);
-        if (i==$scope.start) {
+        if (page.number==$scope.page) {
           page.isActive = true;
         }
         pages.push(page);
@@ -276,13 +276,13 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
         // if the query is invalid query return a default
         if (!isValidQuery($scope.userQuery)) {
           // $scope.message = "Invalid query '" + $scope.userQuery + "'. Using default '" + CONSTANTS.DEFAULT_QUERY + "'";
-          $scope.query = getDefaultQuery($scope,CONSTANTS);
+          $scope.query = getDefaultQuery(CONSTANTS);
           $scope.previousQuery = $scope.query;
         } 
         // there is a previous query and the query has changed
         else if ($scope.previousQuery && $scope.userQuery != $scope.previousQuery.getUserQuery()) {
           $scope.previousQuery = $scope.query;
-          $scope.query = getDefaultQuery($scope,CONSTANTS);
+          $scope.query = getDefaultQuery(CONSTANTS);
           $scope.query.setOption("hl.fl",$scope.highlightingParameters);
           $scope.query.setOption("q",$scope.userQuery);
           $scope.query.setOption("rows",$scope.itemsPerPage);
