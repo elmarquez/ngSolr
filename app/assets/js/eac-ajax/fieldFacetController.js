@@ -26,7 +26,7 @@ function FacetResult(Value,Score) {
  * @param $http HTTP service
  * @param CONSTANTS Application constants
  */
-function FacetFieldController($scope, $http, CONSTANTS) {
+function FieldFacetController($scope, $http, CONSTANTS) {
     // parameters
     $scope.facets = [];         // list of current query facets
     $scope.field = '';          // facet field name

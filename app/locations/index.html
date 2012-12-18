@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="eac-ajax"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="eac-ajax"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="eac-ajax"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="eac-ajax-app"> <!--<![endif]-->
+    <head>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <title>EAC-CPF Faceted Search Interface to Solr</title>
+        <meta name="author" content="eScholarship Research Centre, University of Melbourne">
+        <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Icons -->
+        <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144x144-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114x114-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72x72-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57x57-precomposed.png" />
+        <!-- Stylesheets -->
+        <style>
+            [ng-cloak] {display: none;}
+        </style>
+        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-datepicker.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <!-- Scripts -->
+        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
+
+        <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap-datepicker.js"></script>
+        <script type="text/javascript" src="../assets/js/buckets/buckets.min.js"></script>
+
+        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/app-locationSearch.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/facetSelectionController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/fieldFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/imageSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/locationSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/rangeFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/searchBoxController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/searchHistoryController.js"></script>
+
+        <script type="text/javascript" src="../assets/js/d3/d3.min.js"></script> 
+        <script type="text/javascript" src="../assets/js/d3/d3.layout.min.js"></script> 
+        <script type="text/javascript" src="../assets/js/rickshaw/rickshaw.min.js"></script> 
+    </head>
+    <body ng-controller="LocationSearchController" ng-init="init()">
+
+        <!-- page-header -->
+        <header id="page-header">
+            <div class="navbar navbar-inverse">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="#">EAC-CPF Search</a>
+                        <div class="nav-collapse collapse">
+                            <p class="navbar-text pull-right">
+                                Logged in as <a href="#" class="navbar-link">Username</a>
+                            </p>
+                            <ul class="nav">
+                                <li><a href="../documents">Documents</a></li>
+                                <li><a href="../images">Images</a></li>
+                                <li class="active"><a href="#">Locations</a></li>
+                            </ul>
+                        </div><!--/.nav-collapse -->
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- /page-header -->
+
+        <!-- search bar -->
+        <section id="search-bar">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span2 column-240">&nbsp;</div>
+                    <div class="span5">
+                        <form class="form-inline" ng-submit="$parent.update()">
+                            <div id="search-box" class="input-append" ng-controller="SearchBoxController">
+                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
+                                <button class="btn">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="span5">&nbsp;</div>
+                </div>
+            </div>
+        </section>
+        <!-- /search-bar -->
+
+        <!-- content -->
+        <section id="content">
+            <div class="container-fluid">
+                <div class="row-fluid">
+
+                    <!-- search panel -->
+                    <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
+
+                        <!-- facet selection controller -->
+                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-init="init(query.facets)" ng-show="facets.length>0">
+                            <li><b>Filtering By</b></li>
+                            <li>
+                                <ul class="items unstyled">
+                                    <li ng-repeat="facet in facets">
+                                        <i class="icon-tag"></i>
+                                        <a ng-click="remove($index)">
+                                            <span class="fieldname">{{facet.field}}:</span>
+                                            <span class="value">{{facet.value}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- /facet selection controller -->
+
+                        Location facet controls go here.
+
+                        <br/>
+
+                        Location results go here.
+
+                    </div>
+                    <!-- /search panel -->
+
+                    <!-- result panel -->
+                    <div id="result-panel" class="span5">
+                        <div id="search-results" class="column-512" ng-cloak>
+                            <div class="alert alert-error" ng-show="error">{{error}}</div>
+                            <div class="alert alert-info" ng-show="message">{{message}}</div>
+
+                            <div id="map" style="width:500px;height:380px;"></div>
+
+                        </div><!-- /search results -->
+
+                        <div class="pagination" ng-hide="error">
+                            <ul>
+                                <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
+                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
+                                </li>
+                            </ul>
+                        </div><!-- /pagination -->
+
+                    </div><!-- result panel, center column -->
+
+                </div><!-- /row -->
+            </div><!-- /container -->
+        </section>
+
+        <!-- view specific scripts -->
+        <script type="text/javascript">
+            function initialize() {
+                var mapProp = {
+                    center: new google.maps.LatLng(51.508742,-0.120850),
+                    zoom:5,
+                    mapTypeId:google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById("map"),mapProp);
+            }
+            google.maps.event.addDomListener(window,'load',initialize);
+        </script>
+
+    </body>
+</html>

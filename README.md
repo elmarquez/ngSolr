@@ -97,20 +97,21 @@ x Move code into esrc namespace?
   @see https://github.com/openjsan/openjsan/wiki/Global-Namespaces
 ? Stuck on updating fragment to reflect the current facet query -- facet query
   clears hash
-
-Current:
-
-0.4.0
 x Update the location URL when another page is selected
 x Fix the search history controller so that listings point to pages, not query 
   data
 x Faceted search on date ranges
-x Rename controllers throughout, systematically
 
+Current:
+
+0.4.0
+- Renamed controllers throughout
+- Moved global classes into separate common.js file
+- Created separate document, image, location search applications and pages
 - Updated application routing for document, image, location searching
-- Created default document, image, location views
+- Created document, image, location partial views
 - Reorganized application to match Angular Seed Project implementation
-- Made free floating methods members of the DocumentSearchController
+- Made various free floating methods members of their respective controllers
 
 0.3.2
 - Revised pagination function
