@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eac-ajax-app', []);
+var app = angular.module('eac-ajax-app', ['ui','ui.directives']);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');

@@ -28,7 +28,6 @@
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-
         <!-- Scripts -->
         <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
 
@@ -75,7 +74,7 @@
                                 <li><a href="../images">Images</a></li>
                                 <li><a href="../locations">Locations</a></li>
                             </ul>
-                        </div><!--/.nav-collapse -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,8 +87,8 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                        <form class="form-inline" ng-submit="$parent.update()">
-                            <div id="search-box" class="input-append" ng-controller="SearchBoxController">
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-submit="$parent.update()">
+                            <div id="search-box" class="input-append">
                                 <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
@@ -183,15 +182,6 @@
                         </ul>
                         <!-- /search history panel -->
 
-                        <!-- add custom facet controller -->
-                        <ul class="facet-panel">
-                            <li>
-                                <i class="icon-plus"></i>
-                                <a href="#" class="muted">Add Facet Panel</a>
-                            </li>
-                        </ul>
-                        <!-- /add custom facet controller -->
-
                     </div>
                     <!-- /search panel -->
 
@@ -211,49 +201,47 @@
                                 </div>
                                 <div class="existdates">Sep. 2009 - Mar. 2012</div>
                             </article>
-                        </div><!-- /search results -->
+                        </div>
                         <div class="pagination" ng-hide="error">
                             <ul>
                                 <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
+                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;update();">{{page.name}}</a>
                                 </li>
                             </ul>
-                        </div><!-- /pagination -->
-                    </div><!-- result panel, center column -->
+                        </div>
+                    </div>
+                    <!-- /result panel -->
 
                     <!-- metadata panel -->
                     <div id="metadata-panel" class="span5" ng-show="sidebar">
-
                         <div class="column-320 pull-right">
                             <p>This is an optional metadata or document preview panel.</p>
-                            <div id="graphics">
-
-                            </div>
+                            <div id="graphics"></div>
                             <table class="table table-hover table-condensed" style="width:100%">
                                 <thead><tr><th>Option</th><th>Value</th></tr></thead>
                                 <tbody>
-                                <tr><td>Fields</td><td>{{ fields }}</td></tr>
-                                <tr><td>Items Per Page</td><td>{{ itemsPerPage }}</td></tr>
-                                <tr><td>Max Result Score</td><td>{{ queryMaxScore }}</td></tr>
-                                <tr><td>Page (start)</td><td>{{ page }}</td></tr>
-                                <tr><td>Pages per Set</td><td>{{ pagesPerSet }}</td></tr>
-                                <tr><td>Query</td>
-                                    <td><a ng-href="{{query.getUrl()}}" target="_blank">{{ query.getUserQuery() }}</a></td>
-                                </tr>
-                                <tr><td>Query Time</td><td>{{ queryTime }}</td></tr>
-                                <tr><td>Total Items Found</td><td>{{ queryNumFound }}</td></tr>
-                                <tr><td>Total Pages</td><td>{{ totalPages }}</td></tr>
-                                <tr><td>Total Sets</td><td>{{ totalSets }}</td></tr>
+                                    <tr><td>Fields</td><td>{{ fields }}</td></tr>
+                                    <tr><td>Items Per Page</td><td>{{ itemsPerPage }}</td></tr>
+                                    <tr><td>Max Result Score</td><td>{{ queryMaxScore }}</td></tr>
+                                    <tr><td>Page (start)</td><td>{{ page }}</td></tr>
+                                    <tr><td>Pages per Set</td><td>{{ pagesPerSet }}</td></tr>
+                                    <tr><td>Query</td><td><a ng-href="{{query.getUrl()}}" target="_blank">{{ query.getUserQuery() }}</a></td></tr>
+                                    <tr><td>Query Time</td><td>{{ queryTime }}</td></tr>
+                                    <tr><td>Total Items Found</td><td>{{ queryNumFound }}</td></tr>
+                                    <tr><td>Total Pages</td><td>{{ totalPages }}</td></tr>
+                                    <tr><td>Total Sets</td><td>{{ totalSets }}</td></tr>
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                     <!-- /metadata panel -->
 
-                </div><!-- /row -->
-            </div><!-- /container -->
-        </section><!-- /content -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </section>
+        <!-- /content -->
 
         <!-- footer -->
         <footer id="footer">
@@ -270,7 +258,8 @@
                     <div class="span5">&nbsp;</div>
                 </div>
             </div>
-        </footer><!-- /footer -->
+        </footer>
+        <!-- /footer -->
 
         <!-- view specific scripts -->
         <script type="text/javascript">

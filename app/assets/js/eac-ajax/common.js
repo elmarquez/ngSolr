@@ -56,7 +56,7 @@ function Facet(Field,Value) {
 
     /**
      * Set facet properties from Uri parameters.
-     * @param Url
+     * @param Query
      */
     this.setOptionsFromQuery = function(Query) {
         var elements = Query.split('&');
@@ -82,8 +82,8 @@ function Facet(Field,Value) {
 
 /**
  * A page in a pagination list
- * @param Name
- * @param Num
+ * @param Name Page name
+ * @param Num Page number
  */
 function Page(Name,Num) {
     this.name = Name;

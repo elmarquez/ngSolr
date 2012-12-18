@@ -38,6 +38,8 @@
         <script type="text/javascript" src="../assets/js/buckets/buckets.min.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
+        <script type="text/javascript" src="../assets/js/angular-ui/common/module.js"></script>
+        <script type="text/javascript" src="../assets/js/angular-ui/modules/directives/map/map.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/app-locationSearch.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
@@ -102,58 +104,26 @@
         <!-- /search-bar -->
 
         <!-- content -->
-        <section id="content">
-            <div class="container-fluid">
-                <div class="row-fluid">
+        <section id="content" style="padding-top:0;height:100%;overflow:hidden;">
+            <div class="container-fluid" style="height:100%;padding-right:0;">
+                <div class="row-fluid" style="height:100%;">
 
                     <!-- search panel -->
-                    <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
-
-                        <!-- facet selection controller -->
-                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-init="init(query.facets)" ng-show="facets.length>0">
-                            <li><b>Filtering By</b></li>
-                            <li>
-                                <ul class="items unstyled">
-                                    <li ng-repeat="facet in facets">
-                                        <i class="icon-tag"></i>
-                                        <a ng-click="remove($index)">
-                                            <span class="fieldname">{{facet.field}}:</span>
-                                            <span class="value">{{facet.value}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <!-- /facet selection controller -->
-
+                    <div id="search-panel" class="span2 column-240 bs-docs-sidebar" style="padding-top:20px;">
                         Location facet controls go here.
-
                         <br/>
-
                         Location results go here.
-
                     </div>
                     <!-- /search panel -->
 
                     <!-- result panel -->
-                    <div id="result-panel" class="span5">
-                        <div id="search-results" class="column-512" ng-cloak>
-                            <div class="alert alert-error" ng-show="error">{{error}}</div>
-                            <div class="alert alert-info" ng-show="message">{{message}}</div>
-
-                            <div id="map" style="width:500px;height:380px;"></div>
-
-                        </div><!-- /search results -->
-
-                        <div class="pagination" ng-hide="error">
-                            <ul>
-                                <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
-                                </li>
-                            </ul>
-                        </div><!-- /pagination -->
-
-                    </div><!-- result panel, center column -->
+                    <div id="result-panel" class="span10" style="height:100%;padding:0;">
+                        <div class="alert alert-error" ng-show="error">{{error}}</div>
+                        <div class="alert alert-info" ng-show="message">{{message}}</div>
+                        <div id="search-results" ng-cloak style="height:100%;margin-bottom:100px;">
+                            <div id="map" ui-map="map" style="height:100%;width:100%;"></div>
+                        </div>
+                    </div><!-- result panel -->
 
                 </div><!-- /row -->
             </div><!-- /container -->
