@@ -15,6 +15,7 @@ var app = angular.module('eac-ajax-app', []);
 /**
  * Define application routes.
  */
+/*
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
       when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
@@ -25,6 +26,7 @@ app.config(['$routeProvider', function($routeProvider) {
       when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: LocationSearchController}).
       otherwise({redirectTo: '/documents'});
 }]);
+*/
 
 /**
  * Constants
@@ -39,7 +41,7 @@ app.constant("CONSTANTS", {
   FACET_DELIMITER : '&&',
   MAX_FIELD_LENGTH : 256,
   QUERY_DELIMITER : '!',
-  SOLR_BASE : "http://dev02.internal:8080",
+  SOLR_BASE : "http://localhost:8080",
   SOLR_CORE : "EOAS",
   SOLR_VERSION : 2.2,
 });

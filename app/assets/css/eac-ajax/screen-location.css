@@ -1,6 +1,6 @@
 /*--------------------------------------------------------*/
 /* EAC AJAX Interface to Solr                             */
-/* Main Screen Styles                                     */
+/* Location Search Screen Styles                          */
 
 /*--------------------------------------------------------*/
 /* Page Layout                                            */
@@ -14,31 +14,18 @@ body {
     background: #efefef;
     height: 100%;
 }
-#page-header {
-  margin: 0;
-  padding: 0;
-}
-#page-header .navbar {
-  margin: 0;
-  padding: 0;
-}
-#page-header .navbar-inverse {
-  margin: 0;
-  padding: 0;
-}
-#page-header .navbar-inner {
-  border-radius: 0;
-  -webkit-border-radius: 0;
-}
-#page-header .form-inline {
-  margin: 0;
-  padding-top: 5px;
-}
 #search-bar {
   background: #efefef;
   border-bottom:1px solid #DEDEDE;
+  box-shadow: 0 0px 3px 0px #999;
+  height: 50px;
+  left: 0;
   margin: 0;
   padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
 }
 #search-bar form {
   margin: 10px 0 10px 0;
@@ -48,70 +35,31 @@ body {
   font-weight: bold;
 }
 #content {
-  background: white;
-  margin: 0;
-  padding-top: 20px;
+  padding-top:0;
+  overflow:hidden;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  z-index: 0;
 }
 #search-panel {
   min-width: 240px;
   overflow: hidden;
-  padding-bottom: 20px;
+  padding: 20px;
 }
-#metadata-panel {
-  margin: 0;
-  padding: 0;
-  padding-bottom: 20px;
+#result-panel {
+  bottom: 0;
+  top: 0;
+  left: 240px;
+  position: absolute;
+  right: 0;
 }
-#footer {
-  border-top: 1px solid #dedede;
-  color: #666;
-  font-size: small;
-  min-height: 40px;
-  padding-bottom: 40px;
-  padding-top: 20px;
-}
-
-/*--------------------------------------------------------*/
-/* Facet Panel                                            */
-
-.facet-panel {
-  border: 1px solid #E5E5E5;
-  border-radius: 4px;
-  list-style: none;
-  margin-bottom: 20px;
-  margin-left: 0;
-  padding: 0;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-}
-.facet-panel>li {
-  border-bottom: 1px solid #E5E5E5;
-  padding: 8px 15px;
-  padding-right: 8px;
-}
-.facet-panel>li:first-child {
-  color: #333;
-  font-weight: bold;
-}
-.facet-panel>li:last-child {
-  border-bottom: none;
-}
-.facet-panel .items li:hover:after {
-  content: " remove";
-  font-style: italic;
-}
-.facet-panel .fieldname {
-  font-weight: bold;
-}
-.facet-panel .value {}
-
-/*--------------------------------------------------------*/
-/* Search Results Graphics                                */
 
 /*--------------------------------------------------------*/
 /* Search Results List                                    */
 
-#result-panel {}
 .reading-column {
   max-width: 512px;
 }
@@ -156,38 +104,28 @@ body {
 /* Search Results Map                                     */
 
 #map {
-  height: 100%;
-  width: 100%;
-  /*
   bottom: 0;
   left: 0;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 0;
-  */
+}
+
+#map img{
+  max-width: none;
 }
 
 /*--------------------------------------------------------*/
 /* Sidebar Panel                                          */
 
-/*--------------------------------------------------------*/
-/* Graphics Panel                                         */
-
-.chart div {
-   font: 10px sans-serif;
-   background-color: #ddd;
-   text-align: right;
-   padding: 3px;
-   margin: 1px;
-   color: white;
-}
-.chart div:hover {
-    background-color: steelblue;
-}
 
 /*--------------------------------------------------------*/
 /* Other Styles                                           */
+
+.column-splitbar {
+  width: 10px;
+}
 
 .column-240 {
   /* max-width: 240px; */

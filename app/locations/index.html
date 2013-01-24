@@ -6,7 +6,7 @@
     <head>
         <!-- Meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Faceted Search Interface to Solr</title>
+        <title>EAC-CPF Ajax Search Interface to Solr</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
         <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-datepicker.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen-location.css" media="screen" />
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -34,112 +34,77 @@
 
         <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap-datepicker.js"></script>
-        <script type="text/javascript" src="../assets/js/buckets/buckets.min.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/angular-ui/common/module.js"></script>
-        <script type="text/javascript" src="../assets/js/angular-ui/modules/directives/map/map.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/app-locationSearch.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/facetSelectionController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/fieldFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/imageSearchController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/locationSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/rangeFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/mapController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/searchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchHistoryController.js"></script>
-
-        <script type="text/javascript" src="../assets/js/d3/d3.min.js"></script> 
-        <script type="text/javascript" src="../assets/js/d3/d3.layout.min.js"></script> 
-        <script type="text/javascript" src="../assets/js/rickshaw/rickshaw.min.js"></script> 
+        <script type="text/javascript" src="../assets/js/eac-ajax/timelineController.js"></script>
     </head>
     <body ng-controller="LocationSearchController" ng-init="init()">
 
-        <!-- page-header -->
-        <header id="page-header">
-            <div class="navbar navbar-inverse">
-                <div class="navbar-inner">
-                    <div class="container-fluid">
-                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </a>
-                        <a class="brand" href="#">EAC-CPF Search</a>
-                        <div class="nav-collapse collapse">
-                            <p class="navbar-text pull-right">
-                                Logged in as <a href="#" class="navbar-link">Username</a>
-                            </p>
-                            <ul class="nav">
-                                <li><a href="../documents">Documents</a></li>
-                                <li><a href="../images">Images</a></li>
-                                <li class="active"><a href="#">Locations</a></li>
-                            </ul>
-                        </div><!--/.nav-collapse -->
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- /page-header -->
-
         <!-- search bar -->
         <section id="search-bar">
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span2 column-240">&nbsp;</div>
-                    <div class="span5">
-                        <form class="form-inline" ng-submit="$parent.update()">
-                            <div id="search-box" class="input-append" ng-controller="SearchBoxController">
-                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
-                                <button class="btn">Search</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="span5">&nbsp;</div>
+            <form class="form-inline" ng-submit="$parent.update()">
+                <div id="search-box" class="input-append" ng-controller="SearchBoxController">
+                    <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
+                    <button class="btn">Search</button>
                 </div>
-            </div>
+            </form>
         </section>
         <!-- /search-bar -->
 
         <!-- content -->
-        <section id="content" style="padding-top:0;height:100%;overflow:hidden;">
-            <div class="container-fluid" style="height:100%;padding-right:0;">
-                <div class="row-fluid" style="height:100%;">
+        <section id="content">
 
-                    <!-- search panel -->
-                    <div id="search-panel" class="span2 column-240 bs-docs-sidebar" style="padding-top:20px;">
-                        Location facet controls go here.
-                        <br/>
-                        Location results go here.
-                    </div>
-                    <!-- /search panel -->
+            <!-- search panel -->
+            <div id="search-panel" class="column-240 bs-docs-sidebar">
+                Location facet controls go here.
+                <br/>
+                Location results go here.
+            </div>
+            <!-- /search panel -->
 
-                    <!-- result panel -->
-                    <div id="result-panel" class="span10" style="height:100%;padding:0;">
-                        <div class="alert alert-error" ng-show="error">{{error}}</div>
-                        <div class="alert alert-info" ng-show="message">{{message}}</div>
-                        <div id="search-results" ng-cloak style="height:100%;margin-bottom:100px;">
-                            <div id="map" ui-map="map" style="height:100%;width:100%;"></div>
-                        </div>
-                    </div><!-- result panel -->
+            <!-- result panel -->
+            <div id="result-panel">
+                <div id="map" ng-controller="MapController" ng-init="init()"></div>
+            </div>
+            <!-- result panel -->
 
-                </div><!-- /row -->
-            </div><!-- /container -->
         </section>
 
         <!-- view specific scripts -->
         <script type="text/javascript">
+        /*
             function initialize() {
-                var mapProp = {
-                    center: new google.maps.LatLng(51.508742,-0.120850),
-                    zoom:5,
-                    mapTypeId:google.maps.MapTypeId.ROADMAP
+                var start = new google.maps.LatLng(-32.3456,141.4346);
+                var settings = {
+                    center: start,
+                    mapTypeId: google.maps.MapTypeId.HYBRID,
+                    mapTypeControl: false,
+                    // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+                    mapTypeId: google.maps.MapTypeId.TERRAIN,                
+                    navigationControl: true,
+                    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+                    // overviewMapControl:true,
+                    panControl:true,
+                    rotateControl:true,
+                    scaleControl:true,
+                    streetViewControl:false,
+                    zoom: 5,
+                    zoomControl:true,
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.LARGE
+                    },
                 };
-                var map = new google.maps.Map(document.getElementById("map"),mapProp);
+                var map = new google.maps.Map(document.getElementById("map"),settings);
+                map.panTo(start)
             }
-            google.maps.event.addDomListener(window,'load',initialize);
+            */
+            // google.maps.event.addDomListener(window,'load',initialize);
         </script>
 
     </body>
