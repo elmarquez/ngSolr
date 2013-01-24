@@ -19,14 +19,16 @@ function MapController($scope, $routeParams, $http, CONSTANTS) {
     $scope.markers = [];
     $scope.query = '';
     $scope.settings = {
-        center: new google.maps.LatLng(CONSTANTS.MAP_START_LOCATION),
-        mapTypeId: google.maps.MapTypeId.HYBRID,
+        // center: new google.maps.LatLng(CONSTANTS.MAP_START_LOCATION),
+        center: new google.maps.LatLng(-32.3456,141.4346), // hard code to start at Australia
         mapTypeControl: false,
         // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
-        mapTypeId: google.maps.MapTypeId.TERRAIN,                
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
         navigationControl: true,
-        navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-        // overviewMapControl:true,
+        navigationControlOptions: {
+            style: google.maps.NavigationControlStyle.SMALL
+        },
+        overviewMapControl:false,
         panControl:true,
         rotateControl:true,
         scaleControl:true,
@@ -41,14 +43,94 @@ function MapController($scope, $routeParams, $http, CONSTANTS) {
 
 	///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Reformat a collection of document records for presentation. Truncate each 
+     * field to the maximum length specified.
+     * @param Items
+     * @param FieldName
+     * @param Length
+     * @todo consider merging this into a single function that can handle one or more objects. 
+     */
+    function format(Items,FieldName,Length) {
+      // if the item is an array
+      if (Items) {
+        for (var i=0;i<Items.length;i++) {
+          truncateField(Items[i],FieldName,Length);
+        }
+      }
+      // if an item is an object
+      return Items;
+    };
+
+    /**
+     * Build a default query object.
+     * @param CONSTANTS Application constants
+     */
+    function getDefaultQuery(CONSTANTS) {
+      var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
+      query.setOption("fl","location,location_0_coordinate,location_1_coordinate,title,uri");
+      query.setOption("wt","json");
+      query.setOption("q",CONSTANTS.DEFAULT_QUERY);  
+      return query;
+    };
+
+    /**
+     * Create a marker popup window.
+     */
+    function makeInfoWindow(map, marker, item) {
+        // create info window
+        var infowindow = new google.maps.InfoWindow();
+        // assign content
+        if (item.title) {
+            infowindow.content = item.title;
+        } else {
+            infowindow.content = "unknown";
+        }
+        // open event
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(contentString);
+            infowindow.open(map, marker);
+        });
+        // close event
+        google.maps.event.addListener(infowindow,'closeclick',function() {
+            infowindow.close();
+        });
+    }
+
+    /**
+     * Truncate the field to the specified length.
+     * @param Document Document
+     * @param FieldName Field name to truncate
+     * @param Length Maximum field length
+     */
+    function truncateField(Document,FieldName,Length) {
+      if (Document && Document[FieldName]) {
+        if (Document[FieldName] instanceof Array) {
+          Document[FieldName] = Document[FieldName][0];
+        }
+        if (Document[FieldName].length > Length) {
+          // truncate the document to the specified length
+          Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
+          // find the last word and truncate after that
+          var i = Document[FieldName].lastIndexOf(" ");
+          if (i != -1) {
+            Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
+          }
+        }
+      }
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * Initialize the controller.
 	 */
 	$scope.init = function() {
-        // map presentation settings
+        // init
+        $scope.userQuery = CONSTANTS.DEFAULT_QUERY;
+        $scope.query = getDefaultQuery(CONSTANTS);
         // create the map
         $scope.map = new google.maps.Map(document.getElementById("map"),$scope.settings);
-        // $scope.map.panTo(start);
         // update the display with an initial result set
         $scope.update();
 	};
@@ -70,15 +152,25 @@ function MapController($scope, $routeParams, $http, CONSTANTS) {
           function (data) {
             // if there are search results
             if (data.response && data.response.docs && data.response.docs.length > 0) {
-                // reformat data for presenation, build page navigation index
+                $scope.markers = [];
                 $scope.results = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
-                var markers = [];
+                // create info window
+                var infowindow = new google.maps.InfoWindow();
+                // create new map markers
                 for (var i=0;i<$scope.results.length;i++) {
                     var item = $scope.results[i];
-                    var marker = new google.maps.Marker({
-                        position: item.location,
-                    });
-                    marker.setMap($scope.map);
+                    if (item.location) {
+                        var lat = item.location_0_coordinate;
+                        var lng = item.location_1_coordinate;
+                        // create a marker
+                        var marker = new google.maps.Marker({
+                            // position:  new google.maps.LatLng(-37.7833,144.9667),
+                            map: $scope.map,
+                            position:  new google.maps.LatLng(lat,lng),
+                        });
+                        // create an info window
+                        marker.infowindow = makeInfoWindow($scope.map, marker, item); 
+                    }
                 }
             } else {
                 $scope.message = "No results found for query '" + $scope.query.getUserQuery() + "'.";

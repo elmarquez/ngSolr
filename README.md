@@ -23,7 +23,7 @@ Setup
 5. Load the index.html page and attempt to execute searches against your
    index. You should see search results appear.
 
-
+ 
 Credits
 -------
 
@@ -65,11 +65,14 @@ Current:
 
 x Various controllers need to be refactored and coordinated into a clear collection
 x Refactor documentSearchController into separate search and result listing controllers
+x Diagram and narritive explaining workflow around crawler, visualization
 
 0.5.0
+
 x Start map centered on named location
 x Query index for a list of all entities by location
 x Map output for location entities
+x Infowindow should close when clicking close button
 
 
 x Add a "did you mean" result list on the "no results found" view

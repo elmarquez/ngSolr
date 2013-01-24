@@ -15,14 +15,18 @@ var app = angular.module('eac-ajax-app', []);
 /**
  * Constants
  * @constant DEFAULT_QUERY Default Solr query
- * @constant MAP_START_LOCATION Center the map on the specified location at start.
- * @constant MAX_FIELD_LENGTH Maximum length of a text string for display in search results
+ * @constant FACET_DELIMITER character string used to delimit facet parameters in URL
+ * @constant GOOGLE_ANALYTICS Insert Google Analytics tracking
+ * @constant GOOGLE_MAPS_API Google Maps API key
+ * @constant GOOGLE_SENSOR Google Maps location sensor
+ * @constant MAP_START_LOCATION Center the map on the specified location at start
+ * @constant MAX_FIELD_LENGTH Maximum length of a field for display in text search results
  * @constant SOLR_BASE URL for Solr host
  * @constant SOLR_CORE Name of Solr core (the search index)
  * @constant SOLR_VERSION Version of Solr search interface, result format
  */
 app.constant("CONSTANTS", {
-    DEFAULT_QUERY :"*:*", // consider setting Australia as the default query
+    DEFAULT_QUERY :"*:*",
     FACET_DELIMITER : '&&',
     GOOGLE_ANALYTICS : false,
     GOOGLE_MAPS_API : 'AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M',
