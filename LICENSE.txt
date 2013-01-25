@@ -11,3 +11,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+-------------------------------------------------------------------------------
+
+Map Icons Collection by Nicolas Mollet under the terms of the Creative Commons
+Attribution-ShareAlike 3.0 Unported license.
+
+http://creativecommons.org/licenses/by-sa/3.0/
+
+-------------------------------------------------------------------------------
+
+See application directories for individual Javascript library licenses and 
+copyright statements.

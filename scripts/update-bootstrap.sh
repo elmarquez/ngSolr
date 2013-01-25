@@ -1,19 +1,20 @@
 #!/bin/bash
 
-SRC="../dependencies/bootstrap"
-
-# if the source directory does not exist, create it
-if [ ! -d $SRC ]; then
-	echo "The source directory " + $SRC + " can not be found"
-	exit
-fi 
-
 # pull changes from source repo
-cd $SRC
-git pull origin master
+cd ../dependencies/bootstrap
+rm -fr * 
+wget http://twitter.github.com/bootstrap/assets/bootstrap.zip
+unzip bootstrap.zip
 
-# copy files to appropriate application directories
-# cp 
+# remove existing library files from application
+rm -fr ../../app/assets/css/bootstrap/*
+rm -fr ../../app/assets/css/img/glyphicons*
+rm -fr ../../app/assets/js/bootstrap/*
+
+# copy new library files into application
+cp bootstrap/css/* ../../app/assets/css/bootstrap
+cp bootstrap/img/* ../../app/assets/css/img/
+cp bootstrap/js/*  ../../app/assets/js/bootstrap
 
 # change back to script directory
 cd ../../scripts

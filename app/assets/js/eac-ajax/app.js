@@ -1,4 +1,4 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
@@ -14,8 +14,8 @@ var app = angular.module('eac-ajax-app', []);
 
 /**
  * Define application routes.
+ * @todo consider removing this and making each visualization independent
  */
-/*
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
       when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
@@ -26,7 +26,6 @@ app.config(['$routeProvider', function($routeProvider) {
       when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: LocationSearchController}).
       otherwise({redirectTo: '/documents'});
 }]);
-*/
 
 /**
  * Constants

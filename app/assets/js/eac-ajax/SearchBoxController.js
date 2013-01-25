@@ -23,13 +23,6 @@ function SearchBoxController($scope,$http,CONSTANTS) {
     var minSearchLength = 1;
     var userQuery = "";
     
-    // @todo why do we have this here??
-    var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-    query.setOption("wt","json");
-    query.setOption("facet","true");
-    query.setOption("facet.limit","-1");
-    query.setOption("facet.field",fieldname);
-
     ///////////////////////////////////////////////////////////////////////////
 
     /** 
@@ -67,7 +60,13 @@ function SearchBoxController($scope,$http,CONSTANTS) {
      * Initialize the controller.
      */
     $scope.init = function() {
-        // get the hints list once
+        // build hint list query
+        var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
+        query.setOption("wt","json");
+        query.setOption("facet","true");
+        query.setOption("facet.limit","-1");
+        query.setOption("facet.field",fieldname);
+        // get results once
         console.log("GET " + query.getUrl());
         $http.get(query.getUrl())
             .success(function(data) {
@@ -83,16 +82,24 @@ function SearchBoxController($scope,$http,CONSTANTS) {
             .error(function(data,status,headers,config) {
                 console.log("Could not load search hints. Server returned error code " + status + ".");
             });
+    };
+
+    /**
+     * Update the controller state.
+     */
+    $scope.update = function(newValue,oldValue) {
+
     }
     
     /**
-     * Update the user query value
-     * @param userQuery
+     * Watch the specified variable for changes.
+     * @param variable Variable to watch
      */
-    $scope.updateQuery = function(userQuery) {
-        $scope.$parent.userQuery = userQuery;
-    }
-}
+    $scope.watch = function(variable) {
+        $scope.$watch(variable,$scope.update(),true);
+    };
+
+};
 
 // inject controller dependencies
 SearchBoxController.$inject = ['$scope','$http','CONSTANTS'];

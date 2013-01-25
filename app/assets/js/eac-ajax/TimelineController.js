@@ -1,4 +1,4 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
@@ -14,7 +14,7 @@
  * @param $http HTTP service
  * @param CONSTANTS Application constants
  */
-function TimelineController($scope, $routeParams, $http, CONSTANTS) {
+function TimelineController($scope, $http, CONSTANTS) {
 	// parameters
 
 	///////////////////////////////////////////////////////////////////////////
@@ -34,4 +34,4 @@ function TimelineController($scope, $routeParams, $http, CONSTANTS) {
 };
 
 // inject dependencies
-TimelineController.$inject = ['$scope','$routeParams','$http','CONSTANTS'];
+TimelineController.$inject = ['$scope','$http','CONSTANTS'];

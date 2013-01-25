@@ -5,7 +5,7 @@
 'use strict';
 
 /**
- * Manages the current set of user selected facets.
+ * Displays and manages the current set of user selected facets.
  * @param $scope Controller scope
  */
 function FacetSelectionController($scope) {
@@ -32,9 +32,11 @@ function FacetSelectionController($scope) {
     }
 
     /**
-     * Update the display when a change occurs to the facet list.
+     * Update the controller state.
+     * @param newValue
+     * @param oldValue
      */
-    $scope.update = function() {
+    $scope.update = function(newValue,oldValue) {
     }
 
     /**
@@ -42,9 +44,9 @@ function FacetSelectionController($scope) {
      * @param variable Variable to watch
      */
     $scope.watch = function(variable) {
-        $scope.$watch(variable,$scope.update);
+        $scope.$watch(variable,$scope.update(),true);
     }
-}
+};
 
 // inject controller dependencies
 FacetSelectionController.$inject = ['$scope'];

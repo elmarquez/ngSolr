@@ -1,19 +1,19 @@
 #!/bin/bash
 
-SRC="../dependencies/angular.js"
-
-# if the source directory does not exist, create it
-if [ ! -d $SRC ]; then
-	echo "The source directory " + $SRC + " can not be found"
-	exit
-fi 
+SOURCE="../dependencies/angular.js"
+TARGET="../app/assets/js/angular/"
 
 # pull changes from source repo
-cd $SRC
+cd ../dependencies/angular.js/
 git pull origin master
 
-# copy files to appropriate application directories
-# cp 
+# build updated angular
+npm install
+rake package
+
+# copy to target directory
+rm ../../app/assets/js/angular/*
+cp build/* ../../app/assets/js/angular
 
 # change back to script directory
 cd ../../scripts

@@ -24,14 +24,18 @@ function Query(UserQuery,Url) {
 /**
  * Search history controller. Lists the last N user search queries.
  * @param $scope Controller scope
+ * @param CONSTANTS Application constants
  * @todo The previous query variable should be a list of solr queries, rather 
  *       than just the search string. Otherwise, we can not recover the 
  *       actual query URL that produced the results.
  */
-function SearchHistoryController($scope) {
-    // fields
+function SearchHistoryController($scope,CONSTANTS) {
+
+    // parameters
     $scope.maxQueries = 5;          // the maximum number of items to display
     $scope.queries = new Array();   // reverse chronological list of prior queries
+
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Initialize the controller.
@@ -40,13 +44,14 @@ function SearchHistoryController($scope) {
     }
 
     /**
-     * Update the result set
+     * Update the constroller state.
+     * @param newValue
+     * @param oldValue
      */
-    $scope.update = function() {
+    $scope.update = function(newValue,oldValue) {
         // has the user query changed?
         $scope.previousQuery 
         $scope.queries[0]; // the previous query
-
         if ($scope.queries.length > $scope.maxQueries - 1) {
             // remove the last item
             $scope.queries = $scope.queries.splice($scope.maxQueries-1,1);
@@ -61,9 +66,9 @@ function SearchHistoryController($scope) {
      * @param variable Variable to watch
      */
     $scope.watch = function(scope,variable) {
-        scope.$watch(variable,$scope.update);
+        $scope.$watch(variable,$scope.update(),true);
     }
 }
 
 // inject controller dependencies
-SearchHistoryController.$inject = ['$scope'];
+SearchHistoryController.$inject = ['$scope','CONSTANTS'];

@@ -22,7 +22,6 @@
         </style>
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-datepicker.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen-location.css" media="screen" />
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -36,15 +35,17 @@
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/app-locationSearch.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/locationSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/mapController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/timelineController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/CollapsiblePanelController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/MapController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/MapSearchResultsController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SplitBarController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/TimelineController.js"></script>
     </head>
-    <body ng-controller="LocationSearchController" ng-init="init()">
+    <body ng-controller="DocumentSearchController" ng-init="init()">
 
         <!-- search bar -->
         <section id="search-bar">
@@ -70,7 +71,7 @@
 
             <!-- result panel -->
             <div id="result-panel">
-                <div id="map" ng-controller="MapController" ng-init="init()"></div>
+                <div id="map" ng-controller="MapController" ng-init="init($parent.results)"></div>
             </div>
             <!-- result panel -->
 

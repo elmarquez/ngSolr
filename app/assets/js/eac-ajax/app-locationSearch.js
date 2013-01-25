@@ -26,17 +26,19 @@ var app = angular.module('eac-ajax-app', []);
  * @constant SOLR_VERSION Version of Solr search interface, result format
  */
 app.constant("CONSTANTS", {
-    DEFAULT_QUERY :"*:*",
+    DEFAULT_FIELDS : 'uri,title,summary,location_0_coordinate,location_1_coordinate',
+    DEFAULT_QUERY : '*:*',
     FACET_DELIMITER : '&&',
     GOOGLE_ANALYTICS : false,
     GOOGLE_MAPS_API : 'AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M',
     GOOGLE_MAPS_SENSOR : 'false',
-    MAP_START_LOCATION : '-32.3456,141.4346',
+    MAP_START_LATITUDE : '-35.2828',
+    MAP_START_LONGITUDE : '149.1314',
     MAX_FIELD_LENGTH : 256,
     QUERY_DELIMITER : '!',
-    SOLR_BASE : "http://dev02.internal:8080",
-    SOLR_CORE : "EOAS",
-    SOLR_VERSION : 2.2,
+    SOLR_BASE : 'http://dev02.internal:8080',
+    SOLR_CORE : 'EOAS',
+    SOLR_VERSION : '2.2',
 });
 
 /**

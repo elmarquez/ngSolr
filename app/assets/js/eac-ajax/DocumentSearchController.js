@@ -1,4 +1,4 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
@@ -35,6 +35,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
     $scope.sidebar = true;              // show the sidebar panel
     $scope.totalPages = 1;              // total number of result pages
     $scope.totalSets = 1;               // total number of page sets
+    $scope.userQuery = '';              // the user provided query string
     $scope.view = 'list';               // view type
 
     ///////////////////////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
         if (elements.length > 0) {
           // the first element is the query
           var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-          query.setOption("fl","uri,title,text");
+          query.setOption("fl",CONSTANTS.DEFAULT_FIELDS);
           query.setOption("hl.fl",$scope.highlightingParameters);
           query.setOption("indent","on");
           query.setOption("rows",$scope.itemsPerPage);
@@ -137,8 +138,8 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
             facet.setOptionsFromQuery(q);
             // add facet
             query.facets.push(facet);
-          }
-        }
+          
+}        }
         // return query
         return query;
       }
@@ -150,7 +151,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
      */
     function getDefaultQuery(CONSTANTS) {
       var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-      query.setOption("fl","uri,title,summary");
+      query.setOption("fl",CONSTANTS.DEFAULT_FIELDS);
       query.setOption("wt","json");
       query.setOption("q",CONSTANTS.DEFAULT_QUERY);  
       return query;

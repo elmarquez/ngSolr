@@ -74,6 +74,8 @@ x Query index for a list of all entities by location
 x Map output for location entities
 x Infowindow should close when clicking close button
 
+x Refactoring display controllers to follow the same implementation pattern
+
 
 x Add a "did you mean" result list on the "no results found" view
 x On page load, parse the fragment portion of the location URL to determine
