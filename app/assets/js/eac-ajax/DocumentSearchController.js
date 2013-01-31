@@ -274,6 +274,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
         // reset messages
         $scope.error = null;
         $scope.message = null;
+        /*
         // if the query is invalid query return a default
         if (!isValidQuery($scope.userQuery)) {
           // $scope.message = "Invalid query '" + $scope.userQuery + "'. Using default '" + CONSTANTS.DEFAULT_QUERY + "'";
@@ -297,6 +298,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
         else {
           $scope.previousQuery = $scope.query;
         }
+        */
         // update the browser location to reflect the query
         // setLocation($location,$scope,CONSTANTS.QUERY_DELIMITER);
         // query.setOption("callback","JSON_CALLBACK");
@@ -313,10 +315,10 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
             $scope.totalPages = Math.ceil($scope.queryNumFound/$scope.itemsPerPage);
             $scope.totalSets = Math.ceil($scope.totalPages/$scope.pagesPerSet);
             // if there are search results
-            if (data.response && data.response.docs && data.response.docs.length > 0) {
+            if (data.response && data.response.docs) {
             	// reformat data for presenation, build page navigation index
-            	$scope.results = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
-              $scope.pages = buildPageIndex($scope);
+              // var formatted = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
+            	$scope.results = data.response.docs;
             } else {
               $scope.pages = [];
               $scope.queryMaxScore = 0;
@@ -327,6 +329,7 @@ function DocumentSearchController($http,$location,$scope,CONSTANTS) {
               $scope.totalSets = 0;
             	$scope.message = "No results found for query '" + $scope.query.getUserQuery() + "'.";
             }
+            console.log("There are " + $scope.results.length + " results");
         }).error(
           function(data, status, headers, config) {
             $scope.queryMaxScore = 0;

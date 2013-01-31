@@ -22,6 +22,7 @@ function MapController($scope, CONSTANTS) {
         categoryName3:"iconfilename3.png",
         categoryName4:"iconfilename4.png",
     };
+    $scope.items = [];
     $scope.markers = [];
     $scope.settings = {
         // center: new google.maps.LatLng(CONSTANTS.MAP_START_LATITUDE,CONSTANTS.MAP_START_LONGITUDE),
@@ -79,12 +80,10 @@ function MapController($scope, CONSTANTS) {
      * @param Message
      * @param Error
 	 */
-	$scope.init = function(SearchResults) {
+	$scope.init = function(variable) {
         // watch for changes
-        $scope.results = SearchResults;
-        if ($scope.results) {
-            $scope.watch($scope.results);
-        }
+        $scope.items = variable;
+        $scope.watch(variable);
         //$scope.watch(Message);
         //$scope.watch(Error);
         // create the map
@@ -98,15 +97,16 @@ function MapController($scope, CONSTANTS) {
      * @param newValue
      * @param oldValue
 	 */
-	$scope.update = function(newValue,oldValue) {
+	$scope.update = function(newValue,oldValue,scope) {
+        console.log("Updating map");
         // if there are results to display
-        if ($scope.results && $scope.results.length > 0) {
+        if ($scope.items) {
             $scope.markers = [];
             // create info window
             var infowindow = new google.maps.InfoWindow();
             // create new map markers
-            for (var i=0;i<$scope.results.length;i++) {
-                var item = $scope.results[i];
+            for (var i=0;i<$scope.items.length;i++) {
+                var item = $scope.items[i];
                 if (item.location) {
                     var lat = item.location_0_coordinate;
                     var lng = item.location_1_coordinate;
@@ -119,10 +119,20 @@ function MapController($scope, CONSTANTS) {
                     // create an info window
                     marker.infowindow = makeInfoWindow($scope.map, marker, item); 
                     markers.push(marker);
+                    $scope.map.addOverlay(marker);
                 }
             }
-            // pan the window to the start location and set default zoom level
-        } 
+            // center and zoom to fit search results
+            /*
+            var bounds = new GLatLngBounds();
+            for (var m =0;m<markers.length;m++) {
+                bounds.extend(marker.position);
+            }
+            $scope.map.setCenter(bounds.getCenter(), $scope.map.getBoundsZoomLevel(bounds));
+            */
+        } else {
+            console.log("No map results to display");
+        };
         // if there is an information message
         if ($scope.message && $scope.message != '') {
             console.log("Information message");
@@ -139,7 +149,7 @@ function MapController($scope, CONSTANTS) {
      * @see http://docs.angularjs.org/api/ng.$rootScope.Scope#$watch
      */
     $scope.watch = function(variable) {
-        $scope.$watch(variable,$scope.update(),true);
+        $scope.$watch(variable,$scope.update());
     };
 
 };

@@ -69,6 +69,7 @@ x Diagram and narritive explaining workflow around crawler, visualization
 
 0.5.0
 
+! Trying to figure out why change event is not propagated
 x Start map centered on named location
 x Query index for a list of all entities by location
 x Map output for location entities

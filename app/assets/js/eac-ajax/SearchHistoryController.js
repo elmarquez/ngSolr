@@ -66,7 +66,7 @@ function SearchHistoryController($scope,CONSTANTS) {
      * @param variable Variable to watch
      */
     $scope.watch = function(scope,variable) {
-        $scope.$watch(variable,$scope.update(),true);
+        scope.$watch(variable,$scope.update(),true);
     }
 }
 

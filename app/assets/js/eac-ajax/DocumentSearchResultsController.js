@@ -134,6 +134,7 @@ function DocumentSearchResultsController($scope,CONSTANTS) {
      * Update the controller state.
      */
     $scope.update = function(newValue,oldValue) {
+      $scope.pages = buildPageIndex($scope);
     };
 
 }
