@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="eac-ajax"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app="eac-ajax-app"> <!--<![endif]-->
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="eacajax"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="eacajax"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="eacajax"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="eacajax"> <!--<![endif]-->
     <head>
-        <!-- Meta -->
+        <!-- meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Ajax Search Interface to Solr</title>
+        <title>EAC-CPF Search Interface</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
         <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Icons -->
+        <!-- icons -->
         <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
         <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144x144-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114x114-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72x72-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57x57-precomposed.png" />
-        <!-- Stylesheets -->
+        <!-- stylesheets -->
         <style>
             [ng-cloak] {display: none;}
         </style>
@@ -28,26 +28,31 @@
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
 
-        <!-- Scripts -->
+        <!-- scripts -->
         <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
 
         <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
 
-        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/app-locationSearch.js"></script>
+        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/CollapsiblePanelController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/MapController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/MapSearchResultsController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SplitBarController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/TimelineController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/services.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/app.js"></script>
     </head>
-    <body ng-controller="DocumentSearchController" ng-init="init()">
+    <body>
 
         <!-- search bar -->
+        <!--
         <section id="search-bar">
             <form class="form-inline" ng-submit="$parent.update()">
                 <div id="search-box" class="input-append" ng-controller="SearchBoxController">
@@ -56,6 +61,7 @@
                 </div>
             </form>
         </section>
+        -->
         <!-- /search-bar -->
 
         <!-- content -->
@@ -71,42 +77,12 @@
 
             <!-- result panel -->
             <div id="result-panel">
-                <div id="map" ng-controller="MapController" ng-init="init(results)"></div>
+                <div id="map" ng-controller="MapController" ng-init="init()"></div>
             </div>
             <!-- result panel -->
 
         </section>
 
-        <!-- view specific scripts -->
-        <script type="text/javascript">
-        /*
-            function initialize() {
-                var start = new google.maps.LatLng(-32.3456,141.4346);
-                var settings = {
-                    center: start,
-                    mapTypeId: google.maps.MapTypeId.HYBRID,
-                    mapTypeControl: false,
-                    // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
-                    mapTypeId: google.maps.MapTypeId.TERRAIN,                
-                    navigationControl: true,
-                    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-                    // overviewMapControl:true,
-                    panControl:true,
-                    rotateControl:true,
-                    scaleControl:true,
-                    streetViewControl:false,
-                    zoom: 5,
-                    zoomControl:true,
-                    zoomControlOptions: {
-                        style: google.maps.ZoomControlStyle.LARGE
-                    },
-                };
-                var map = new google.maps.Map(document.getElementById("map"),settings);
-                map.panTo(start)
-            }
-            */
-            // google.maps.event.addDomListener(window,'load',initialize);
-        </script>
-
+        <!-- scripts -->
     </body>
 </html>

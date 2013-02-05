@@ -7,14 +7,11 @@
 /*---------------------------------------------------------------------------*/
 /* Jasmine Tests                                                             */
 
-describe('service', function() {
-  beforeEach(module('myApp.services'));
+/**
+ * Unit tests for Solr Search Service.
+ */
+describe('SolrSearchService', function() {
 
-
-  describe('version', function() {
-    it('should return current version', inject(function(version) {
-      expect(version).toEqual('0.1');
-    }));
-  });
+  // it should always have 0 or more result items
 
 });

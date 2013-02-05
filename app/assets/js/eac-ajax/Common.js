@@ -1,4 +1,4 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
@@ -94,14 +94,14 @@ function Page(Name,Num) {
 
 /**
  * A Solr search query.
- * @param Base URL to Solr host
+ * @param Url URL to Solr host
  * @param Core Name of Solr core
  * @see [ref to Solr query page]
  * @todo This should likely be converted into an Angular service
  */
-function SearchQuery(Base,Core) {
+function SearchQuery(Url,Core) {
     // parameters
-    this.base = Base + "/" + Core + "/select?";   // URL for the Solr core
+    this.url = Url + "/" + Core + "/select?";   // URL for the Solr core
     this.facets = [];                             // search facets
     this.options = {};                            // search parameters
 
@@ -137,7 +137,7 @@ function SearchQuery(Base,Core) {
      * Get the fully specified Solr query URL.
      */
     this.getUrl = function() {
-        return this.base + this.getHash();
+        return this.url + this.getHash();
     };
 
     /**

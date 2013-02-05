@@ -1,11 +1,18 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
  'use strict';
 
+/*---------------------------------------------------------------------------*/
+/* Register Services                                                         */
 
-// Demonstrate how to register services
-// In this case it is a simple value service.
-angular.module('eac-ajax-app.services', []).
-  value('version', '0.1');
+/*
+angular.module('Services', []).
+    factory('SolrSearchService', function($http,$location,CONSTANTS) {
+    	var solrSearchService = {};
+    	return solrSearchService;
+	});
+*/
+
+// angular.module('Services', []).service('SolrSearchService', SolrSearchService);

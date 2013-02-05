@@ -4,10 +4,21 @@
  */
 'use strict';
 
-// 
-angular.module('eac-ajax-app', []).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
+/*---------------------------------------------------------------------------*/
+/* Register Directives                                                       */
+
+var directives = angular.module('Directives', []);
+
+directives.directive('map', ['SolrSearchService', function(SolrSearchService) {
+	return {
+        restrict: 'E',
+        scope: {items:'='},
+        replace: true,
+        transclude: true,
+        link: function($scope, lElement, attrs) {
+             $scope.$watch('results',function() {
+                console.log('Map update event fired');
+            }, true);
+        }
+    }
   }]);

@@ -1,5 +1,5 @@
 EAC-AJAX: Faceted Search Interface to Solr EAC Data Index
----------------------------------------------------------
+=========================================================
 
 EAC-AJAX is a single page, Javascript web application for searching EAC and 
 EAC-CPF data in Apache Solr. The application is easy to customize and deploy.
@@ -24,6 +24,15 @@ Setup
    index. You should see search results appear.
 
  
+Testing
+-------
+
+1. Post and commit the Solr Input Documents from test/solr to your Solr testing 
+   core. Confirm that the data is available from the index.
+2. Configure the application to point to your Solr text core.
+3. Run test.sh
+
+
 Credits
 -------
 
