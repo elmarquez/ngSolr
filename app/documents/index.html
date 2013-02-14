@@ -1,52 +1,44 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="eac-ajax"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app="eac-ajax-app"> <!--<![endif]-->
+<html class="no-js" ng-app="eacajax">
     <head>
-        <!-- Meta -->
+        <!-- meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Faceted Search Interface to Solr</title>
+        <title>EAC-CPF Search Interface</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
         <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Icons -->
+        <!-- icons -->
         <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
         <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144x144-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114x114-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72x72-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57x57-precomposed.png" />
-        <!-- Stylesheets -->
+        <!-- stylesheets -->
         <style>
             [ng-cloak] {display: none;}
         </style>
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-datepicker.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap-datepicker/datepicker.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
-        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-        <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <!-- Scripts -->
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
 
+    <!-- Scripts -->
         <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap-datepicker.js"></script>
-        <script type="text/javascript" src="../assets/js/buckets/buckets.min.js"></script>
+        <script type="text/javascript" src="../assets/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/app-documentSearch.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/facetSelectionController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/fieldFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/imageSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/locationSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/rangeFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchHistoryController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/app-documentsearch.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/FacetSelectionController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/FieldFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/RangeFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SearchHistoryController.js"></script>
 
         <script type="text/javascript" src="../assets/js/d3/d3.min.js"></script>
         <script type="text/javascript" src="../assets/js/d3/d3.layout.min.js"></script>

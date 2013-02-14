@@ -1,9 +1,9 @@
 /*--------------------------------------------------------*/
-/* EAC AJAX Interface to Solr                             */
-/* Main Screen Styles                                     */
+/* Screen Styles                                          */
 
 /*--------------------------------------------------------*/
 /* Page Layout                                            */
+
 html {
     height: 100%;
     margin: 0;
@@ -15,60 +15,61 @@ body {
     height: 100%;
 }
 #page-header {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 #page-header .navbar {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 #page-header .navbar-inverse {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 #page-header .navbar-inner {
-  border-radius: 0;
-  -webkit-border-radius: 0;
+    border-radius: 0;
+    -webkit-border-radius: 0;
 }
 #page-header .form-inline {
-  margin: 0;
-  padding-top: 5px;
+    margin: 0;
+    padding-top: 5px;
 }
 #search-bar {
-  background: #efefef;
-  border-bottom:1px solid #DEDEDE;
-  margin: 0;
-  padding: 0;
+    background: #efefef;
+    border-bottom:1px solid #DEDEDE;
+    height: 50px;
+    margin: 0;
+    padding: 0;
 }
 #search-bar form {
-  margin: 10px 0 10px 0;
-  padding: 0;
+    margin: 10px 0 10px 0;
+    padding: 0;
 }
 #search-box #query {
-  font-weight: bold;
+    font-weight: bold;
 }
 #content {
-  background: white;
-  margin: 0;
-  padding-top: 20px;
+    background: white;
+    margin: 0;
+    padding-top: 20px;
 }
 #search-panel {
-  min-width: 240px;
-  overflow: hidden;
-  padding-bottom: 20px;
+    min-width: 240px;
+    overflow: hidden;
+    padding-bottom: 20px;
 }
-#metadata-panel {
-  margin: 0;
-  padding: 0;
-  padding-bottom: 20px;
+#sidebar {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 20px;
 }
 #footer {
-  border-top: 1px solid #dedede;
-  color: #666;
-  font-size: small;
-  min-height: 40px;
-  padding-bottom: 40px;
-  padding-top: 20px;
+    border-top: 1px solid #dedede;
+    color: #666;
+    font-size: small;
+    min-height: 40px;
+    padding-bottom: 40px;
+    padding-top: 20px;
 }
 
 /*--------------------------------------------------------*/
@@ -136,7 +137,7 @@ body {
   background: yellow;
 }
 .document .facets {
-  color: light-gray;
+  color: #aaa;
   display: none;
   font-size: small;
 }
@@ -155,6 +156,12 @@ body {
 /*--------------------------------------------------------*/
 /* Search Results Map                                     */
 
+#search-bar #location-search-bar {
+    max-width: 640px;
+    padding: 10px 20px 10px 0;
+    padding-left: 320px;
+}
+
 .infowindow {
     max-width: 300px;
 }
@@ -172,20 +179,25 @@ body {
 
 }
 #map {
-  height: 100%;
-  width: 100%;
-  /*
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 0;
-  */
+    bottom: 0;
+    left: 320px;
+    position: absolute;
+    right: 0;
+    top: 93px;
+    z-index: 0;
+}
+#map img{
+    max-width: none;
 }
 
 /*--------------------------------------------------------*/
 /* Sidebar Panel                                          */
+
+#sidebar {
+    background: white;
+    position: absolute;
+    z-index: 100;
+}
 
 /*--------------------------------------------------------*/
 /* Graphics Panel                                         */
@@ -210,15 +222,15 @@ body {
 }
 .column-320 {
   max-width: 320px;
-  overflow: hide;
+  overflow: hidden;
 }
 .column-512 {
   max-width: 512px;
-  overflow: hide;
+  overflow: hidden;
 }
 .column-620 {
   max-width: 640px;
-  overflow: hide;
+  overflow: hidden;
 }
 .text-medium {
     font-size: medium;

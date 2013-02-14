@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app="eac-ajax"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app="eac-ajax"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app="eac-ajax-app"> <!--<![endif]-->
+<html class="no-js" ng-app="eacajax">
     <head>
         <!-- Meta -->
         <meta charset="utf-8">
@@ -22,7 +19,7 @@
         </style>
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-datepicker.css" />
+        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap-datepicker/datepicker.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -30,28 +27,23 @@
         <![endif]-->
 
         <!-- Scripts -->
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
-
         <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap-datepicker.js"></script>
-        <script type="text/javascript" src="../assets/js/buckets/buckets.min.js"></script>
+        <script type="text/javascript" src="../assets/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/common.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/app-imageSearch.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/documentSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/facetSelectionController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/fieldFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/imageSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/locationSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/rangeFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/searchHistoryController.js"></script>
-
-        <script type="text/javascript" src="../assets/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="../assets/js/d3/d3.layout.min.js"></script>
-        <script type="text/javascript" src="../assets/js/rickshaw/rickshaw.min.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/app-imagesearch.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/FacetSelectionController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/FieldFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/ImageSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/RangeFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SearchHistoryController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
     </head>
     <body ng-controller="ImageSearchController" ng-init="init()">
 
