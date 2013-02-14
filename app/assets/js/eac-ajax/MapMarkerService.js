@@ -7,59 +7,84 @@
 /*---------------------------------------------------------------------------*/
 /* Service                                                                   */
 
-var services = angular.module('Services',[]);
-
 /**
- * Executes a document search against a Solr index.
- * @param $http HTTP service
- * @param $location Location service
+ * Creates and configures standard map icons for a Google Map.
  * @param CONSTANTS Application constants
  */
-services.factory('MapMarkerService',
-    ['CONSTANTS',function(CONSTANTS) {
+angular.module('MapServices', []).factory('MapMarkerService', ['CONSTANTS', function (CONSTANTS) {
 
-        var categoryToIconMap = {
-            categoryName1:"iconfilename1.png",
-            categoryName2:"iconfilename2.png",
-            categoryName3:"iconfilename3.png",
-            categoryName4:"iconfilename4.png"
-        };
+    // the service instance
+    var svc = {};
 
-        /**
-         * Create a marker popup window.
-         * @param map
-         * @param marker
-         * @param item
-         */
-        var makeInfoWindow = function(map, marker, item) {
-            // create info window
-            var infowindow = new google.maps.InfoWindow();
-            // assign content
-            if (item.title) {
-                infowindow.content = item.title;
-            } else {
-                infowindow.content = "unknown";
-            }
-            // handle close event
-            google.maps.event.addListener(infowindow,'closeclick',function() {
-                infowindow.close();
-            });
-            // handle open event
-            google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(map, marker);
-            });
+    // a default classifer to icon path mapping
+    svc.categoryToIconMap = {
+        default:"../assets/img/icon/information.png",
+        corporateBody:"../assets/img/icon/house.png",
+        government:"../assets/img/icon/house.png",
+        organization:"../assets/img/icon/firstaid.png",
+        person:"../assets/img/icon/firstaid.png"
+    };
+
+    // google map info window
+    svc.infowindow = new google.maps.InfoWindow();
+
+    /**
+     * Add info window to marker
+     * @param Map Google map
+     * @param Marker Map marker
+     * @param Content HTML content to be displayed in the info window
+     */
+    svc.addInfoWindow = function (Map, Marker, Content) {
+        var infoWindow = new google.maps.InfoWindow({
+            content:Content
+        });
+        google.maps.event.addListener(Marker, 'click', function () {
+            infoWindow.close();
+            infoWindow.open(Map, Marker);
+        });
+    };
+
+    /**
+     * Get a map marker.
+     * @param Map Map
+     * @param Title Tooltip label
+     * @param Content Popup window HTML content
+     * @param Category Item category
+     * @param Lat Latitude
+     * @param Lng Longitude
+     */
+    svc.getMarker = function (Map, Title, Content, Category, Lat, Lng) {
+        // get the marker icon
+        var icon = svc.categoryToIconMap['default'];
+        if (Category != null && Category in svc.categoryToIconMap) {
+            icon = svc.categoryToIconMap[Category];
         }
+        // create the marker
+        var marker = new google.maps.Marker({
+            icon:icon,
+            map:Map,
+            position:new google.maps.LatLng(Lat, Lng),
+            title:Title
+        });
+        // attach an info window to the marker
+        svc.addInfoWindow(Map, marker, Content);
+        // return result
+        return marker;
+    };
 
-        var service = {};
+    ///////////////////////////////////////////////////////////////////////
 
-        /**
-         * Get a map marker.
-         */
-        service.getMarker = function() {
+    // @todo consider merging the override icons into the map
+    if (CONSTANTS['ICONS'] != undefined && CONSTANTS['ICONS'] != null) {
+        svc.categoryToIconMap = CONSTANTS['ICONS'];
+    }
 
-        }
+    // handle close click event on info window
+    google.maps.event.addListener(svc.infowindow, 'close', function () {
+        svc.infowindow.close();
+    });
 
-        // return the service instance
-        return service;
+    // return the service instance
+    return svc;
 
-    }]);
+}]);

@@ -1,4 +1,4 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
@@ -11,26 +11,25 @@
  * Provides autocomplete and extended search support aids. This is a 
  * rudimentary, non-optimal implementation.
  * @param $scope Controller scope
- * @param $http HTTP service
+ * @param SolrSearchService Document search service
  * @param CONSTANTS Application constants
  * @see http://jsfiddle.net/DNjSM/17/
- * @todo Reimplement with a proper data structure for search set
  */
-function SearchBoxController($scope,$http,CONSTANTS) {
+function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
+
+    $scope.userquery = "";
+
     // private
     var fieldname = "title";
     var tokens = new Array();
     var minSearchLength = 1;
-    var userQuery = "";
-    
-    ///////////////////////////////////////////////////////////////////////////
 
-    /** 
+    /**
      * Determine if the string s1 starts with the string s2
      * @param s1 String 1
      * @param s2 String 2
      */
-    function startsWith(s1,s2) {
+    var startsWith = function(s1,s2) {
         if (s1 && s2) {
             return s1.slice(0, s2.length) == s2;
         }
@@ -43,12 +42,12 @@ function SearchBoxController($scope,$http,CONSTANTS) {
      * Update the list of search hints.
      * @param userQuery Current user query fragment
      */
-    $scope.getHints = function(userQuery) {
+    $scope.getHints = function() {
         var items = new Array();
-        if (userQuery.length>= minSearchLength) {
+        if ($scope.userquery.length>= minSearchLength) {
             for (var i=0;i<tokens.length;i++) {
                 var token = tokens[i];
-                if (startsWith(token,userQuery)) {
+                if (startsWith(token,$scope.userquery)) {
                     items.push(token);
                 }
             }
@@ -85,21 +84,13 @@ function SearchBoxController($scope,$http,CONSTANTS) {
     };
 
     /**
-     * Update the controller state.
+     * Handle submit event.
      */
-    $scope.update = function(newValue,oldValue) {
-
+    $scope.submit = function() {
+        SolrSearchService.setQuery($scope.userquery);
     }
-    
-    /**
-     * Watch the specified variable for changes.
-     * @param variable Variable to watch
-     */
-    $scope.watch = function(variable) {
-        $scope.$watch(variable,$scope.update(),true);
-    };
 
 };
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','$http','CONSTANTS'];
+SearchBoxController.$inject = ['$scope','$http','SolrSearchService','CONSTANTS'];

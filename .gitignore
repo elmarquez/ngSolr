@@ -1,6 +1,7 @@
 .idea
 *.zip
 
+app/assets/img/icon
 app/assets/img/maki
 app/assets/img/mapiconscollection
 tmp/

@@ -1,5 +1,16 @@
 DEVELOPMENT NOTES
 
+Marker Clustering
+https://developers.google.com/maps/articles/toomanymarkers
+http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/docs/reference.html
+
+Routing
+when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
+
+function Controller($scope, $routeParams) {
+  // some value from the url
+  $scope.paramName = $routeParams.paramName;
+};
 
 -------------------------------------------------------------------------------
 Various Examples

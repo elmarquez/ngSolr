@@ -155,6 +155,22 @@ body {
 /*--------------------------------------------------------*/
 /* Search Results Map                                     */
 
+.infowindow {
+    max-width: 300px;
+}
+.infowindow .title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.infowindow .address {
+
+}
+.infowindow .type {
+
+}
+.infowindow .summary {
+
+}
 #map {
   height: 100%;
   width: 100%;

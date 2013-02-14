@@ -23,45 +23,42 @@
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen-location.css" media="screen" />
-        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-        <!--[if lt IE 9]>
-          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
 
         <!-- scripts -->
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyASYutMKsjloESclywjl23bdeBIkSj8C4M&sensor=false"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&sensor=true"></script>
+        <script type="text/javascript" src="../assets/js/google/markerclusterer.js"></script>
 
         <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
 
         <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
-        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/CollapsiblePanelController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/MapMarkerService.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/MapController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/MapSearchResultsController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SplitBarController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/TimelineController.js"></script>
+
         <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/services.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/app.js"></script>
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
     </head>
     <body>
 
         <!-- search bar -->
-        <!--
         <section id="search-bar">
-            <form class="form-inline" ng-submit="$parent.update()">
-                <div id="search-box" class="input-append" ng-controller="SearchBoxController">
-                    <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
-                    <button class="btn">Search</button>
+            <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
+                <div id="search-box" class="input-append">
+                    <input type="text" id="query" name="q" ng-model="userquery" placeholder="Enter keywords to search for" ui-items="getHints(userquery)" auto-complete autocomplete="off" style="width:380px" />
+                    <button class="btn" ng-click="submit()">Search</button>
                 </div>
             </form>
         </section>
-        -->
         <!-- /search-bar -->
 
         <!-- content -->

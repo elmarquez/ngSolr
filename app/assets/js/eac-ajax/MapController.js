@@ -11,14 +11,14 @@
  * Displays a map of the current search results and can optionally display
  * error and warning messages to the user.
  * @param $scope Controller scope
- * @param SearchService Search service
+ * @param SolrSearchService Search service
+ * @param MapMarkerService Map marker service
  * @param CONSTANTS Application constants
  */
-function MapController($scope, SearchService, CONSTANTS) {
+function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
     // parameters
     $scope.markers = [];
     $scope.settings = {
-        // center: new google.maps.LatLng(CONSTANTS.MAP_START_LATITUDE,CONSTANTS.MAP_START_LONGITUDE),
         center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
         // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
@@ -46,36 +46,10 @@ function MapController($scope, SearchService, CONSTANTS) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Create a marker popup window.
-     * @param map
-     * @param marker
-     * @param item
-     */
-    var makeInfoWindow = function (map, marker, item) {
-        // create info window
-        var infowindow = new google.maps.InfoWindow();
-        // assign content
-        if (item.title) {
-            infowindow.content = item.title;
-        } else {
-            infowindow.content = "unknown";
-        }
-        // handle close event
-        google.maps.event.addListener(infowindow, 'closeclick', function () {
-            infowindow.close();
-        });
-        // handle open event
-        google.maps.event.addListener(marker, 'click', function () {
-            infowindow.open(map, marker);
-        });
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
      * Initialize the controller.
      */
     $scope.init = function () {
+        // update the search query to include geolocation properties
         // update the display for the first time
         $scope.update();
     };
@@ -87,40 +61,38 @@ function MapController($scope, SearchService, CONSTANTS) {
      * @param scope
      */
     $scope.update = function (newValue, oldValue, scope) {
-        console.log("Updating map");
+        // clear current markers
+        $scope.markerClusterer.clearMarkers();
+        $scope.markers = [];
+        // create marker bounds
+        var bounds = new google.maps.LatLngBounds();
         // if there are results to display
-        if (SearchService) {
-            var results = SearchService.getQueryResults();
-            $scope.markers = [];
+        if (SolrSearchService) {
+            var results = SolrSearchService.getQueryResults();
             // create new map markers
             for (var i = 0; i < results.length; i++) {
                 var item = results[i];
                 if (item.location) {
                     // marker metadata
-                    var category = "Home";
-                    var url = "http://www.example.com";
+                    var content = "<div class='infowindow'><div class='title'>" + item.title + "</div><div class='type'>" +
+                                  item.type + "</div><div class='summary'>" + item.summary + "</div></div>" ;
                     var lat = item.location_0_coordinate;
                     var lng = item.location_1_coordinate;
                     // create a marker
-                    var marker = new google.maps.Marker({
-                        map:$scope.map,
-                        position:new google.maps.LatLng(lat, lng)
-                    });
-                    // create an info window
-                    marker.infowindow = makeInfoWindow($scope.map, marker, item);
-                    markers.push(marker);
-                    $scope.map.addOverlay(marker);
+                    var marker = MapMarkerService.getMarker($scope.map, item.title, content, item.type, lat, lng);
+                    // add marker to bounds
+                    bounds.extend(marker.position);
+                    // add marker to list
+                    $scope.markers.push(marker);
                 }
             }
-            // center and zoom to fit search results
-            /*
-             var bounds = new GLatLngBounds();
-             for (var m =0;m<markers.length;m++) {
-             bounds.extend(marker.position);
-             }
-             $scope.map.setCenter(bounds.getCenter(), $scope.map.getBoundsZoomLevel(bounds));
-             */
         }
+        // add markers to clusterer
+        $scope.markerClusterer.addMarkers($scope.markers);
+        // zoom and center the map view to fit search results
+        $scope.map.fitBounds(bounds);
+        //setZoom($scope.getBoundsZoomLevel(bounds));
+        //$scope.map.setCenter(bounds.getCenter());
         // if there is an information message
         if ($scope.message && $scope.message != '') {
             console.log("Information message");
@@ -130,6 +102,11 @@ function MapController($scope, SearchService, CONSTANTS) {
             console.log("Error message");
         }
     };
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    // create a marker clusterer
+    $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers);
 
     /**
      * Handle update events from the search service.
@@ -141,4 +118,4 @@ function MapController($scope, SearchService, CONSTANTS) {
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope', 'SolrSearchService', 'CONSTANTS'];
+MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','CONSTANTS'];

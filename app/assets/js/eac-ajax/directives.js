@@ -9,16 +9,17 @@
 
 var directives = angular.module('Directives', []);
 
-directives.directive('map', ['SolrSearchService', function(SolrSearchService) {
-	return {
-        restrict: 'E',
-        scope: {items:'='},
-        replace: true,
-        transclude: true,
-        link: function($scope, lElement, attrs) {
-             $scope.$watch('results',function() {
-                console.log('Map update event fired');
-            }, true);
-        }
-    }
-  }]);
+/**
+ * Directive to support Bootstrap typeahead.
+ * @see http://twitter.github.com/bootstrap/javascript.html#typeahead
+ * @see http://jsfiddle.net/DNjSM/17/
+ */
+directives.directive('autoComplete', function ($timeout) {
+    return function (scope, iElement, iAttrs) {
+        var autocomplete = iElement.typeahead();
+        scope.$watch(iAttrs.uiItems, function(values) {
+            autocomplete.data('typeahead').source = values;
+            // console.log(values);
+        }, true);
+    };
+});

@@ -13,20 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 -------------------------------------------------------------------------------
-
-Map Icons Collection by Nicolas Mollet under the terms of the Creative Commons
-Attribution-ShareAlike 3.0 Unported license.
-
-http://creativecommons.org/licenses/by-sa/3.0/
-
--------------------------------------------------------------------------------
-
-Datepicker for Bootstrap
-Copyright 2012 Stefan Petre
-Licensed under the Apache License v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
--------------------------------------------------------------------------------
 AngularJS
 (c) 2010-2012 Google, Inc. http://angularjs.org
 
@@ -51,6 +37,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+Map Icons Collection by Nicolas Mollet under the terms of the Creative Commons
+Attribution-ShareAlike 3.0 Unported license.
+
+http://creativecommons.org/licenses/by-sa/3.0/
+
+-------------------------------------------------------------------------------
+
+Datepicker for Bootstrap
+Copyright 2012 Stefan Petre
+Licensed under the Apache License v2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 -------------------------------------------------------------------------------
 

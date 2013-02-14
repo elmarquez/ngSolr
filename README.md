@@ -12,9 +12,10 @@ Setup
 -----
 
 1. Install and configure a web server and Apache Solr search engine.
-2. Install EAC-Solr in your Apache Solr core. Index your EAC data using the
-   EAC-Solr configuration. Use the Solr administration interface to ensure that
-   search data is now available.
+2. Install EAC-Solr schema in your Apache Solr core. Index your EAC data using
+   the EAC-Solr configuration. Use the Solr administration interface to ensure
+   that search data is now available. Copy the EAC transform file to your
+   project folder.
 3. Download and unzip the EAC-Ajax package. The unzipped archive will contain a
    number of subdirectories.  Copy the app subdirectory to your web server.
 4. Edit the assets/js/eac-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE
@@ -73,19 +74,16 @@ Current:
 0.6.0
 
 x Various controllers need to be refactored and coordinated into a clear collection
+
+0.5.1
 x Refactor documentSearchController into separate search and result listing controllers
 x Diagram and narritive explaining workflow around crawler, visualization
 
 0.5.0
 
-! Trying to figure out why change event is not propagated
-x Start map centered on named location
 x Query index for a list of all entities by location
-x Map output for location entities
 x Infowindow should close when clicking close button
-
-x Refactoring display controllers to follow the same implementation pattern
-
+x Inject Google API key into script loading tag in head of location page
 
 x Add a "did you mean" result list on the "no results found" view
 x On page load, parse the fragment portion of the location URL to determine
@@ -107,6 +105,10 @@ x Autocomplete should show phrases that include the current search term, rather
 x Update the location URL when another page is selected
 x Fix the search history controller so that listings point to pages, not query
   data
+
+ * Reorganized application controllers to work off of a search service
+ * Added mapping default arguments to application constants
+ * Map starts at specified coordinates, or Australia if not specified
 
 
 0.4.0
@@ -189,17 +191,3 @@ Known Issues
 
  * The metadata/graphics panel stays right aligned when in a single column
    layout.
-
-
-Notes
------
-
--- rename controllers throughout
---
-
-when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
-
-function Controller($scope, $routeParams) {
-  // some value from the url
-  $scope.paramName = $routeParams.paramName;
-};
