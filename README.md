@@ -79,6 +79,10 @@ Current:
 
 0.5.1
 
+ ? SolrSearchService provides both a 'default' and named queries
+ ? SolrSearchService passes the name of the query on update
+ ? Other controllers listen for changes on their target named query, or 'default' if none is set
+
  x Refactor documentSearchController into separate search and result listing controllers
  x Diagram and narritive explaining workflow around crawler, visualization
  x Update the location URL when another page is selected

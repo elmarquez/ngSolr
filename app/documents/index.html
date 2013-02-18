@@ -28,12 +28,11 @@
         <script type="text/javascript" src="../assets/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
         <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/app-documentsearch.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchResultsController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/FacetSelectionController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/FieldFacetController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/RangeFacetController.js"></script>
@@ -44,19 +43,19 @@
         <script type="text/javascript" src="../assets/js/d3/d3.layout.min.js"></script>
         <script type="text/javascript" src="../assets/js/rickshaw/rickshaw.min.js"></script>
     </head>
-    <body ng-controller="DocumentSearchController" ng-init="init()">
+    <body>
 
         <!-- page-header -->
         <header id="page-header">
             <div class="navbar navbar-inverse">
-                <div class="navbar-inner">
+                <div class="navbar-inner" style="padding:0;">
                     <div class="container-fluid">
                         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </a>
-                        <a class="brand" href="#">EAC-CPF Search</a>
+                        <a class="brand-title" href="#">EAC-CPF Search</a>
                         <div class="nav-collapse collapse">
                             <p class="navbar-text pull-right">
                                 Logged in as <a href="#" class="navbar-link">Username</a>
@@ -79,10 +78,10 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                        <form class="form-inline" ng-controller="SearchBoxController" ng-submit="$parent.update()">
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
                             <div id="search-box" class="input-append">
-                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
-                                <button class="btn">Search</button>
+                                <input type="text" id="query" name="q" ng-model="userquery" placeholder="Enter keywords to search for" ui-items="getHints(userquery)" auto-complete autocomplete="off" style="width:380px" />
+                                <button class="btn" ng-click="submit()">Search</button>
                             </div>
                         </form>
                     </div>
@@ -118,7 +117,7 @@
                         <!-- /facet selection controller -->
 
                         <!-- function facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('fIdentity_entityType',$parent.query.facets)">
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('ffunction',$parent.query.facets)">
                             <li><b>Function</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -132,8 +131,8 @@
                         <!-- function facet controller -->
 
                         <!-- location facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('fDescription_occupation',$parent.query.facets)">
-                            <li><b>Occupation</b></li>
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('ftype',$parent.query.facets)">
+                            <li><b>Type</b></li>
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
@@ -178,14 +177,14 @@
                     <!-- /search panel -->
 
                     <!-- result panel -->
-                    <div id="result-panel" class="span5">
+                    <div id="result-panel" class="span5" ng-controller="DocumentSearchResultsController" ng-init="itemsPerPage=6;">
                         <div id="search-results" class="column-512" ng-cloak>
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
-                            <article ng-repeat="doc in results" class="document">
-                                <a href="{{doc.uri}}" class="title">{{doc.title}}</a>
-                                <a href="{{doc.uri}}" class="uri">{{doc.uri}}</a>
-                                <div class="text">{{doc.text}}</div>
+                            <article ng-repeat="doc in documents" class="document">
+                                <a ng-href="{{doc.uri}}" class="title">{{doc.title}}</a>
+                                <div class="source">{{doc.uri}}</div>
+                                <div class="text">{{doc.abstract}}</div>
                                 <div class="facets">
                                     <ul class="unstyled">
                                         <li><a href="#">Facet</a></li>
@@ -193,14 +192,14 @@
                                 </div>
                                 <div class="existdates">Sep. 2009 - Mar. 2012</div>
                             </article>
-                        </div>
-                        <div class="pagination" ng-hide="error">
+                        </div><!-- /search results -->
+                        <div class="search-results-pager pagination" ng-hide="error">
                             <ul>
-                                <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;update();">{{page.name}}</a>
+                                <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
+                                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div><!-- /pagination -->
                     </div>
                     <!-- /result panel -->
 

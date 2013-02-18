@@ -117,10 +117,6 @@ body {
   font-weight: bold;
   text-decoration: underline;
 }
-.document .uri {
-  color: green;
-  font-size: small;
-}
 .document .facets {
   color: #aaa;
   display: none;
@@ -138,6 +134,10 @@ body {
 }
 .document .more {
   font-size: small;
+}
+.document .source {
+    color: green;
+    font-size: small;
 }
 .document .summary {
     font-size: small;

@@ -1,5 +1,11 @@
 DEVELOPMENT NOTES
 
+
+-------------------------------------------------------------------------------
+Interface Design
+
+ * Collapsible sidebar a la sphinx
+
 -------------------------------------------------------------------------------
 Mapping
 
@@ -21,7 +27,7 @@ Routing
    };
 
 -------------------------------------------------------------------------------
-Various Examples
+Angular Implementation Examples
 
  * https://github.com/angular/angular.js/wiki/JsFiddle-Examples
  * http://blog.angularjs.org/2012/11/angularjs-example-applications.html

@@ -9,9 +9,12 @@
 
 /**
  * Document search result item.
- * @constructor
+ * @param Title
+ * @param Uri
+ * @param Location
+ * @param Abstract
  */
-function Document(Title, Url, Location, Summary) {
+function Document(Title, Uri, Location, Abstract) {
     var setifdefined = function(Val) {
         if (Val) {
             return Val;
@@ -19,10 +22,10 @@ function Document(Title, Url, Location, Summary) {
         return '';
     };
     this.title = setifdefined(Title);
-    this.url = setifdefined(Url);
+    this.uri = setifdefined(Uri);
     this.location = setifdefined(Location);
-    this.summary = setifdefined(Summary);
-};
+    this.abstract = setifdefined(Abstract);
+}
 
 /**
  * A page in a pagination list
@@ -34,7 +37,7 @@ function Page(Name,Num) {
     this.number = Num;
     this.isActive = false;
     this.isDisabled = false;
-};
+}
 
 /*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
@@ -48,13 +51,13 @@ function Page(Name,Num) {
 function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
 
     // parameters
-    $scope.queryname = "documents"; // the name of the search query
-
     $scope.documents = [];          // document search results
     $scope.itemsPerPage = 10;       // the number of search results per page
+    $scope.maxFieldLength = 256;    // maximum length of string for presentation
     $scope.page = 0;                // the current search result page
     $scope.pages = [];              // list of pages in the current navigation set
     $scope.pagesPerSet = 10;        // the number of pages in a navigation set
+    $scope.queryname = "default";   // the query name
     $scope.startPage = 0;           // zero based start page index
     $scope.totalPages = 1;          // count of the total number of result pages
     $scope.totalResults = 0;        // count of the total number of search results
@@ -62,25 +65,6 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
     $scope.view = 'list';           // presentation type
 
     ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Reformat a collection of document records for presentation. Truncate each 
-     * field to the maximum length specified.
-     * @param Items
-     * @param FieldName
-     * @param Length
-     * @todo consider merging this into a single function that can handle one or more objects. 
-     */
-    function format(Items,FieldName,Length) {
-      // if the item is an array
-      if (Items) {
-        for (var i=0;i<Items.length;i++) {
-          truncateField(Items[i],FieldName,Length);
-        }
-      }
-      // if an item is an object
-      return Items;
-    };
 
     /**
      * Return property value if present in the object. Otherwise, return an empty string.
@@ -111,7 +95,7 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
         }
       } 
       return Val;
-    };
+    }
 
     /**
      * Truncate the field to the specified length.
@@ -120,25 +104,26 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
      * @param Length Maximum field length
      */
     function truncateField(Document,FieldName,Length) {
-      if (Document && Document[FieldName]) {
-        if (Document[FieldName] instanceof Array) {
-          Document[FieldName] = Document[FieldName][0];
+        if (Document && Document[FieldName]) {
+            if (Document[FieldName] instanceof Array) {
+                Document[FieldName] = Document[FieldName][0];
+            }
+            if (Document[FieldName].length > Length) {
+                // remove start/end whitespace
+                Document[FieldName] = trim(Document[FieldName]);
+                // truncate the document to the specified length
+                Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
+                // find the last word and truncate after that
+                var i = Document[FieldName].lastIndexOf(" ");
+                if (i != -1) {
+                    Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
+                }
+            }
         }
-        if (Document[FieldName].length > Length) {
-          // truncate the document to the specified length
-          Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
-          // find the last word and truncate after that
-          var i = Document[FieldName].lastIndexOf(" ");
-          if (i != -1) {
-            Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
-          }
-        }
-      }
-    };
+    }
 
     /**
      * Update page index for navigation of search results.
-     * @param $scope Controller scope
      */
     function updatePageIndex() {
         // the default page navigation set
@@ -174,7 +159,7 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
             var nextPage = new Page("»",nextSet);
             $scope.pages.push(nextPage);
         }
-    };
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -183,7 +168,7 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
      * @param PageNumber
      */
     $scope.setPage = function(PageNumber) {
-
+        // update the page number in the query
     };
 
     /**
@@ -200,10 +185,13 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
         // add new results
         for (var i=0;i<$scope.itemsPerPage;i++) {
             var title = getIfPresent(results[i],'title');
-            var url = getIfPresent(results[i],'url');
             var location = getIfPresent(results[i],'location');
-            var summary = getIfPresent(results[i],'summary');
-            var doc = new Document(title,url,location,summary);
+            var abstrct = getIfPresent(results[i],'abstract');
+            var uri = getIfPresent(results[i],'referrer_uri');
+            // create a new document and clean up record
+            var doc = new Document(title,uri,location,abstrct);
+            truncateField(doc,'abstract',$scope.maxFieldLength);
+            // add to result list
             $scope.documents.push(doc);
         }
         // update the page index

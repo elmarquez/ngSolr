@@ -5,70 +5,49 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
-
-/**
- * This should be removed and, instead, the original SearchQuery object
- * should be available in the previous query list
- * @param UserQuery
- * @param Url
- */
-function Query(UserQuery,Url) {
-    this.userQuery = UserQuery;
-    this.url = Url;
-}
-
-/*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
 
 /**
  * Search history controller. Lists the last N user search queries.
  * @param $scope Controller scope
+ * @param SolrSearchService Solr search service
  * @param CONSTANTS Application constants
- * @todo The previous query variable should be a list of solr queries, rather 
- *       than just the search string. Otherwise, we can not recover the 
- *       actual query URL that produced the results.
  */
-function SearchHistoryController($scope,CONSTANTS) {
+function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
 
     // parameters
-    $scope.maxQueries = 5;          // the maximum number of items to display
-    $scope.queries = new Array();   // reverse chronological list of prior queries
+    $scope.maxItems = 5;            // the maximum number of items to display
+    $scope.queries = [];            // list of user queries in reverse order
+    $scope.queryName = 'default';   // the name of the query to watch
 
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Initialize the controller.
+     * Update the controller state.
      */
-    $scope.init = function() {
-    }
-
-    /**
-     * Update the constroller state.
-     * @param newValue
-     * @param oldValue
-     */
-    $scope.update = function(newValue,oldValue) {
-        // has the user query changed?
-        $scope.previousQuery 
-        $scope.queries[0]; // the previous query
-        if ($scope.queries.length > $scope.maxQueries - 1) {
-            // remove the last item
-            $scope.queries = $scope.queries.splice($scope.maxQueries-1,1);
+    $scope.update = function() {
+        // append the new query to the list
+        var history = [];
+        history.push(SolrSearchService.getQuery());
+        // append the rest of the queries to the list
+        for (var i=0;i<$scope.queries.length;i++) {
+            history.push($scope.queries[i]);
         }
-        var previous = $scope.previousQuery;
-        $scope.queries.splice(0,0,previous);
-    }
+        $scope.queries = history;
+        // if there are more than maxItems in the list, remove the first item
+        if ($scope.queries.length > $scope.maxItems) {
+            $scope.queries = $scope.queries.splice($scope.maxItems-1,1);
+        }
+    };
 
     /**
-     * Watch the specified variable for changes.
-     * @param scope Variable scope
-     * @param variable Variable to watch
+     * Handle update events from the search service.
      */
-    $scope.watch = function(scope,variable) {
-        scope.$watch(variable,$scope.update(),true);
-    }
-}
+    $scope.$on('update', function() {
+        $scope.update();
+    });
+
+};
 
 // inject controller dependencies
-SearchHistoryController.$inject = ['$scope','CONSTANTS'];
+SearchHistoryController.$inject = ['$scope','SolrSearchService','CONSTANTS'];

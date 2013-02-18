@@ -194,7 +194,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         var svc = {};                       // the service instance
 
         svc.error = null;                   // error message to user
-        svc.highlighting = true;            // result highlighing on/off
+        svc.highlighting = true;            // result highlighting on/off
         svc.highlightingParameters = "";    // result highlighting parameters
         svc.message = null;                 // info or warning message to user
         svc.page = 0;                       // result page currently being displayed
@@ -280,6 +280,14 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         svc.getPage = function (PageNumber) {
 
         };
+
+        /**
+         * Get the query object.
+         * @return The query object.
+         */
+        svc.getQuery = function() {
+            return this.query;
+        }
 
         /**
          * Get query response parameters, search result metadata.

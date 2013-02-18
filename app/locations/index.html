@@ -49,7 +49,7 @@
         <!-- page-header -->
         <header id="page-header">
             <div class="navbar navbar-inverse">
-                <div class="navbar-inner"style="padding:0;">
+                <div class="navbar-inner" style="padding:0;">
                     <div class="container-fluid">
                         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                             <span class="icon-bar"></span>
@@ -94,20 +94,20 @@
             <!-- search panel -->
             <div id="search-panel" class="column-320 bs-docs-sidebar">
                 <div class="inset">
-                    <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="pagesPerSet=5;update()" ng-cloak>
+                    <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="itemsPerPage=5;pagesPerSet=5;maxFieldLength=128;update()" ng-cloak>
                         <h6>Search Results</h6>
 
                         <div class="document" ng-repeat="doc in documents">
                             <a ng-href="{{doc.url}}" class="title">{{doc.title}}</a>
                             <div class="location">{{doc.location}}</div>
                             <div class="type">{{doc.type}}</div>
-                            <div class="summary">{{doc.summary}}</div>
+                            <div class="summary">{{doc.abstract}}</div>
                         </div><!-- /search results -->
 
                         <div class="search-results-pager pagination" ng-hide="error">
                             <ul>
                                 <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number);updateResults();">{{page.name}}</a>
+                                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
                                 </li>
                             </ul>
                         </div><!-- /pagination -->
