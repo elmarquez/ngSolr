@@ -73,43 +73,49 @@ Current:
 
 0.6.0
 
-x Various controllers need to be refactored and coordinated into a clear collection
+ ? Various controllers need to be refactored and coordinated into a clear collection
+ ? Map document search results should update to reflect the zoom level and current view position
+ ? When a facet constraint is added, it should impact the typeahead filter
 
 0.5.1
-x Refactor documentSearchController into separate search and result listing controllers
-x Diagram and narritive explaining workflow around crawler, visualization
+
+ x Refactor documentSearchController into separate search and result listing controllers
+ x Diagram and narritive explaining workflow around crawler, visualization
+ x Update the location URL when another page is selected
+ x Fix the search history controller so that listings point to pages, not query
+   data
+ x How to create a "related searches: a, b, c" list of queries
+ x Query term highlighting in search results
+ x Autocomplete should show phrases that include the current search term, rather
+   than just showing literal matches
+ ? Stuck on updating fragment to reflect the current facet query -- facet query
+   clears hash
+ x Add a "did you mean" result list on the "no results found" view
+ x On page load, parse the fragment portion of the location URL to determine
+   if there is a starting search query.  Execute that query.
+ x Update EAC to Solr transform: Added keywords field to support autocomplete
+   search
+ x Created a location facet controller
+ x Controller unit tests
+ x Add date field into the title output
+ x Query index for a list of all entities by location
+ x Infowindow should close when clicking close button
+
+0.5.1
+
+ ? SolrQuery now implements all functionality required for managing a single query
+ ? Created named queries in Solr Search Service
 
 0.5.0
 
-x Query index for a list of all entities by location
-x Infowindow should close when clicking close button
-x Inject Google API key into script loading tag in head of location page
-
-x Add a "did you mean" result list on the "no results found" view
-x On page load, parse the fragment portion of the location URL to determine
-   if there is a starting search query.  Execute that query.
-x Controller unit tests
-x Add date field into the title output
-x Update EAC to Solr transform: Added keywords field to support autocomplete
-  search
-x Facet list is not currently updating the search in all cases
-x When a facet constraint is added, it should impact the typeahead filter
-x Location facet controller
-
-x How to create a "related searches: a, b, c" list of queries
-x Query term highlighting in search results
-x Autocomplete should show phrases that include the current search term, rather
-  than just showing literal matches
-? Stuck on updating fragment to reflect the current facet query -- facet query
-  clears hash
-x Update the location URL when another page is selected
-x Fix the search history controller so that listings point to pages, not query
-  data
-
- * Reorganized application controllers to work off of a search service
- * Added mapping default arguments to application constants
+ * Defined default map cluster icon options 
+ * SearchBoxController now updates search query in SolrSearchService
+ * Google API key removed from script loading call
+ * Reorganized application controllers to use Solr search service
+ * Resized DocumentSearchResultsController to use SolrSearchService
+ * Created SolrSearchService
  * Map starts at specified coordinates, or Australia if not specified
-
+ * Added mapping default arguments to application constants
 
 0.4.0
 

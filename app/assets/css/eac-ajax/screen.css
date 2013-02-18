@@ -73,46 +73,38 @@ body {
 }
 
 /*--------------------------------------------------------*/
-/* Facet Panel                                            */
+/* Branding                                               */
 
-.facet-panel {
-  border: 1px solid #E5E5E5;
-  border-radius: 4px;
-  list-style: none;
-  margin-bottom: 20px;
-  margin-left: 0;
-  padding: 0;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
+.brand-title {
+    color: #ccc;
+    display: block;
+    float: left;
+    font-size: 20px;
+    font-weight: 200;
+    margin-left: -20px;
+    padding: 10px 20px 10px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0,25);
 }
-.facet-panel>li {
-  border-bottom: 1px solid #E5E5E5;
-  padding: 8px 15px;
-  padding-right: 8px;
+
+/*--------------------------------------------------------*/
+/* General Styles                                         */
+
+.inset {
+    padding-left: 20px;
+    padding-right: 20px;
 }
-.facet-panel>li:first-child {
-  color: #333;
-  font-weight: bold;
-}
-.facet-panel>li:last-child {
-  border-bottom: none;
-}
-.facet-panel .items li:hover:after {
-  content: " remove";
-  font-style: italic;
-}
-.facet-panel .fieldname {
-  font-weight: bold;
-}
-.facet-panel .value {}
 
 /*--------------------------------------------------------*/
 /* Search Results Graphics                                */
 
 /*--------------------------------------------------------*/
-/* Search Results List                                    */
+/* Document Search Results                                */
 
-#result-panel {}
+.document-search-results {}
+.document-search-results-pager {
+    padding-top: 20px;
+}
+
 .reading-column {
   max-width: 512px;
 }
@@ -129,13 +121,6 @@ body {
   color: green;
   font-size: small;
 }
-.document .text {
-  font-size: small;
-  line-height: 1.25em;
-}
-.document .text em {
-  background: yellow;
-}
 .document .facets {
   color: #aaa;
   display: none;
@@ -149,8 +134,24 @@ body {
 .document .existdates:before {
   /* content: "Exist dates: "; */
 }
+.document .location {
+}
 .document .more {
   font-size: small;
+}
+.document .summary {
+    font-size: small;
+    line-height: 1.25em;
+}
+.document .summary em {
+    background: yellow;
+}
+.document .text {
+    font-size: small;
+    line-height: 1.25em;
+}
+.document .text em {
+    background: yellow;
 }
 
 /*--------------------------------------------------------*/
@@ -189,6 +190,40 @@ body {
 #map img{
     max-width: none;
 }
+
+/*--------------------------------------------------------*/
+/* Facet Panel                                            */
+
+.facet-panel {
+    border: 1px solid #E5E5E5;
+    border-radius: 4px;
+    list-style: none;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding: 0;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.facet-panel>li {
+    border-bottom: 1px solid #E5E5E5;
+    padding: 8px 15px;
+    padding-right: 8px;
+}
+.facet-panel>li:first-child {
+    color: #333;
+    font-weight: bold;
+}
+.facet-panel>li:last-child {
+    border-bottom: none;
+}
+.facet-panel .items li:hover:after {
+    content: " remove";
+    font-style: italic;
+}
+.facet-panel .fieldname {
+    font-weight: bold;
+}
+.facet-panel .value {}
 
 /*--------------------------------------------------------*/
 /* Sidebar Panel                                          */

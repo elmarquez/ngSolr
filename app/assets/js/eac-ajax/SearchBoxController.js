@@ -14,6 +14,7 @@
  * @param SolrSearchService Document search service
  * @param CONSTANTS Application constants
  * @see http://jsfiddle.net/DNjSM/17/
+ * @todo reimplement to use SolrSearchService to execute all queries
  */
 function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
 

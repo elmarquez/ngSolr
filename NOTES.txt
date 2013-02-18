@@ -1,37 +1,45 @@
 DEVELOPMENT NOTES
 
+-------------------------------------------------------------------------------
+Mapping
+
 Marker Clustering
-https://developers.google.com/maps/articles/toomanymarkers
-http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/docs/reference.html
+
+ * https://developers.google.com/maps/articles/toomanymarkers
+ * http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/docs/reference.html
+
+Cluster Icons
+
+ * http://a32.me/2012/05/handling-huge-amount-of-markers-on-google-maps-with-clusters/
 
 Routing
-when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
 
-function Controller($scope, $routeParams) {
-  // some value from the url
-  $scope.paramName = $routeParams.paramName;
-};
+ * when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
+   function Controller($scope, $routeParams) {
+     // some value from the url
+     $scope.paramName = $routeParams.paramName;
+   };
 
 -------------------------------------------------------------------------------
 Various Examples
 
-https://github.com/angular/angular.js/wiki/JsFiddle-Examples
-http://blog.angularjs.org/2012/11/angularjs-example-applications.html
-
-** http://onehungrymind.com/angularjs-communicating-between-controllers/
+ * https://github.com/angular/angular.js/wiki/JsFiddle-Examples
+ * http://blog.angularjs.org/2012/11/angularjs-example-applications.html
+ * http://onehungrymind.com/angularjs-communicating-between-controllers/
 
 -------------------------------------------------------------------------------
 Service Definition
 
-* http://onehungrymind.com/angularjs-sticky-notes-pt-1-architecture/
-* https://github.com/simpulton/angular-sticky-notes/blob/master/app.js
-http://jsfiddle.net/asgoth/7bNAd/
-http://plnkr.co/edit/3n8m1X?p=preview
-http://jsfiddle.net/whnSs/
-https://github.com/GoogleChrome/wReader-app/blob/master/js/services.js
-https://bitbucket.org/adhilnv/contact-path/src/5fb11833841495b4be0784f8d8407a80ff30ee24/js/services.js?at=master
+ * http://onehungrymind.com/angularjs-sticky-notes-pt-1-architecture/
+ * https://github.com/simpulton/angular-sticky-notes/blob/master/app.js
+ * http://jsfiddle.net/asgoth/7bNAd/
+ * http://plnkr.co/edit/3n8m1X?p=preview
+ * http://jsfiddle.net/whnSs/
+ * https://github.com/GoogleChrome/wReader-app/blob/master/js/services.js
+ * https://bitbucket.org/adhilnv/contact-path/src/5fb11833841495b4be0784f8d8407a80ff30ee24/js/services.js?at=master
 
 -------------------------------------------------------------------------------
 Application Packaging 
 
-http://coenraets.org/blog/2012/12/phonegap-and-phonegap-build-in-5-minutes/
+ * http://coenraets.org/blog/2012/12/phonegap-and-phonegap-build-in-5-minutes/
+
