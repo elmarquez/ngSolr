@@ -107,7 +107,7 @@ Current:
 
 0.5.3
 
- >> Fixing facet based filtering on document search
+ >> Fixed facet based filtering on document search
 
 0.5.2
 

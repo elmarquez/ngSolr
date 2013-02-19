@@ -82,9 +82,10 @@ function Facet(Field,Value) {
 
 /**
  * A Solr search query.
+ * @param $scope
+ * @param $http
  * @param Url URL to Solr host
  * @param Core Name of Solr core
- * @see [ref to Solr query page]
  * @todo it should retain its search state, and provide methods for executing the search query
  */
 function SearchQuery(Url,Core) {
@@ -170,6 +171,62 @@ function SearchQuery(Url,Core) {
         }
     };
 
+    /**
+     * Update the search results.
+     * @param Callback Callback function to be executed once the update has completed.
+     */
+    this.update = function(Callback) {
+        // reset messages
+        svc.error = null;
+        svc.message = null;
+        // update the browser location to reflect the query
+        // setLocation($location,$scope,CONSTANTS.QUERY_DELIMITER);
+        // log the current query
+        console.log("GET " + svc.query.getUrl());
+        // fetch the search results
+        $http.get(svc.query.getUrl()).success(
+            function (data) {
+                svc.queryMaxScore = data.response.maxScore;
+                svc.queryNumFound = data.response.numFound;
+                svc.queryParams = data.responseHeader.params;
+                svc.queryStatus = data.responseHeader.status;
+                svc.queryTime = data.responseHeader.QTime;
+                svc.totalPages = Math.ceil(svc.queryNumFound / svc.itemsPerPage);
+                svc.totalSets = Math.ceil(svc.totalPages / svc.pagesPerSet);
+                // if there are search results
+                if (data.response && data.response.docs) {
+                    // reformat data for presenation, build page navigation index
+                    // var formatted = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
+                    svc.results = data.response.docs;
+                } else {
+                    svc.pages = [];
+                    svc.queryMaxScore = 0;
+                    svc.queryNumFound = 0;
+                    svc.queryTime = 0;
+                    svc.results = [];
+                    svc.totalPages = 0;
+                    svc.totalSets = 0;
+                    svc.message = "Found 0 results for query '" + query.getUserQuery() + "'.";
+                }
+                // notify listeners
+                $rootScope.$broadcast('update');
+            }).error(
+            function (data, status, headers, config) {
+                svc.queryMaxScore = 0;
+                svc.queryNumFound = 0;
+                svc.queryParams = '';
+                svc.queryStatus = status;
+                svc.queryTime = 0;
+                svc.results = [];
+                svc.totalPages = 0;
+                svc.totalSets = 0;
+                svc.error = "Could not get search results from server. Server responded with status code " + status + ".";
+                // notify listeners
+                $rootScope.$broadcast('update');
+            });
+    };
+
+
 };
 
 
@@ -178,7 +235,8 @@ function SearchQuery(Url,Core) {
 
 /**
  * Executes a document search against an Apache Solr/Lucence search index.
- * Provides shared search configuration for multiple controllers.
+ * Provides shared search configuration for multiple controllers in the form
+ * of named queries.
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
@@ -190,6 +248,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
 
         // parameters
         var svc = {};                       // the service instance
+        svc.queries = {};                   // named search queries
 
         svc.error = null;                   // error message to user
         svc.highlighting = true;            // result highlighting on/off
@@ -197,7 +256,6 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         svc.message = null;                 // info or warning message to user
         svc.page = 0;                       // result page currently being displayed
         svc.previousQuery = '';             // previous query
-        svc.queries = {};                   // search queries
         svc.query = null                    // the current query
         svc.queryMaxScore = 1;              // maximum result score
         svc.queryNumFound = 0;              // number of result items found
@@ -282,11 +340,17 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         };
 
         /**
-         * Get the query object.
-         * @return The query object.
+         * Get the query object. Where a name is not provided, the default query is returned.
+         * @param Query name
+         * @return The query object or undefined if not found.
          */
-        svc.getQuery = function() {
-            return this.query;
+        svc.getQuery = function(Name) {
+            if (Name && Name in svc.queries) {
+                return svc.queries[Name];
+            } else {
+                return this.query;
+            }
+            return undefined;
         };
 
         /**
@@ -364,14 +428,17 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         };
 
         /**
-         * Update the user search query.
+         * Set the named query. If a name is not specified, the default query is set.
+         * @param Query Query object
+         * @param Name Query name
          */
-        svc.setQuery = function (Query) {
-            // create a new search query
-            svc.query = svc.getDefaultQuery(CONSTANTS);
-            // set the query value
-            svc.query.setOption("q",Query);
-            // update the results
+        svc.setQuery = function (Query, Name) {
+            if (Name) {
+                svc.queries[Name] = Query;
+            } else {
+                svc.queries['default'] = Query;
+                svc.query = Query;
+            }
             svc.update();
         };
 
@@ -427,6 +494,25 @@ angular.module('SearchServices', []).factory('SolrSearchService',
                     // notify listeners
                     $rootScope.$broadcast('update');
                 });
+        };
+
+        /**
+         * Update the user search query. If a name is not specified, the default query is updated.
+         * @param UserQuery User query
+         * @param Name Query name
+         */
+        svc.setUserQuery = function (UserQuery, Name) {
+            var query = undefined;
+            if (Name in svc.queries) {
+                query = svc.queries[Name];
+                query.setOption("q",UserQuery);
+            } else {
+                query = svc.queries['default'];
+                query.setOption("q",UserQuery);
+                query = svc.query;
+                query.setOption("q",UserQuery);
+            }
+            svc.update();
         };
 
         ///////////////////////////////////////////////////////////////////////
