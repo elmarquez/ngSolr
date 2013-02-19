@@ -8,7 +8,8 @@
 /* Controllers                                                               */
 
 /**
- * Search history controller. Lists the last N user search queries.
+ * Search history controller. Lists the last N user search queries. Takes the
+ * form of a queue.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  * @param CONSTANTS Application constants
@@ -23,20 +24,39 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Load the specified query into the view.
+     * @param QueryIndex The index of the query object in the queries list.
+     * @todo complete this function
+     */
+    $scope.load = function(QueryIndex) {
+        if (QueryIndex >= 0 && QueryIndex <= $scope.queries.length) {
+            var query = $scope.queries[QueryIndex];
+            if (query) {
+                // set the query in the search service, then force it to update
+            }
+        }
+    };
+
+    /**
      * Update the controller state.
      */
     $scope.update = function() {
-        // append the new query to the list
-        var history = [];
-        history.push(SolrSearchService.getQuery());
-        // append the rest of the queries to the list
-        for (var i=0;i<$scope.queries.length;i++) {
-            history.push($scope.queries[i]);
-        }
-        $scope.queries = history;
-        // if there are more than maxItems in the list, remove the first item
-        if ($scope.queries.length > $scope.maxItems) {
-            $scope.queries = $scope.queries.splice($scope.maxItems-1,1);
+        // get the new query
+        var newquery = SolrSearchService.getQuery();
+        // if there are existing queries
+        if ($scope.queries.length > 0) {
+            // if the new query is the same as the last query, ignore it
+            if (newquery != $scope.queries[0]) {
+                // add new query to the top of the queue
+                $scope.queries.unshift(newquery);
+                // if there are more than maxItems in the list, remove the first item
+                if ($scope.queries.length > $scope.maxItems) {
+                    $scope.queries.pop();
+                }
+            }
+        } else {
+            $scope.queries = [];
+            $scope.queries.push(newquery);
         }
     };
 

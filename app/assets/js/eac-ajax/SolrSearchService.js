@@ -29,6 +29,7 @@ function Facet(Field,Value) {
         if (this.options[Name]) {
             return this.options[Name];
         }
+        return None;
     };
 
     /**
@@ -176,11 +177,8 @@ function SearchQuery(Url,Core) {
 /* Service                                                                   */
 
 /**
- * Executes a document search against a Solr index. Provides shared search
- * configuration for multiple controllers. Where a controller wants to
- * execute a one off search query, use getDefaultQuery() to get a query
- * object, configure it as desired and then pass it back to
- * getQueryOneTime(Query).
+ * Executes a document search against an Apache Solr/Lucence search index.
+ * Provides shared search configuration for multiple controllers.
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
@@ -276,9 +274,11 @@ angular.module('SearchServices', []).factory('SolrSearchService',
 
         /**
          * Update the result set to get the items from the specified page number.
+         * @param ItemNumber The index of the starting document.
          */
-        svc.getPage = function (PageNumber) {
-
+        svc.getPage = function (ItemNumber) {
+            svc.query.setOption("start",ItemNumber);
+            svc.update();
         };
 
         /**
@@ -287,14 +287,6 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          */
         svc.getQuery = function() {
             return this.query;
-        }
-
-        /**
-         * Get query response parameters, search result metadata.
-         */
-        svc.getQueryResponse = function () {
-            // @TODO create a dictionary with search result properties???? or getters for various properties?
-            return {};
         };
 
         /**

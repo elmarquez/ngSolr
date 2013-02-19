@@ -77,7 +77,7 @@ Current:
  ? Map document search results should update to reflect the zoom level and current view position
  ? When a facet constraint is added, it should impact the typeahead filter
 
-0.5.1
+0.5.3
 
  ? SolrSearchService provides both a 'default' and named queries
  ? SolrSearchService passes the name of the query on update
@@ -105,10 +105,17 @@ Current:
  x Query index for a list of all entities by location
  x Infowindow should close when clicking close button
 
-0.5.1
+0.5.2
 
  ? SolrQuery now implements all functionality required for managing a single query
  ? Created named queries in Solr Search Service
+
+0.5.1
+
+ * Updated DocumentSearchResultsController to work with SolrSearchService
+ * Updated pagination setup on DocumentSearchController to work with SolrSearchService
+ * Updated SearchHistoryController to only record changes in the query object
+ >> Fixing facet based filtering on document search
 
 0.5.0
 

@@ -168,7 +168,8 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
      * @param PageNumber
      */
     $scope.setPage = function(PageNumber) {
-        // update the page number in the query
+        $scope.page = PageNumber;
+        SolrSearchService.getPage(PageNumber);
     };
 
     /**
