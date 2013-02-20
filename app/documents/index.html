@@ -100,7 +100,7 @@
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
 
                         <!-- facet selection controller -->
-                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-show="facets.length>0">
+                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-show="facets.length>0" ng-cloak>
                             <li><b>Filtering By</b></li>
                             <li>
                                 <ul class="items unstyled">
@@ -117,7 +117,7 @@
                         <!-- /facet selection controller -->
 
                         <!-- function facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('function')">
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('function')" ng-cloak>
                             <li><b>Function</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -131,7 +131,7 @@
                         <!-- function facet controller -->
 
                         <!-- location facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('type')">
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('type')" ng-cloak>
                             <li><b>Type</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -145,7 +145,7 @@
                         <!-- /location facet controller -->
 
                         <!-- date range facet controller -->
-                        <ul class="facet-panel" ng-controller="RangeFacetController">
+                        <ul class="facet-panel" ng-controller="RangeFacetController" ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
                                 <div class="input-append" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
