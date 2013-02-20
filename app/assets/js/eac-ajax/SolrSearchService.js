@@ -110,7 +110,17 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      * @param Facet
      */
     self.addFacet = function(Facet) {
-        self.facets.push(Facet);
+        // if the facet is not already present
+        var found = false;
+        var count = 0;
+        while (!found && count < self.facets.length) {
+            var fct = self.facets[count];
+            if (fct.field === Facet.field && fct.value === Facet.value) {
+                found = true;
+            }
+            count++;
+        }
+        if (!found) self.facets.push(Facet);
         self.update();
     };
 
@@ -163,10 +173,17 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      * @param Facet
      */
     self.removeFacet = function(Facet) {
-        var i = self.facets.indexOf(Facet);
-        if (i > -1) {
-            self.facets.splice(i,1);
+        // if the facet is found
+        var found = false;
+        var index = 0;
+        while (!found && index < self.facets.length) {
+            var fct = self.facets[index];
+            if (fct.field === Facet.field && fct.value === Facet.value) {
+                found = true;
+            }
+            index++;
         }
+        if (found) self.facets.splice(index-1,1);
         self.update();
     };
 

@@ -32,6 +32,7 @@ function FacetSelectionController($scope, SolrSearchService) {
      * Update the controller state.
      */
     $scope.update = function() {
+        $scope.facets = [];
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
             for (var i=0;i<query.facets.length;i++) {

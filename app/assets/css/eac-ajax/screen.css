@@ -216,10 +216,10 @@ body {
 .facet-panel>li:last-child {
     border-bottom: none;
 }
-.facet-panel .items li:hover:after {
+/*.facet-panel .items li:hover:after {
     content: " remove";
     font-style: italic;
-}
+}*/
 .facet-panel .fieldname {
     font-weight: bold;
 }
