@@ -90,25 +90,26 @@ function SolrFacet(Field,Value) {
  * @param $rootScope Root scope
  */
 function SolrQuery(Url,Core,$http,$rootScope) {
-    // parameters
-    this.error = undefined;     // error message
-    this.facets = [];           // query facets
-    this.highlighting = {};     // query response highlighting
-    this.message = undefined;   // information message
-    this.options = {};          // query options
-    this.response = {};         // query response
-    this.responseHeader = {};   // response header
+    var self = this;
 
-    this.url = Url + "/" + Core + "/select?";   // URL for the Solr core
+    // parameters
+    self.error = undefined;     // error message
+    self.facets = [];           // query facets
+    self.highlighting = {};     // query response highlighting
+    self.message = undefined;   // information message
+    self.options = {};          // query options
+    self.response = {};         // query response
+    self.responseHeader = {};   // response header
+    self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
 
     /**
      * Get option value.
      * @param Name Option name
      * @return Option value or undefined if not found.
      */
-    this.getOption = function(Name) {
-        if (this.options[Name]) {
-            return this.options[Name];
+    self.getOption = function(Name) {
+        if (self.options[Name]) {
+            return self.options[Name];
         }
         return undefined;
     };
@@ -116,15 +117,15 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     /**
      * Get the hash portion of the query URL.
      */
-    this.getHash = function() {
+    self.getHash = function() {
         var query = '';
         // append query parameters
-        for (var key in this.options) {
-            if (this.options.hasOwnProperty(key)) query = query + "&" + key + "=" + this.options[key];
+        for (var key in self.options) {
+            if (self.options.hasOwnProperty(key)) query = query + "&" + key + "=" + self.options[key];
         }
         // append faceting parameters
-        for (var i=0;i<this.facets.length;i++) {
-            var facet = this.facets[i];
+        for (var i=0;i<self.facets.length;i++) {
+            var facet = self.facets[i];
             query = query + facet.getUrlFragment();
         }
         // return results
@@ -134,15 +135,15 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     /**
      * Get the fully specified Solr query URL.
      */
-    this.getUrl = function() {
-        return this.url + this.getHash();
+    self.getUrl = function() {
+        return self.url + self.getHash();
     };
 
     /**
      * Get the user query portion of the query.
      */
-    this.getUserQuery = function() {
-        return this.getOption('q');
+    self.getUserQuery = function() {
+        return self.getOption('q');
     };
 
     /**
@@ -150,16 +151,16 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      * @param Name
      * @param Value
      */
-    this.setOption = function(Name,Value) {
+    self.setOption = function(Name,Value) {
         if (Name=="fq") {
-            var fq = this.getOption(Name);
+            var fq = self.getOption(Name);
             if (fq != undefined && fq == "") {
-                this.options[Name] = fq + " +" + Value;
+                self.options[Name] = fq + " +" + Value;
             } else {
-                this.options[Name] = "+" + Value;
+                self.options[Name] = "+" + Value;
             }
         } else {
-            this.options[Name] = Value;
+            self.options[Name] = Value;
         }
     };
 
@@ -168,14 +169,14 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      * window location.
      * @param Query Query fragment
      */
-    this.setOptionsFromQuery = function(Query) {
+    self.setOptionsFromQuery = function(Query) {
         var elements = Query.split('&');
         for (var i=0;i<elements.length;i++) {
             var element = elements[i];
             if (element != null && element != '') {
                 var parts = element.split('=');
                 var name = parts[0].replace('&','');
-                (parts.length==2) ? this.setOption(name,decodeURI(parts[1])) : this.setOption(name,'');
+                (parts.length==2) ? self.setOption(name,decodeURI(parts[1])) : self.setOption(name,'');
             }
         }
     };
@@ -183,26 +184,25 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     /**
      * Update the search results.
      */
-    this.update = function() {
+    self.update = function() {
         // reset messages
-        this.error = undefined;
-        this.message = undefined;
+        self.error = undefined;
+        self.message = undefined;
         // log the current query
-        var query = this.getUrl();
+        var query = self.getUrl();
         console.log("GET " + query);
         // fetch the search results
-        var sq = this;
         $http.get(query).
             success(function (data, sq) {
-                this.highlighting = data.highlighting;
-                this.response = data.response;
-                this.responseHeader = data.responseHeader;
+                self.highlighting = data.highlighting;
+                self.response = data.response;
+                self.responseHeader = data.responseHeader;
                 $rootScope.$broadcast('update');
             }).error(function (data, status, headers, config, sq) {
-                this.error = "Could not get search results from server. Server responded with status code " + status + ".";
-                this.response['numFound'] = 0;
-                this.response['start'] = 0;
-                this.response['docs'] = [];
+                self.error = "Could not get search results from server. Server responded with status code " + status + ".";
+                self.response['numFound'] = 0;
+                self.response['start'] = 0;
+                self.response['docs'] = [];
                 $rootScope.$broadcast('update');
             });
     };

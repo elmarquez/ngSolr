@@ -180,20 +180,27 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
         $scope.documents = [];
         // get new results
         var results = SolrSearchService.getQueryResults();
-        $scope.totalResults = results.length;
-        $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
-        $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
-        // add new results
-        for (var i=0;i<$scope.itemsPerPage;i++) {
-            var title = getIfPresent(results[i],'title');
-            var location = getIfPresent(results[i],'location');
-            var abstrct = getIfPresent(results[i],'abstract');
-            var uri = getIfPresent(results[i],'referrer_uri');
-            // create a new document and clean up record
-            var doc = new Document(title,uri,location,abstrct);
-            truncateField(doc,'abstract',$scope.maxFieldLength);
-            // add to result list
-            $scope.documents.push(doc);
+        if (results && results.docs) {
+            $scope.totalResults = results.docs.length;
+            $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
+            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
+            // add new results
+            for (var i=0;i<$scope.itemsPerPage;i++) {
+                var title = getIfPresent(results.docs[i],'title');
+                var location = getIfPresent(results.docs[i],'location');
+                var abstrct = getIfPresent(results.docs[i],'abstract');
+                var uri = getIfPresent(results.docs[i],'referrer_uri');
+                // create a new document and clean up record
+                var doc = new Document(title,uri,location,abstrct);
+                truncateField(doc,'abstract',$scope.maxFieldLength);
+                // add to result list
+                $scope.documents.push(doc);
+            }
+        } else {
+            $scope.documents = [];
+            $scope.totalResults = 0;
+            $scope.totalPages = 1;
+            $scope.totalSets = 1;
         }
         // update the page index
         updatePageIndex();

@@ -67,11 +67,11 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
         // create marker bounds
         var bounds = new google.maps.LatLngBounds();
         // if there are results to display
-        if (SolrSearchService) {
-            var results = SolrSearchService.getQueryResults();
+        var results = SolrSearchService.getQueryResults();
+        if (results && results.docs) {
             // create new map markers
-            for (var i = 0; i < results.length; i++) {
-                var item = results[i];
+            for (var i = 0; i < results.docs.length; i++) {
+                var item = results.docs[i];
                 if (item.location) {
                     // marker metadata
                     var content = "<div class='infowindow'><div class='title'>" + item.title + "</div><div class='type'>" +
