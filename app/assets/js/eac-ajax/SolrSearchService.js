@@ -103,6 +103,17 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     self.responseHeader = {};   // response header
     self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
 
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Add facet constraint.
+     * @param Facet
+     */
+    self.addFacet = function(Facet) {
+        self.facets.push(Facet);
+        self.update();
+    };
+
     /**
      * Get option value.
      * @param Name Option name
@@ -145,6 +156,18 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      */
     self.getUserQuery = function() {
         return self.getOption('q');
+    };
+
+    /**
+     * Remove facet constraint.
+     * @param Facet
+     */
+    self.removeFacet = function(Facet) {
+        var i = self.facets.indexOf(Facet);
+        if (i > -1) {
+            self.facets.splice(i,1);
+        }
+        self.update();
     };
 
     /**
