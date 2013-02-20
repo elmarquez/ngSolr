@@ -101,7 +101,8 @@ Current:
 0.5.3
 
  > Listen for updates on specific data sets from the SolrSearchService
- * Updated FieldFacetController to work with SolrSearchService
+ > Updated FacetSelectionController to work with SolrSearchService
+ * Updated FieldFacetController to get results from SolrSearchService, add facet constraint to named query
 
 0.5.2
 

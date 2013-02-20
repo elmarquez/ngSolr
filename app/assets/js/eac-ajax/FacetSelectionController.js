@@ -1,52 +1,53 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
 'use strict';
 
 /**
- * Displays and manages the current set of user selected facets.
+ * Displays and manages the set of facet constraints on a named query.
  * @param $scope Controller scope
  */
-function FacetSelectionController($scope) {
+function FacetSelectionController($scope, SolrSearchService) {
 	// fields
-    $scope.facets = [];  // list of query facets
+    $scope.facets = [];         // list of facets
+    $scope.target = 'default';  // target query name
 
-    /**
-     * Initialize the controller
-     * @param FacetList List of current search facets
-     */
-    $scope.init = function(FacetList) {
-        $scope.facets = FacetList;
-        $scope.watch(FacetList);
-    }
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Remove the facet at the specified index.
      * @param Index Index of facet to remove.
      */
     $scope.remove = function(Index) {
-        $scope.facets.splice(Index,1);
+        var facet = $scope.facets[Index];
+        var query = SolrSearchService.getQuery($scope.target);
+        if (query && facet) {
+            query.removeFacet(facet);
+        }
         $scope.update();
-        $scope.$parent.updateResults();
-    }
+    };
 
     /**
      * Update the controller state.
-     * @param newValue
-     * @param oldValue
      */
-    $scope.update = function(newValue,oldValue) {
-    }
+    $scope.update = function() {
+        var query = SolrSearchService.getQuery($scope.target);
+        if (query) {
+            for (var i=0;i<query.facets.length;i++) {
+                $scope.facets.push(query.facets[i]);
+            }
+        }
+    };
 
     /**
-     * Watch the specified variable for changes.
-     * @param variable Variable to watch
+     * Handle update events from the search service.
      */
-    $scope.watch = function(variable) {
-        $scope.$watch(variable,$scope.update(),true);
-    }
+    $scope.$on('update', function () {
+        $scope.update();
+    });
+
 };
 
 // inject controller dependencies
-FacetSelectionController.$inject = ['$scope'];
+FacetSelectionController.$inject = ['$scope','SolrSearchService'];
