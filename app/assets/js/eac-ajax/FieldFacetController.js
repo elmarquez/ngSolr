@@ -35,7 +35,7 @@ function FieldFacetController($scope, $http, CONSTANTS) {
     $scope.maxresults = 7;      // max number of results to display
 
     // query to get list of facet values
-    var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
+    var query = new SolrQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
     query.setOption("facet","true");
     query.setOption("facet.mincount","1");
     query.setOption("facet.sort","count");
@@ -71,7 +71,7 @@ function FieldFacetController($scope, $http, CONSTANTS) {
       // @todo once a facet from this controller has been added to a list, the controller should disappear
       if ($scope.facets && $scope.facets instanceof Array) {
         // check to see if the facet is already in the list
-        var facet = new Facet($scope.field,$scope.items[Index].value);
+        var facet = new SolrFacet($scope.field,$scope.items[Index].value);
         // add the facet
         $scope.facets.push(facet);
         // update the search results

@@ -61,7 +61,7 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
      */
     $scope.init = function() {
         // build hint list query
-        var query = new SearchQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
+        var query = new SolrQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
         query.setOption("wt","json");
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
