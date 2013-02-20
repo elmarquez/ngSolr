@@ -95,6 +95,7 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     // parameters
     self.error = undefined;     // error message
     self.facets = [];           // query facets
+    self.facet_counts = {};     // facet counts
     self.highlighting = {};     // query response highlighting
     self.message = undefined;   // information message
     self.options = {};          // query options
@@ -105,7 +106,7 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     /**
      * Get option value.
      * @param Name Option name
-     * @return Option value or undefined if not found.
+     * @return undefined value or undefined if not found.
      */
     self.getOption = function(Name) {
         if (self.options[Name]) {
@@ -185,7 +186,7 @@ function SolrQuery(Url,Core,$http,$rootScope) {
      * Update the search results.
      */
     self.update = function() {
-        // reset messages
+        // reset
         self.error = undefined;
         self.message = undefined;
         // log the current query
@@ -193,12 +194,15 @@ function SolrQuery(Url,Core,$http,$rootScope) {
         console.log("GET " + query);
         // fetch the search results
         $http.get(query).
-            success(function (data, sq) {
+            success(function (data) {
                 self.highlighting = data.highlighting;
+                if (data.hasOwnProperty('facet_counts')) {
+                    self.facet_counts = data.facet_counts;
+                }
                 self.response = data.response;
                 self.responseHeader = data.responseHeader;
                 $rootScope.$broadcast('update');
-            }).error(function (data, status, headers, config, sq) {
+            }).error(function (data, status, headers, config) {
                 self.error = "Could not get search results from server. Server responded with status code " + status + ".";
                 self.response['numFound'] = 0;
                 self.response['start'] = 0;
@@ -283,7 +287,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          * @param $http HTTP service
          * #param $rootScope Root scope
          */
-        svc.getDefaultQuery = function (CONSTANTS, $http, $rootScope) {
+        svc.getDefaultQuery = function () {
             var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE, $http, $rootScope);
             query.setOption("q", CONSTANTS.DEFAULT_QUERY);
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
@@ -293,9 +297,21 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         };
 
         /**
+         * Get the query facet counts.
+         * @param Name Query name
+         */
+        svc.getFacetCounts = function (Name) {
+            if (Name) {
+                return svc.queries[Name].facet_counts;
+            } else {
+                return svc.queries['default'].facet_counts;
+            }
+        };
+
+        /**
          * Get the query facet list.
          * @param Name Query name
-         * @returns Facet list for the named query, or for the default query if no name is specified.
+         * @returns Array Facet list for the named query, or for the default query if no name is specified.
          */
         svc.getFacets = function (Name) {
             if (Name) {
@@ -321,7 +337,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
 
         /**
          * Get the query object. Where a name is not provided, the default query is returned.
-         * @param Query name
+         * @param Name Query name
          * @return The query object or undefined if not found.
          */
         svc.getQuery = function(Name) {
@@ -333,10 +349,10 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         };
 
         /**
-         * Get the current list of search results.
+         * Get the query response.
          * @param Name Query name
          */
-        svc.getQueryResults = function (Name) {
+        svc.getResponse = function (Name) {
             if (Name) {
                 return svc.queries[Name].response;
             } else {
@@ -359,7 +375,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          * URL when the controller initializes then use that as the initial query,
          * otherwise use the default.
          */
-        svc.init = function () {
+        svc.init = function (CONSTANTS, $http, $rootScope) {
             if (svc.hasQuery(window.location.hash, CONSTANTS.QUERY_DELIMITER)) {
                 svc.queries['default'] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
             } else {
@@ -411,10 +427,11 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         svc.setQuery = function (Query, Name) {
             if (Name) {
                 svc.queries[Name] = Query;
+                svc.updateQuery(Name);
             } else {
                 svc.queries['default'] = Query;
+                svc.updateQuery('default');
             }
-            svc.update();
         };
 
         /**
@@ -453,59 +470,19 @@ angular.module('SearchServices', []).factory('SolrSearchService',
 
         /**
          * Update the named query.
-         * @param Name
+         * @param Name Query name
          */
         svc.updateQuery = function (Name) {
             var query = svc.queries[Name];
-            // log the current query
-            console.log("GET " + query.getUrl());
-            // fetch the search results
-            $http.get(query.getUrl()).success(
-                function (data) {
-                    svc.queryMaxScore = data.response.maxScore;
-                    svc.queryNumFound = data.response.numFound;
-                    svc.queryParams = data.responseHeader.params;
-                    svc.queryStatus = data.responseHeader.status;
-                    svc.queryTime = data.responseHeader.QTime;
-                    svc.totalPages = Math.ceil(svc.queryNumFound / svc.itemsPerPage);
-                    svc.totalSets = Math.ceil(svc.totalPages / svc.pagesPerSet);
-                    // if there are search results
-                    if (data.response && data.response.docs) {
-                        // reformat data for presenation, build page navigation index
-                        // var formatted = format(data.response.docs,CONSTANTS.MAX_FIELD_LENGTH);
-                        svc.results = data.response.docs;
-                    } else {
-                        svc.pages = [];
-                        svc.queryMaxScore = 0;
-                        svc.queryNumFound = 0;
-                        svc.queryTime = 0;
-                        svc.results = [];
-                        svc.totalPages = 0;
-                        svc.totalSets = 0;
-                        svc.message = "Found 0 results for query '" + query.getUserQuery() + "'.";
-                    }
-                    // notify listeners
-                    $rootScope.$broadcast('update');
-                }).error(
-                function (data, status, headers, config) {
-                    svc.queryMaxScore = 0;
-                    svc.queryNumFound = 0;
-                    svc.queryParams = '';
-                    svc.queryStatus = status;
-                    svc.queryTime = 0;
-                    svc.results = [];
-                    svc.totalPages = 0;
-                    svc.totalSets = 0;
-                    svc.error = "Could not get search results from server. Server responded with status code " + status + ".";
-                    // notify listeners
-                    $rootScope.$broadcast('update');
-                });
-        }
+            if (query) {
+                query.update();
+            }
+        };
 
         ///////////////////////////////////////////////////////////////////////
 
         // initialize
-        svc.init();
+        svc.init(CONSTANTS, $http, $rootScope);
 
         // return the service instance
         return svc;

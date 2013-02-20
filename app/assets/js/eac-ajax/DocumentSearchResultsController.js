@@ -128,36 +128,40 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
     function updatePageIndex() {
         // the default page navigation set
         $scope.pages = [];
-        // calculate the total number of pages
-        $scope.totalPages = SolrSearchService.getQueryResults().length;
-        // determine the current page, current page set
-        var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
-        var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
-        // determine the first and last page in the set
-        var firstPageInSet = currentSet * $scope.pagesPerSet;
-        var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
-        if (lastPageInSet>=$scope.totalPages) {
-            lastPageInSet = lastPageInSet - (lastPageInSet - $scope.totalPages) - 1;
-        }
-        // link to previous set
-        if ($scope.totalSets>1 && currentSet!=0) {
-            var previousSet = (currentSet - 1) * $scope.itemsPerPage;
-            var prevPage = new Page("«",previousSet);
-            $scope.pages.push(prevPage);
-        }
-        // page links
-        for (var i=firstPageInSet;i<=lastPageInSet;i++) {
-            var page = new Page(i+1,i*$scope.itemsPerPage);
-            if (page.number==$scope.page) {
-                page.isActive = true;
+        // get query results
+        var results = SolrSearchService.getResponse($scope.queryname);
+        if (results && results.docs && results.docs.length > 0) {
+            // calculate the total number of pages
+            $scope.totalPages = results.docs.length;
+            // determine the current page, current page set
+            var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
+            var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
+            // determine the first and last page in the set
+            var firstPageInSet = currentSet * $scope.pagesPerSet;
+            var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
+            if (lastPageInSet>=$scope.totalPages) {
+                lastPageInSet = lastPageInSet - (lastPageInSet - $scope.totalPages) - 1;
             }
-            $scope.pages.push(page);
-        }
-        // link to next set
-        if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
-            var nextSet = (lastPageInSet*$scope.itemsPerPage) + $scope.itemsPerPage;
-            var nextPage = new Page("»",nextSet);
-            $scope.pages.push(nextPage);
+            // link to previous set
+            if ($scope.totalSets>1 && currentSet!=0) {
+                var previousSet = (currentSet - 1) * $scope.itemsPerPage;
+                var prevPage = new Page("«",previousSet);
+                $scope.pages.push(prevPage);
+            }
+            // page links
+            for (var i=firstPageInSet;i<=lastPageInSet;i++) {
+                var page = new Page(i+1,i*$scope.itemsPerPage);
+                if (page.number==$scope.page) {
+                    page.isActive = true;
+                }
+                $scope.pages.push(page);
+            }
+            // link to next set
+            if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
+                var nextSet = (lastPageInSet*$scope.itemsPerPage) + $scope.itemsPerPage;
+                var nextPage = new Page("»",nextSet);
+                $scope.pages.push(nextPage);
+            }
         }
     }
 
@@ -179,7 +183,7 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
         // clear current results
         $scope.documents = [];
         // get new results
-        var results = SolrSearchService.getQueryResults();
+        var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
             $scope.totalResults = results.docs.length;
             $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);

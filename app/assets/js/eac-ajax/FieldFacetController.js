@@ -24,40 +24,16 @@ function FacetResult(Value,Score) {
  * Facet field query controller.
  * @param $scope Controller scope
  * @param $http HTTP service
+ * @param SolrSearchService Solr search service
  * @param CONSTANTS Application constants
  */
-function FieldFacetController($scope, $http, CONSTANTS) {
+function FieldFacetController($scope, $http, SolrSearchService, CONSTANTS) {
     // parameters
     $scope.facets = [];         // list of current query facets
-    $scope.field = '';          // facet field name
+    $scope.field = '';          // facet field name and name of query
     $scope.isSelected = false;  // a facet from this controller is selected
     $scope.items = [];          // list of facet values for the specified field
-    $scope.maxresults = 7;      // max number of results to display
-
-    // query to get list of facet values
-    var query = new SolrQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
-    query.setOption("facet","true");
-    query.setOption("facet.mincount","1");
-    query.setOption("facet.sort","count");
-    query.setOption("q","*:*");
-    query.setOption("wt","json");
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Parse result list into a format that is easier to present.
-     * @param FacetList List of facets
-     */
-    function parse(FacetList) {
-        var items = new Array();
-        if (FacetList) {
-            for (var i=0;i<FacetList.length;i+=2) {
-                var result = new FacetResult(FacetList[i],FacetList[i+1]);
-                items.push(result);
-            }
-        }
-        return items;
-    };
+    $scope.maxItems = 7;        // max number of results to display
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -89,6 +65,19 @@ function FieldFacetController($scope, $http, CONSTANTS) {
     $scope.init = function(FieldName,FacetList) {
         $scope.field = FieldName;
         $scope.facets = FacetList;
+        // build the query
+        var query = SolrSearchService.getDefaultQuery();
+        query.setOption("facet","true");
+        query.setOption("facet.field",$scope.field);
+        query.setOption("facet.limit",$scope.maxItems);
+        query.setOption("facet.mincount","1");
+        query.setOption("facet.sort","count");
+        query.setOption("fl", "title,function");
+        query.setOption("q","*:*");
+        query.setOption("wt","json");
+        // set the query
+        SolrSearchService.setQuery(query,$scope.field);
+        // update the query
         $scope.update();
     };
 
@@ -96,19 +85,30 @@ function FieldFacetController($scope, $http, CONSTANTS) {
      * Update the list of facet values.
      */
     $scope.update = function() {
-        query.setOption("facet.field",$scope.field);
-        query.setOption("facet.limit",$scope.maxresults);
-        console.log("GET " + query.getUrl());
-        $http.get(query.getUrl())
-            .success(function(data) {
-                $scope.items = parse(data.facet_counts.facet_fields[$scope.field]);
-            })
-            .error(function(data,status,headers,config) {
-                console.log("Could not load facet results for '" + $scope.field + "'");
-            });
+        // clear current results
+        $scope.items = [];
+        // get new results
+        var results = SolrSearchService.getFacetCounts($scope.field);
+        if (results && results.facet_fields) {
+            if (results.hasOwnProperty('facet_fields')) {
+                for (var i = 0; i < results.facet_fields[$scope.field].length && i <$scope.maxItems; i+=2) {
+                    var label = results.facet_fields[$scope.field][i];
+                    var count = results.facet_fields[$scope.field][i+1];
+                    var result = new FacetResult(label,count);
+                    $scope.items.push(result);
+                }
+            }
+        }
     };
+
+    /**
+     * Handle update events from the search service.
+     */
+    $scope.$on('update', function () {
+        $scope.update();
+    });
 
 }
 
 // inject dependencies
-FieldFacetController.$inject = ['$scope','$http','CONSTANTS'];
+FieldFacetController.$inject = ['$scope','$http','SolrSearchService','CONSTANTS'];

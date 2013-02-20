@@ -56,10 +56,7 @@ Thanks:
  * Angular.js - http://www.angularjs.org
  * Bootstrap - http://twitter.github.com/bootstrap
  * Bootstrap Datepicker - http://www.eyecon.ro/bootstrap-datepicker/
- * Buckets - https://github.com/mauriciosantos/buckets
- * D3.js - http://mbostock.github.com/d3/
  * JQuery - http://www.jquery.com
- * Rickshaw - http://code.shutterstock.com/rickshaw/
 
 License
 -------
@@ -75,41 +72,41 @@ Current:
 
  > Map document search results should update to reflect the zoom level and current view position
  > When a facet constraint is added, it should impact the typeahead filter
+ > Fuzzy search support : add a "did you mean" result list on the "no results found" view to DocumentSearchResultsController
+ > How to create a "related searches: a, b, c" list of queries
+ > Autocomplete should show phrases that include the current search term, rather
+   than just showing literal matches
+
+0.5.5
+
+ > Diagram and narritive explaining workflow around crawler, visualization
+ > Update the location URL when another page is selected
+ > Stuck on updating fragment to reflect the current facet query -- facet query
+   clears hash
+ > On page load, parse the fragment portion of the location URL to determine
+   if there is a starting search query.  Execute that query.
+ > Query term highlighting in search results
+ > Add date field into the title output
 
 0.5.4
 
  > SolrSearchService passes the name of the query on update
  > Other controllers listen for changes on their target named query, or 'default' if none is set
-
- > Refactor documentSearchController into separate search and result listing controllers
- > Diagram and narritive explaining workflow around crawler, visualization
- > Update the location URL when another page is selected
- > Fix the search history controller so that listings point to pages, not query
-   data
- > How to create a "related searches: a, b, c" list of queries
- > Query term highlighting in search results
- > Autocomplete should show phrases that include the current search term, rather
-   than just showing literal matches
- > Stuck on updating fragment to reflect the current facet query -- facet query
-   clears hash
- > Add a "did you mean" result list on the "no results found" view
- > On page load, parse the fragment portion of the location URL to determine
-   if there is a starting search query.  Execute that query.
- > Update EAC to Solr transform: Added keywords field to support autocomplete
-   search
  > Created a location facet controller
  > Controller unit tests
- > Add date field into the title output
  > Query index for a list of all entities by location
- > Infowindow should close when clicking close button
+ > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
+ > One map info window should be open at a time
 
 0.5.3
 
- > Fixed facet based filtering on document search
+ > Listen for updates on specific data sets from the SolrSearchService
+ * Updated FieldFacetController to work with SolrSearchService
 
 0.5.2
 
  * Named and default queries in SolrSearchService
+ * Marker info window closes when clicking its close button
 
 0.5.1
 
@@ -123,7 +120,8 @@ Current:
  * SearchBoxController now updates search query in SolrSearchService
  * Google API key removed from script loading call
  * Reorganized application controllers to use Solr search service
- * Resized DocumentSearchResultsController to use SolrSearchService
+ * Updated DocumentSearchResultsController to use SolrSearchService
+ * Replaced DocumentSearchController with DocumentSearchResultsController for text based display of search results
  * Created SolrSearchService
  * Map starts at specified coordinates, or Australia if not specified
  * Added mapping default arguments to application constants

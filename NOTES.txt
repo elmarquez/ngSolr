@@ -5,9 +5,17 @@ DEVELOPMENT NOTES
 Interface Design
 
  * Collapsible sidebar a la sphinx
+ * http://turbogears.org/2.0/docs/gettingstarted.html#getting-started
 
 -------------------------------------------------------------------------------
 Mapping
+
+ * How to activate a particular marker from another panel
+    * MapMarkerService maintains a list of the current markers and info windows
+    * Another panel can subscribe to that service
+    * MapMarkerService keeps a map of ID to marker
+    * Open info window and center in view when selected by Id
+
 
 Marker Clustering
 
