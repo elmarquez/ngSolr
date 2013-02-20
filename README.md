@@ -73,46 +73,43 @@ Current:
 
 0.6.0
 
- ? Various controllers need to be refactored and coordinated into a clear collection
- ? Map document search results should update to reflect the zoom level and current view position
- ? When a facet constraint is added, it should impact the typeahead filter
+ > Map document search results should update to reflect the zoom level and current view position
+ > When a facet constraint is added, it should impact the typeahead filter
 
 0.5.4
 
- ? SolrSearchService provides both a 'default' and named queries
- ? SolrSearchService passes the name of the query on update
- ? Other controllers listen for changes on their target named query, or 'default' if none is set
+ > SolrSearchService passes the name of the query on update
+ > Other controllers listen for changes on their target named query, or 'default' if none is set
 
- x Refactor documentSearchController into separate search and result listing controllers
- x Diagram and narritive explaining workflow around crawler, visualization
- x Update the location URL when another page is selected
- x Fix the search history controller so that listings point to pages, not query
+ > Refactor documentSearchController into separate search and result listing controllers
+ > Diagram and narritive explaining workflow around crawler, visualization
+ > Update the location URL when another page is selected
+ > Fix the search history controller so that listings point to pages, not query
    data
- x How to create a "related searches: a, b, c" list of queries
- x Query term highlighting in search results
- x Autocomplete should show phrases that include the current search term, rather
+ > How to create a "related searches: a, b, c" list of queries
+ > Query term highlighting in search results
+ > Autocomplete should show phrases that include the current search term, rather
    than just showing literal matches
- ? Stuck on updating fragment to reflect the current facet query -- facet query
+ > Stuck on updating fragment to reflect the current facet query -- facet query
    clears hash
- x Add a "did you mean" result list on the "no results found" view
- x On page load, parse the fragment portion of the location URL to determine
+ > Add a "did you mean" result list on the "no results found" view
+ > On page load, parse the fragment portion of the location URL to determine
    if there is a starting search query.  Execute that query.
- x Update EAC to Solr transform: Added keywords field to support autocomplete
+ > Update EAC to Solr transform: Added keywords field to support autocomplete
    search
- x Created a location facet controller
- x Controller unit tests
- x Add date field into the title output
- x Query index for a list of all entities by location
- x Infowindow should close when clicking close button
+ > Created a location facet controller
+ > Controller unit tests
+ > Add date field into the title output
+ > Query index for a list of all entities by location
+ > Infowindow should close when clicking close button
 
 0.5.3
 
- >> Fixed facet based filtering on document search
+ > Fixed facet based filtering on document search
 
 0.5.2
 
- ? SolrQuery now implements all functionality required for managing a single query
- ? Created named queries in Solr Search Service
+ * Named and default queries in SolrSearchService
 
 0.5.1
 
