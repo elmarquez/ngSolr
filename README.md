@@ -40,11 +40,11 @@ Credits
 EAC-AJAX is a project of the eScholarship Research Center at the University of
 Melbourne. For more information about the project, please contact us at:
 
-  eScholarship Research Center
-  University of Melbourne
-  Parkville, Victoria
-  Australia
-  www.esrc.unimelb.edu.au
+  > eScholarship Research Center
+  > University of Melbourne
+  > Parkville, Victoria
+  > Australia
+  > www.esrc.unimelb.edu.au
 
 Authors:
 
@@ -105,6 +105,9 @@ Current:
 
 0.5.3
 
+ * Removed Angular partials
+ * Initial implementation of DateRangeController, displays min/max years in the whole data set
+ * Removed RangeFacetController
  * Updated FacetSelectionController to display and remove facets from a named query in the SolrSearchService
  * Updated FieldFacetController to get results from SolrSearchService, add facet constraint to named query
 
