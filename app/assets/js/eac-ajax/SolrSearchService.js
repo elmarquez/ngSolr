@@ -125,18 +125,6 @@ function SolrQuery(Url,Core,$http,$rootScope) {
     };
 
     /**
-     * Get option value.
-     * @param Name Option name
-     * @return undefined value or undefined if not found.
-     */
-    self.getOption = function(Name) {
-        if (self.options[Name]) {
-            return self.options[Name];
-        }
-        return undefined;
-    };
-
-    /**
      * Get the hash portion of the query URL.
      */
     self.getHash = function() {
@@ -152,6 +140,18 @@ function SolrQuery(Url,Core,$http,$rootScope) {
         }
         // return results
         return query;
+    };
+
+    /**
+     * Get option value.
+     * @param Name Option name
+     * @return undefined value or undefined if not found.
+     */
+    self.getOption = function(Name) {
+        if (self.options[Name]) {
+            return self.options[Name];
+        }
+        return undefined;
     };
 
     /**

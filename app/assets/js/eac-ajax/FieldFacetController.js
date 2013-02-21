@@ -31,6 +31,7 @@ function FacetResult(Value,Score) {
  * @param CONSTANTS Application constants
  */
 function FieldFacetController($scope, $http, SolrSearchService, CONSTANTS) {
+
     // parameters
     $scope.facets = [];         // list of current query facets
     $scope.field = '';          // facet field name and name of query
@@ -43,7 +44,6 @@ function FieldFacetController($scope, $http, SolrSearchService, CONSTANTS) {
     /**
      * Add the selected facet to the facet constraint list.
      * @param Index Index of user selected facet. This facet will be added to the search list.
-     * @see https://github.com/angular/angular.js/issues/1179
      */
     $scope.add = function($event,Index) {
         // create a new facet constraint

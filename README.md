@@ -76,6 +76,7 @@ Current:
  > How to create a "related searches: a, b, c" list of queries
  > Autocomplete should show phrases that include the current search term, rather
    than just showing literal matches
+ > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
 
 0.5.5
 
@@ -95,13 +96,16 @@ Current:
  > Created a location facet controller
  > Controller unit tests
  > Query index for a list of all entities by location
+ > Listen for updates on specific data sets from the SolrSearchService
+
+0.5.4
+
  > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
  > One map info window should be open at a time
 
 0.5.3
 
- > Listen for updates on specific data sets from the SolrSearchService
- > Updated FacetSelectionController to work with SolrSearchService
+ * Updated FacetSelectionController to display and remove facets from a named query in the SolrSearchService
  * Updated FieldFacetController to get results from SolrSearchService, add facet constraint to named query
 
 0.5.2

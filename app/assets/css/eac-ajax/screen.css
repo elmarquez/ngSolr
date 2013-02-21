@@ -93,6 +93,9 @@ body {
     padding-left: 20px;
     padding-right: 20px;
 }
+label {
+    font-size: small;
+}
 
 /*--------------------------------------------------------*/
 /* Search Results Graphics                                */
@@ -104,28 +107,27 @@ body {
 .document-search-results-pager {
     padding-top: 20px;
 }
-
 .reading-column {
-  max-width: 512px;
+    max-width: 512px;
 }
 .document {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .document .title {
-  display: table;
-  font-size: medium;
-  font-weight: bold;
-  text-decoration: underline;
+    display: table;
+    font-size: medium;
+    font-weight: bold;
+    text-decoration: underline;
 }
 .document .facets {
-  color: #aaa;
-  display: none;
-  font-size: small;
+    color: #aaa;
+    display: none;
+    font-size: small;
 }
 .document .existdates {
-  color: #666;
-  font-size: small;
-  font-style: normal;
+    color: #666;
+    font-size: small;
+    font-style: normal;
 }
 .document .existdates:before {
   /* content: "Exist dates: "; */
@@ -133,7 +135,7 @@ body {
 .document .location {
 }
 .document .more {
-  font-size: small;
+    font-size: small;
 }
 .document .source {
     color: green;
@@ -162,7 +164,6 @@ body {
     padding: 10px 20px 10px 0;
     padding-left: 320px;
 }
-
 .infowindow {
     max-width: 300px;
 }
@@ -171,10 +172,8 @@ body {
     font-weight: bold;
 }
 .infowindow .address {
-
 }
 .infowindow .type {
-
 }
 .infowindow .summary {
 
@@ -224,6 +223,9 @@ body {
     font-weight: bold;
 }
 .facet-panel .value {}
+.year-input {
+    width: auto;
+}
 
 /*--------------------------------------------------------*/
 /* Sidebar Panel                                          */

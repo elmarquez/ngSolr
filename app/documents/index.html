@@ -35,7 +35,7 @@
         <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchResultsController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/FacetSelectionController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/RangeFacetController.js"></script>
+        <script type="text/javascript" src="../assets/js/eac-ajax/DateFacetController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
         <script type="text/javascript" src="../assets/js/eac-ajax/SearchHistoryController.js"></script>
 
@@ -145,23 +145,21 @@
                         <!-- /location facet controller -->
 
                         <!-- date range facet controller -->
-                        <ul class="facet-panel" ng-controller="RangeFacetController" ng-cloak>
+                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
-                                <div class="input-append" id="fromDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
-                                    <input size="10" type="text">
-                                    <span class="add-on"><i class="icon-th"></i></span>
+                                <div>
+                                    <label for="fromDate">From</label>
+                                    <input id="fromDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                    <label for="toDate">To</label>
+                                    <input id="toDate" class="year-input" type="text" ng-model="endDate" size="4" />
                                 </div>
-                                <div class="input-append" id="toDate" data-date-format="yyyy-mm-dd" data-date="2012-10-20">
-                                    <input size="10" type="text">
-                                    <span class="add-on"><i class="icon-th"></i></span>
-                                </div>
-                            </li>
+                            <li>
                         </ul>
                         <!-- /date range facet controller -->
 
                         <!-- search history panel -->
-                        <ul class="facet-panel" ng-controller="SearchHistoryController" ng-init="watch($parent,'previousQuery')">
+                        <ul class="facet-panel" ng-controller="SearchHistoryController">
                             <li><b>Search History</b></li>
                             <li>
                                 <ul class="unstyled">
