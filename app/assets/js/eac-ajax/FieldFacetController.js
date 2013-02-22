@@ -79,6 +79,7 @@ function FieldFacetController($scope, $http, SolrSearchService, CONSTANTS) {
         query.setOption("facet.sort","count");
         query.setOption("fl", "title,function");
         query.setOption("q","*:*");
+        query.setOption("rows","0");
         query.setOption("wt","json");
         // set the query
         SolrSearchService.setQuery(query,$scope.field);

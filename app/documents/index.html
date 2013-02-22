@@ -148,13 +148,28 @@
                         <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
-                                <div>
+                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
+                                    <table>
+                                        <tr>
+                                            <td style="font-size:small">From</td>
+                                            <td style="font-size:small">To</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-right: 10px;">
+                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                            </td>
+                                            <td>
+                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <button>Submit</button>
+                                    <!--
                                     <label for="fromDate">From</label>
-                                    <input id="fromDate" class="year-input" type="text" ng-model="startDate" size="4" />
                                     <label for="toDate">To</label>
-                                    <input id="toDate" class="year-input" type="text" ng-model="endDate" size="4" />
-                                </div>
-                            <li>
+                                    -->
+                                </form>
+                            </li>
                         </ul>
                         <!-- /date range facet controller -->
 
@@ -236,15 +251,11 @@
         <footer id="footer">
             <div class="container-fluid">
                 <div class="row-fluid">
-                    <div class="span2 column-240">&nbsp;</div>
-                    <div class="span5">
-                        <div class="column-512">
-                            EAC-CPF faceted search interface to Apache Solr.
-                            A project of the
-                            <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
-                        </div>
+                    <div>
+                        EAC-CPF faceted search interface to Apache Solr.
+                        A project of the
+                        <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
                     </div>
-                    <div class="span5">&nbsp;</div>
                 </div>
             </div>
         </footer>

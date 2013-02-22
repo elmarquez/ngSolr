@@ -17,7 +17,8 @@
  */
 function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
     // parameters
-    $scope.markers = [];
+    $scope.clusterResults = true;   //
+    $scope.markers = [];            // list of markers
     $scope.settings = {
         center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
@@ -56,11 +57,8 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
 
     /**
      * Update the controller state.
-     * @param newValue
-     * @param oldValue
-     * @param scope
      */
-    $scope.update = function (newValue, oldValue, scope) {
+    $scope.update = function () {
         // clear current markers
         $scope.markerClusterer.clearMarkers();
         $scope.markers = [];
@@ -89,10 +87,16 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
         }
         // add markers to clusterer
         $scope.markerClusterer.addMarkers($scope.markers);
-        // zoom and center the map view to fit search results
-        $scope.map.fitBounds(bounds);
-        //setZoom($scope.getBoundsZoomLevel(bounds));
-        //$scope.map.setCenter(bounds.getCenter());
+        // if the force center on start property is set, recenter the view
+        if (CONSTANTS.hasOwnProperty('MAP_FORCE_START_LOCATION') &&
+            CONSTANTS.MAP_FORCE_START_LOCATION === true) {
+            var lat = CONSTANTS.MAP_START_LATITUDE;
+            var lng = CONSTANTS.MAP_START_LONGITUDE;
+            var point = new google.maps.LatLng(lat,lng);
+            $scope.map.setCenter(point, 8);
+        } else {
+            $scope.map.fitBounds(bounds);
+        }
         // if there is an information message
         if ($scope.message && $scope.message != '') {
             console.log("Information message");

@@ -8,7 +8,8 @@
 /* Service                                                                   */
 
 /**
- * Creates and configures standard map icons for a Google Map.
+ * Creates and configures standard map icons for a Google Map. Enables other
+ * controllers to open, close, center the screen on selected markers.
  * @param CONSTANTS Application constants
  */
 angular.module('MapServices', []).factory('MapMarkerService', ['CONSTANTS', function (CONSTANTS) {

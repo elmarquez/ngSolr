@@ -88,6 +88,7 @@ function SolrFacet(Field,Value) {
  * @param Core Name of Solr core
  * @param $http HTTP service
  * @param $rootScope Root scope
+ * @todo treat this object as a data element only, get rid of scopes ... move update procedure to the service!!! service puts result set?
  */
 function SolrQuery(Url,Core,$http,$rootScope) {
     var self = this;
@@ -260,11 +261,14 @@ function SolrQuery(Url,Core,$http,$rootScope) {
 /**
  * Executes a document search against an Apache Solr/Lucence search index.
  * Provides shared search configuration for multiple controllers in the form
- * of named queries.
+ * of named queries, and a subscriber service to listen for changes on the
+ * named query.
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
  * @param CONSTANTS Application constants
+ * @todo implement a pubsub service - listeners should listen on SolrSearchService.[name of the query]
+ * @todo move all update operations into the service, and keep other objects as data only
  */
 angular.module('SearchServices', []).factory('SolrSearchService',
     ['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
@@ -518,6 +522,36 @@ angular.module('SearchServices', []).factory('SolrSearchService',
                 query.update();
             }
         };
+
+        /*
+        svc.updateQuery = function(Name) {
+            // reset
+            svc.error = undefined;
+            svc.message = undefined;
+            // log the current query
+            var query = self.getUrl();
+            console.log("GET " + query);
+            // fetch the search results
+            $http.get(query).
+                success(function (data) {
+                    self.highlighting = data.highlighting;
+                    if (data.hasOwnProperty('facet_counts')) {
+                        self.facet_counts = data.facet_counts;
+                    }
+                    self.response = data.response;
+                    self.responseHeader = data.responseHeader;
+                    $rootScope.$broadcast('update');
+                }).error(function (data, status, headers, config) {
+                    self.error = "Could not get search results from server. Server responded with status code " + status + ".";
+                    self.response['numFound'] = 0;
+                    self.response['start'] = 0;
+                    self.response['docs'] = [];
+                    $rootScope.$broadcast('update');
+                });
+        };
+        */
+
+
 
         ///////////////////////////////////////////////////////////////////////
 
