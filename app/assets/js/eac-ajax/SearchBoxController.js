@@ -18,6 +18,7 @@
  */
 function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
 
+    $scope.target = "defaultQuery";
     $scope.userquery = "";
 
     // private
@@ -35,6 +36,15 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
             return s1.slice(0, s2.length) == s2;
         }
         return false;
+    };
+
+    /**
+     * Trim starting and ending spaces from the string.
+     * @param Val
+     * @returns String
+     */
+    var trim = function(Val) {
+        return Val.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -88,7 +98,12 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
      * Handle submit event.
      */
     $scope.submit = function() {
-        SolrSearchService.setQuery($scope.userquery);
+        var trimmed = trim($scope.userquery);
+        if (trimmed === '') {
+            $scope.userquery = "*:*";
+        }
+        SolrSearchService.setUserQuery($scope.userquery);
+        SolrSearchService.updateQuery($scope.target);
     }
 
 };

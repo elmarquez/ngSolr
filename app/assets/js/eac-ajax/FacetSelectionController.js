@@ -10,8 +10,8 @@
  */
 function FacetSelectionController($scope, SolrSearchService) {
 	// fields
-    $scope.facets = [];         // list of facets
-    $scope.target = 'default';  // target query name
+    $scope.facets = [];              // list of facets
+    $scope.target = 'defaultQuery';  // target query name
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -24,8 +24,8 @@ function FacetSelectionController($scope, SolrSearchService) {
         var query = SolrSearchService.getQuery($scope.target);
         if (query && facet) {
             query.removeFacet(facet);
+            SolrSearchService.updateQuery($scope.target);
         }
-        $scope.update();
     };
 
     /**
@@ -44,7 +44,7 @@ function FacetSelectionController($scope, SolrSearchService) {
     /**
      * Handle update events from the search service.
      */
-    $scope.$on('update', function () {
+    $scope.$on($scope.target, function () {
         $scope.update();
     });
 

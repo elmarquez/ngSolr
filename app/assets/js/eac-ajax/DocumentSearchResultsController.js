@@ -15,16 +15,16 @@
  * @param Abstract
  */
 function Document(Title, Uri, Location, Abstract) {
-    var setifdefined = function(Val) {
+    var setIfDefined = function(Val) {
         if (Val) {
             return Val;
         }
         return '';
     };
-    this.title = setifdefined(Title);
-    this.uri = setifdefined(Uri);
-    this.location = setifdefined(Location);
-    this.abstract = setifdefined(Abstract);
+    this.title = setIfDefined(Title);
+    this.uri = setIfDefined(Uri);
+    this.location = setIfDefined(Location);
+    this.abstract = setIfDefined(Abstract);
 }
 
 /**
@@ -46,23 +46,22 @@ function Page(Name,Num) {
  * Displays text based search results and pager.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service.
- * @param CONSTANTS Application constants
  */
-function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
+function DocumentSearchResultsController($scope, SolrSearchService) {
 
     // parameters
-    $scope.documents = [];          // document search results
-    $scope.itemsPerPage = 10;       // the number of search results per page
-    $scope.maxFieldLength = 256;    // maximum length of string for presentation
-    $scope.page = 0;                // the current search result page
-    $scope.pages = [];              // list of pages in the current navigation set
-    $scope.pagesPerSet = 10;        // the number of pages in a navigation set
-    $scope.queryname = "default";   // the query name
-    $scope.startPage = 0;           // zero based start page index
-    $scope.totalPages = 1;          // count of the total number of result pages
-    $scope.totalResults = 0;        // count of the total number of search results
-    $scope.totalSets = 1;           // count of the number of search result sets
-    $scope.view = 'list';           // presentation type
+    $scope.documents = [];              // document search results
+    $scope.itemsPerPage = 10;           // the number of search results per page
+    $scope.maxFieldLength = 256;        // maximum length of string for presentation
+    $scope.page = 0;                    // the current search result page
+    $scope.pages = [];                  // list of pages in the current navigation set
+    $scope.pagesPerSet = 10;            // the number of pages in a navigation set
+    $scope.queryname = "defaultQuery";  // the query name
+    $scope.startPage = 0;               // zero based start page index
+    $scope.totalPages = 1;              // count of the total number of result pages
+    $scope.totalResults = 0;            // count of the total number of search results
+    $scope.totalSets = 1;               // count of the number of search result sets
+    $scope.view = 'list';               // presentation type
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -168,12 +167,25 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Initialize the controller.
+     */
+    $scope.init = function() {
+        // handle update events from the search service
+        $scope.$on($scope.queryname, function () {
+            $scope.update();
+        });
+        // update the search results
+        $scope.update();
+    };
+
+    /**
      * Set the current page.
      * @param PageNumber
      */
     $scope.setPage = function(PageNumber) {
         $scope.page = PageNumber;
-        SolrSearchService.getPage(PageNumber);
+        SolrSearchService.setPage(PageNumber,$scope.queryname);
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -210,14 +222,7 @@ function DocumentSearchResultsController($scope,SolrSearchService,CONSTANTS) {
         updatePageIndex();
     };
 
-    /**
-     * Handle update events from the search service.
-     */
-    $scope.$on('update', function () {
-        $scope.update();
-    });
-
 }
 
 // inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','SolrSearchService','CONSTANTS'];
+DocumentSearchResultsController.$inject = ['$scope','SolrSearchService'];

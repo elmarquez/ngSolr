@@ -52,7 +52,7 @@ app.constant("CONSTANTS", {
     GOOGLE_MAPS_API : 'AIzaSyAKoxr2KxRN2tSE7skC8_bqXQgmstFlmwU',
     GOOGLE_MAPS_SENSOR : 'false',
     ICONS: null,
-    ITEMS_PER_PAGE : 3000,
+    ITEMS_PER_PAGE : 10,
     MAP_FORCE_START_LOCATION: true,
     MAP_LEFT_PANEL_COLLAPSED: false,
     MAP_LEFT_PANEL_WIDTH: "320px",

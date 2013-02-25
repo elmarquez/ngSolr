@@ -86,11 +86,8 @@ function SolrFacet(Field,Value) {
  * A Solr search query.
  * @param Url URL to Solr host
  * @param Core Name of Solr core
- * @param $http HTTP service
- * @param $rootScope Root scope
- * @todo treat this object as a data element only, get rid of scopes ... move update procedure to the service!!! service puts result set?
  */
-function SolrQuery(Url,Core,$http,$rootScope) {
+function SolrQuery(Url,Core) {
     var self = this;
 
     // parameters
@@ -122,7 +119,6 @@ function SolrQuery(Url,Core,$http,$rootScope) {
             count++;
         }
         if (!found) self.facets.push(Facet);
-        self.update();
     };
 
     /**
@@ -185,7 +181,6 @@ function SolrQuery(Url,Core,$http,$rootScope) {
             index++;
         }
         if (found) self.facets.splice(index-1,1);
-        self.update();
     };
 
     /**
@@ -223,35 +218,6 @@ function SolrQuery(Url,Core,$http,$rootScope) {
         }
     };
 
-    /**
-     * Update the search results.
-     */
-    self.update = function() {
-        // reset
-        self.error = undefined;
-        self.message = undefined;
-        // log the current query
-        var query = self.getUrl();
-        console.log("GET " + query);
-        // fetch the search results
-        $http.get(query).
-            success(function (data) {
-                self.highlighting = data.highlighting;
-                if (data.hasOwnProperty('facet_counts')) {
-                    self.facet_counts = data.facet_counts;
-                }
-                self.response = data.response;
-                self.responseHeader = data.responseHeader;
-                $rootScope.$broadcast('update');
-            }).error(function (data, status, headers, config) {
-                self.error = "Could not get search results from server. Server responded with status code " + status + ".";
-                self.response['numFound'] = 0;
-                self.response['start'] = 0;
-                self.response['docs'] = [];
-                $rootScope.$broadcast('update');
-            });
-    };
-
 } // end SolrQuery
 
 
@@ -274,6 +240,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
     ['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
 
         // parameters
+        var defaultQuery = "defaultQuery";  // the name of the default query
         var svc = {};                       // the service instance
         svc.error = undefined;              // error message
         svc.message = undefined;            // info or warning message to user
@@ -328,11 +295,9 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         /**
          * Build a default query object.
          * @param CONSTANTS Application constants
-         * @param $http HTTP service
-         * #param $rootScope Root scope
          */
         svc.getDefaultQuery = function () {
-            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE, $http, $rootScope);
+            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
             query.setOption("q", CONSTANTS.DEFAULT_QUERY);
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
@@ -348,7 +313,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].facet_counts;
             } else {
-                return svc.queries['default'].facet_counts;
+                return svc.queries[defaultQuery].facet_counts;
             }
         };
 
@@ -361,22 +326,8 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].facets;
             } else {
-                return svc.queries['default'].facets;
+                return svc.queries[defaultQuery].facets;
             }
-        };
-
-        /**
-         * Set the starting Update the result set for the named query to get the items from the specified page number.
-         * @param ItemNumber The index of the starting document.
-         * @param Name Query name
-         */
-        svc.getPage = function (ItemNumber,Name) {
-            if (Name) {
-                svc.queries[Name].setOption("start",ItemNumber);
-            } else {
-                svc.queries['default'].setOption("start",ItemNumber);
-            }
-            svc.update();
         };
 
         /**
@@ -388,7 +339,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name];
             } else {
-                return svc.queries['default'];
+                return svc.queries[defaultQuery];
             }
         };
 
@@ -400,7 +351,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].response;
             } else {
-                return svc.queries['default'].response;
+                return svc.queries[defaultQuery].response;
             }
         };
 
@@ -421,9 +372,9 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          */
         svc.init = function (CONSTANTS, $http, $rootScope) {
             if (svc.hasQuery(window.location.hash, CONSTANTS.QUERY_DELIMITER)) {
-                svc.queries['default'] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
+                svc.queries[defaultQuery] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
             } else {
-                svc.queries['default'] = svc.getDefaultQuery(CONSTANTS, $http, $rootScope);
+                svc.queries[defaultQuery] = svc.getDefaultQuery(CONSTANTS, $http, $rootScope);
             }
             svc.update();
         };
@@ -464,6 +415,19 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         };
 
         /**
+         * Set the starting document in the named query.
+         * @param Start The index of the starting document.
+         * @param Query Query name
+         */
+        svc.setPage = function (Start,Query) {
+            if (Query) {
+                svc.queries[Query].setOption("start",Start);
+            } else {
+                svc.queries['defaulQuery'].setOption("start",Start);
+            }
+        };
+
+        /**
          * Set the named query. If a name is not specified, the default query is set.
          * @param Query Query object
          * @param Name Query name
@@ -471,10 +435,8 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         svc.setQuery = function (Query, Name) {
             if (Name) {
                 svc.queries[Name] = Query;
-                svc.updateQuery(Name);
             } else {
-                svc.queries['default'] = Query;
-                svc.updateQuery('default');
+                svc.queries[defaultQuery] = Query;
             }
         };
 
@@ -489,12 +451,9 @@ angular.module('SearchServices', []).factory('SolrSearchService',
                 query = svc.queries[Name];
                 query.setOption("q",UserQuery);
             } else {
-                query = svc.queries['default'];
-                query.setOption("q",UserQuery);
-                query = svc.query;
+                query = svc.queries[defaultQuery];
                 query.setOption("q",UserQuery);
             }
-            svc.update();
         };
 
         /**
@@ -507,7 +466,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             // update queries
             for (var key in svc.queries) {
                 if (svc.queries.hasOwnProperty(key)) {
-                    svc.queries[key].update();
+                    svc.updateQuery(key);
                 }
             }
         };
@@ -517,41 +476,38 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          * @param Name Query name
          */
         svc.updateQuery = function (Name) {
+            // reset messages
+            svc.error = null;
+            svc.message = null;
+            // get the named query
             var query = svc.queries[Name];
             if (query) {
-                query.update();
+                // fetch the search results
+                var url = query.getUrl();
+                console.log("GET " + url);
+                $http.get(url).
+                    success(function (data) {
+                        query.highlighting = data.highlighting;
+                        if (data.hasOwnProperty('facet_counts')) {
+                            query.facet_counts = data.facet_counts;
+                        }
+                        query.response = data.response;
+                        query.responseHeader = data.responseHeader;
+                        $rootScope.$broadcast(Name);
+                    }).error(function (data, status, headers, config) {
+                        svc.error = "Could not get search results from server. Server responded with status code " + status + ".";
+                        query.response['numFound'] = 0;
+                        query.response['start'] = 0;
+                        query.response['docs'] = [];
+                        query.facet_counts = [];
+                        query.highlighting = {};
+                        query.responseHeader = {};
+                        $rootScope.$broadcast(Name);
+                    });
+
+
             }
         };
-
-        /*
-        svc.updateQuery = function(Name) {
-            // reset
-            svc.error = undefined;
-            svc.message = undefined;
-            // log the current query
-            var query = self.getUrl();
-            console.log("GET " + query);
-            // fetch the search results
-            $http.get(query).
-                success(function (data) {
-                    self.highlighting = data.highlighting;
-                    if (data.hasOwnProperty('facet_counts')) {
-                        self.facet_counts = data.facet_counts;
-                    }
-                    self.response = data.response;
-                    self.responseHeader = data.responseHeader;
-                    $rootScope.$broadcast('update');
-                }).error(function (data, status, headers, config) {
-                    self.error = "Could not get search results from server. Server responded with status code " + status + ".";
-                    self.response['numFound'] = 0;
-                    self.response['start'] = 0;
-                    self.response['docs'] = [];
-                    $rootScope.$broadcast('update');
-                });
-        };
-        */
-
-
 
         ///////////////////////////////////////////////////////////////////////
 

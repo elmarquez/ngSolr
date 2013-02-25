@@ -17,8 +17,9 @@
  */
 function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
     // parameters
-    $scope.clusterResults = true;   //
-    $scope.markers = [];            // list of markers
+    $scope.clusterResults = true;       // use cluster manager
+    $scope.markers = [];                // list of markers
+    $scope.queryname = "defaultQuery";  // name of the query
     $scope.settings = {
         center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
@@ -39,9 +40,8 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
             style:google.maps.ZoomControlStyle.LARGE
         }
     };
-    $scope.showMessages = true;
-    $scope.showErrors = true;
-
+    $scope.showMessages = true;     // show info messages window
+    $scope.showErrors = true;       // show error messages window
     $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
 
     ///////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,14 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
      */
     $scope.init = function () {
         // update the search query to include geolocation properties
-        // update the display for the first time
-        $scope.update();
+        var query = SolrSearchService.getQuery();
+        query.setOption("rows","3000");
+         // handle update events from the search service.
+        $scope.$on($scope.queryname, function () {
+            $scope.update();
+        });
+        // update the result set and the display
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -65,7 +71,7 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
         // create marker bounds
         var bounds = new google.maps.LatLngBounds();
         // if there are results to display
-        var results = SolrSearchService.getResponse();
+        var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
             // create new map markers
             for (var i = 0; i < results.docs.length; i++) {
@@ -137,13 +143,6 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
             width: 90
         }]};
     $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers, clusterOptions);
-
-    /**
-     * Handle update events from the search service.
-     */
-    $scope.$on('update', function () {
-        $scope.update();
-    });
 
 } // MapController
 

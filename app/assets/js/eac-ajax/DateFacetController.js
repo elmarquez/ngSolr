@@ -28,7 +28,7 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
     $scope.startDate = 0;                       // start date
     $scope.startDateField = 'startDate';        // facet field name
     $scope.startDateQueryName = 'startDate';    // start date query name
-    $scope.target = 'default';                  // named query to filter
+    $scope.target = 'defaultQuery';                  // named query to filter
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -77,6 +77,7 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
         startDateQuery.setOption("sort",$scope.startDateField + "%20asc");
         startDateQuery.setOption("wt","json");
         SolrSearchService.setQuery(startDateQuery,$scope.startDateQueryName);
+        SolrSearchService.updateQuery($scope.startDateQueryName);
         // build a query that will fetch the latest date in the list
         var endDateQuery = SolrSearchService.getDefaultQuery();
         endDateQuery.setOption("fl", $scope.endDateField);
@@ -85,6 +86,7 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
         endDateQuery.setOption("sort",$scope.endDateField + "%20desc");
         endDateQuery.setOption("wt","json");
         SolrSearchService.setQuery(endDateQuery,$scope.endDateQueryName);
+        SolrSearchService.updateQuery($scope.endDateQueryName);
         // update the search results
         $scope.update();
     };
@@ -154,7 +156,7 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
     /**
      * Handle update events from the search service.
      */
-    $scope.$on('update', function () {
+    $scope.$on($scope.target, function () {
         $scope.update();
     });
 
