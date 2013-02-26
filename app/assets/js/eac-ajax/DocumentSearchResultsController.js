@@ -66,16 +66,45 @@ function DocumentSearchResultsController($scope, SolrSearchService) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Return property value if present in the object. Otherwise, return an empty string.
-     * @param Obj
-     * @param Prop
-     * @return {*}
+     * Convert month index to common name.
+     * @param Index
      */
-    function getIfPresent(Obj,Prop) {
-        if (Obj && Prop in Obj) {
-            return Obj[Prop];
+    function convertMonthIndexToName(Index) {
+        var months = {
+            '01':"January",
+            '02':"February",
+            '03':"March",
+            '04':"April",
+            '05':"May",
+            '06':"June",
+            '07':"July",
+            '08':"August",
+            '09':"September",
+            '10':"October",
+            '11':"November",
+            '12':"December"
+        };
+        return months[Index];
+    }
+
+    /**
+     * Format date to convert it to the form MMM DD, YYYY.
+     * @param Date
+     */
+    function formatDate(DateField) {
+        if (DateField) {
+            var i = DateField.indexOf("T");
+            if (i) {
+                var d = DateField.substring(0,i);
+                var parts = d.split("-");
+                var year = parts[0];
+                var month = convertMonthIndexToName(parts[1]);
+                var day = parts[2];
+                // return month + " " + day + ", " + year;
+                return month + " " + year;
+
+            }
         }
-        return '';
     }
 
     /**
@@ -202,15 +231,12 @@ function DocumentSearchResultsController($scope, SolrSearchService) {
             $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
             // add new results
             for (var i=0;i<$scope.itemsPerPage;i++) {
-                var title = getIfPresent(results.docs[i],'title');
-                var location = getIfPresent(results.docs[i],'location');
-                var abstrct = getIfPresent(results.docs[i],'abstract');
-                var uri = getIfPresent(results.docs[i],'referrer_uri');
-                // create a new document and clean up record
-                var doc = new Document(title,uri,location,abstrct);
-                truncateField(doc,'abstract',$scope.maxFieldLength);
+                // clean up document fields
+                results.docs[i].fromDate = formatDate(results.docs[i].fromDate);
+                results.docs[i].toDate = formatDate(results.docs[i].toDate);
+                truncateField(results.docs[i],'abstract',$scope.maxFieldLength);
                 // add to result list
-                $scope.documents.push(doc);
+                $scope.documents.push(results.docs[i]);
             }
         } else {
             $scope.documents = [];

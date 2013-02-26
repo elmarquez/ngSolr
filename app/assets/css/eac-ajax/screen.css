@@ -127,7 +127,8 @@ label {
 .document .existdates {
     color: #666;
     font-size: small;
-    font-style: normal;
+    font-style: italic;
+    padding-top: 3px;
 }
 .document .existdates:before {
   /* content: "Exist dates: "; */
@@ -157,7 +158,7 @@ label {
 }
 
 /*--------------------------------------------------------*/
-/* Search Results Map                                     */
+/* Location Based Search                                  */
 
 #search-bar #location-search-bar {
     max-width: 640px;

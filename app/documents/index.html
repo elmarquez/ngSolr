@@ -209,16 +209,18 @@
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                             <article ng-repeat="doc in documents" class="document">
-                                <a ng-href="{{doc.uri}}" class="title">{{doc.title}}</a>
-                                <div class="source">{{doc.uri}}</div>
+                                <a ng-href="{{doc.referrer_uri}}" class="title">{{doc.title}}</a>
+                                <div class="source">{{doc.referrer_uri}}</div>
                                 <div class="text">{{doc.abstract}}</div>
-                                <div class="facets">
-                                    <ul class="unstyled">
-                                        <li><a href="#">Facet</a></li>
-                                    </ul>
+                                <div class="horizontal">
+                                    <span class="state" ng-show="state">State</span>
+                                    <span class="country" ng-show="country">Australia</span>
+                                    <div class="existdates">
+                                        <span>{{doc.fromDate}}</span>
+                                        <span ng-show="doc.toDate">to</span>
+                                        <span>{{doc.toDate}}</span>
+                                    </div>
                                 </div>
-                                <div class="location">{{ location }}</div>
-                                <div class="existdates">{{fromDate}} - {{toDate}}</div>
                             </article>
                         </div><!-- /search results -->
                         <div class="search-results-pager pagination" ng-hide="error">
