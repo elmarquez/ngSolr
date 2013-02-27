@@ -89,6 +89,9 @@ body {
 /*--------------------------------------------------------*/
 /* General Styles                                         */
 
+.clickable {
+  cursor: hand;
+}
 .inset {
     padding-left: 20px;
     padding-right: 20px;
@@ -113,8 +116,17 @@ label {
 .document {
     margin-bottom: 10px;
 }
+.document .country {
+    color: #666;
+    display: inline;
+    font-size: small;
+    font-style: italic;
+    padding-right: 5px;
+    padding-top: 3px;
+}
 .document .existdates {
     color: #666;
+    display: inline;
     font-size: small;
     font-style: italic;
     padding-top: 3px;
@@ -127,7 +139,12 @@ label {
     display: none;
     font-size: small;
 }
-.document .location {
+.document .region {
+    color: #666;
+    display: inline;
+    font-size: small;
+    font-style: italic;
+    padding-top: 3px;
 }
 .document .more {
     font-size: small;
@@ -236,7 +253,16 @@ label {
 .facet-panel .fieldname {
     font-weight: bold;
 }
-.facet-panel .value {}
+.facet-panel .facet-name {
+    font-size: small;
+}
+.facet-panel .facet-score {
+    color: #666;
+    font-size: small;
+}
+
+
+
 .year-input {
     width: auto;
 }

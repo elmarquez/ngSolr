@@ -17,9 +17,9 @@
 function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
 
     // parameters
-    $scope.maxItems = 5;            // the maximum number of items to display
-    $scope.queries = [];            // list of user queries in reverse order
-    $scope.queryName = 'default';   // the name of the query to watch
+    $scope.maxItems = 5;                // the maximum number of items to display
+    $scope.queries = [];                // list of user queries in reverse order
+    $scope.queryName = 'defaultQuery';  // the name of the query to watch
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
      */
     $scope.update = function() {
         // get the new query
-        var newquery = SolrSearchService.getQuery();
+        var newquery = SolrSearchService.getQuery($scope.queryName);
         // if there are existing queries
         if ($scope.queries.length > 0) {
             // if the new query is the same as the last query, ignore it
@@ -63,7 +63,7 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
     /**
      * Handle update events from the search service.
      */
-    $scope.$on('update', function() {
+    $scope.$on($scope.queryName, function() {
         $scope.update();
     });
 

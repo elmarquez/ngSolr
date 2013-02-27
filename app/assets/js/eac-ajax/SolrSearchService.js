@@ -451,9 +451,11 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name in svc.queries) {
                 query = svc.queries[Name];
                 query.setOption("q",UserQuery);
+                query.setOption("start",0);
             } else {
                 query = svc.queries[defaultQueryName];
                 query.setOption("q",UserQuery);
+                query.setOption("start",0);
             }
         };
 
