@@ -81,14 +81,13 @@ function FieldFacetController($scope, $http, SolrSearchService) {
         query.setOption("facet.limit",$scope.maxItems);
         query.setOption("facet.mincount","1");
         query.setOption("facet.sort","count");
-        //query.setOption("fl", "title,function");
         query.setOption("q","*:*");
         query.setOption("rows","0");
         query.setOption("wt","json");
         SolrSearchService.setQuery(query,$scope.queryname);
         SolrSearchService.updateQuery($scope.queryname);
-        // handle update events on the target query
-        $scope.$on($scope.target, function () {
+        // handle update events on the query
+        $scope.$on($scope.queryname, function () {
             $scope.update();
         });
         // update the query

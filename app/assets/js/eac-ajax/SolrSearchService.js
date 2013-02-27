@@ -295,6 +295,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         /**
          * Build a default query object.
          * @param CONSTANTS Application constants
+         * @todo Rename this as createDefaultQuery()
          */
         svc.getDefaultQuery = function () {
             var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
@@ -484,7 +485,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (query) {
                 // fetch the search results
                 var url = query.getUrl();
-                console.log("GET " + url);
+                console.log("GET " + Name + ": " + url);
                 $http.get(url).
                     success(function (data) {
                         query.highlighting = data.highlighting;

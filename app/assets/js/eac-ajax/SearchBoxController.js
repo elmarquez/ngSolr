@@ -19,6 +19,7 @@
  */
 function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS) {
 
+    $scope.queryname = "searchHintsQuery";
     $scope.target = "defaultQuery";
     $scope.userquery = "";
 
@@ -44,35 +45,25 @@ function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS)
             }
         }
         return items;
-    }
+    };
 
     /**
      * Initialize the controller.
-     * @todo move the query entity into the SolrSearchService
      */
     $scope.init = function() {
-        // build hint list query
-        var query = new SolrQuery(CONSTANTS.SOLR_BASE,CONSTANTS.SOLR_CORE);
+        // create a query to get the list of search hints
+        var query = SolrSearchService.getDefaultQuery();
         query.setOption("wt","json");
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
         query.setOption("facet.field",fieldname);
-        // get results once
-        console.log("GET " + query.getUrl());
-        $http.get(query.getUrl())
-            .success(function(data) {
-                // get the term list, which we expect is already 
-                // sorted and contains only unique terms
-                var result = data.facet_counts.facet_fields[fieldname];
-                // transform all results to lowercase, add to list
-                for (var i=0;i<result.length;i+=2) {
-                    var item = result[i].toLowerCase();
-                    tokens.push(item);
-                }
-            })
-            .error(function(data,status,headers,config) {
-                console.log("Could not load search hints. Server returned error code " + status + ".");
-            });
+        SolrSearchService.setQuery(query,$scope.queryname);
+        // handle update events from the search service.
+        $scope.$on($scope.queryname, function() {
+            $scope.update();
+        });
+        // update the result set and the display
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -85,7 +76,24 @@ function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS)
         }
         SolrSearchService.setUserQuery($scope.userquery);
         SolrSearchService.updateQuery($scope.target);
-    }
+    };
+
+    /**
+     * Update the controller state.
+     */
+    $scope.update = function() {
+        var results = SolrSearchService.getFacetCounts($scope.queryname);
+        if (results) {
+            // get the term list, which we expect is already
+            // sorted and contains only unique terms
+            var result = results.facet_fields[fieldname];
+            // transform all results to lowercase, add to list
+            for (var i=0;i<result.length;i+=2) {
+                var item = result[i].toLowerCase();
+                tokens.push(item);
+            }
+        }
+    };
 
 };
 

@@ -123,8 +123,8 @@
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($event,$index)">{{item.value}}</a>
-                                        ({{item.score}})
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>
@@ -137,8 +137,8 @@
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($event,$index)">{{item.value}}</a>
-                                        ({{item.score}})
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>
@@ -146,13 +146,13 @@
                         <!-- /type facet controller -->
 
                         <!-- location facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('type')" ng-cloak>
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('region')" ng-cloak>
                             <li><b>State</b></li>
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <a href="#" ng-click="add($event,$index)">{{item.value}}</a>
-                                        ({{item.score}})
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>

@@ -113,17 +113,6 @@ label {
 .document {
     margin-bottom: 10px;
 }
-.document .title {
-    display: table;
-    font-size: medium;
-    font-weight: bold;
-    text-decoration: underline;
-}
-.document .facets {
-    color: #aaa;
-    display: none;
-    font-size: small;
-}
 .document .existdates {
     color: #666;
     font-size: small;
@@ -132,6 +121,11 @@ label {
 }
 .document .existdates:before {
   /* content: "Exist dates: "; */
+}
+.document .facets {
+    color: #aaa;
+    display: none;
+    font-size: small;
 }
 .document .location {
 }
@@ -155,6 +149,17 @@ label {
 }
 .document .text em {
     background: yellow;
+}
+.document .title {
+    display: table;
+    font-size: medium;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.document .type {
+    color: #999;
+    font-size: small;
+    font-style: italic;
 }
 
 /*--------------------------------------------------------*/
