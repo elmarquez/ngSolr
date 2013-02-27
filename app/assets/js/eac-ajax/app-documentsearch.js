@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eacajax', ['Directives','Filters','SearchServices']);
+var app = angular.module('eacajax', ['Directives', 'Filters', 'SearchServices', 'Utils']);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');

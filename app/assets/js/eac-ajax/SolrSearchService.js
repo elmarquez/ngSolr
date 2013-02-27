@@ -240,7 +240,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
     ['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
 
         // parameters
-        var defaultQuery = "defaultQuery";  // the name of the default query
+        var defaultQueryName = "defaultQuery";  // the name of the default query
         var svc = {};                       // the service instance
         svc.error = undefined;              // error message
         svc.message = undefined;            // info or warning message to user
@@ -313,7 +313,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].facet_counts;
             } else {
-                return svc.queries[defaultQuery].facet_counts;
+                return svc.queries[defaultQueryName].facet_counts;
             }
         };
 
@@ -326,7 +326,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].facets;
             } else {
-                return svc.queries[defaultQuery].facets;
+                return svc.queries[defaultQueryName].facets;
             }
         };
 
@@ -339,7 +339,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name];
             } else {
-                return svc.queries[defaultQuery];
+                return svc.queries[defaultQueryName];
             }
         };
 
@@ -351,7 +351,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 return svc.queries[Name].response;
             } else {
-                return svc.queries[defaultQuery].response;
+                return svc.queries[defaultQueryName].response;
             }
         };
 
@@ -372,9 +372,9 @@ angular.module('SearchServices', []).factory('SolrSearchService',
          */
         svc.init = function (CONSTANTS, $http, $rootScope) {
             if (svc.hasQuery(window.location.hash, CONSTANTS.QUERY_DELIMITER)) {
-                svc.queries[defaultQuery] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
+                svc.queries[defaultQueryName] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
             } else {
-                svc.queries[defaultQuery] = svc.getDefaultQuery(CONSTANTS, $http, $rootScope);
+                svc.queries[defaultQueryName] = svc.getDefaultQuery(CONSTANTS, $http, $rootScope);
             }
             svc.update();
         };
@@ -423,7 +423,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Query) {
                 svc.queries[Query].setOption("start",Start);
             } else {
-                svc.queries['defaulQuery'].setOption("start",Start);
+                svc.queries[defaulQueryName].setOption("start",Start);
             }
         };
 
@@ -436,7 +436,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             if (Name) {
                 svc.queries[Name] = Query;
             } else {
-                svc.queries[defaultQuery] = Query;
+                svc.queries[defaultQueryName] = Query;
             }
         };
 
@@ -451,7 +451,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
                 query = svc.queries[Name];
                 query.setOption("q",UserQuery);
             } else {
-                query = svc.queries[defaultQuery];
+                query = svc.queries[defaultQueryName];
                 query.setOption("q",UserQuery);
             }
         };

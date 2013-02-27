@@ -13,9 +13,10 @@
  * @param $scope Controller scope
  * @param SolrSearchService Search service
  * @param MapMarkerService Map marker service
+ * @param Utils Utility functions
  * @param CONSTANTS Application constants
  */
-function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
+function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONSTANTS) {
     // parameters
     // create a marker clusterer
     var clusterOptions = {
@@ -23,7 +24,7 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
             height: 53,
             url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",
             width: 53
-        },
+            },
             {
                 height: 56,
                 url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m2.png",
@@ -43,7 +44,8 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
                 height: 90,
                 url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m5.png",
                 width: 90
-            }]};
+            }
+        ]};
     $scope.clusterResults = true;       // use cluster manager
     $scope.markers = [];                // list of markers
     $scope.queryname = "defaultQuery";  // name of the query
@@ -72,45 +74,6 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
     $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
     $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers, clusterOptions);
 
-    /**
-     * Trim whitespace from start and end of string.
-     * @param Val String to trim
-     */
-    function trim(Val) {
-        if (Val) {
-            // remove preceding white space
-            while (Val.length >= 1 && Val[0] == ' ') {
-                Val = Val.substring(1,Val.length-1);
-            }
-            // remove trailing white space
-            while (Val.length >= 1 && Val[Val.length-1] == ' ') {
-                Val = Val.substring(0,Val.length-2);
-            }
-        }
-        return Val;
-    }
-
-    /**
-     * Truncate the field to the specified length.
-     * @param Field
-     * @param Length
-     * @return {*}
-     */
-    function truncate(Field,Length) {
-        if (Field.length > Length) {
-            // remove start/end whitespace
-            Field = trim(Field);
-            // truncate the document to the specified length
-            Field = Field.substring(0,Math.min(Length,Field.length));
-            // find the last word and truncate after that
-            var i = Field.lastIndexOf(" ");
-            if (i != -1) {
-                Field = Field.substring(0,i) + " ...";
-            }
-        }
-        return Field;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -118,8 +81,8 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
      */
     $scope.init = function () {
         // update the search query to include geolocation properties
-        var query = SolrSearchService.getQuery();
-        query.setOption("rows","3000");
+        var query = SolrSearchService.getQuery($scope.queryname);
+        query.setOption("rows","3000"); // @todo need to get all records, or get all records near the starting location
          // handle update events from the search service.
         $scope.$on($scope.queryname, function () {
             $scope.update();
@@ -147,8 +110,9 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
                     // marker metadata
                     var content = "<div class='infowindow'>" +
                                   "<div class='title'><a href='" + item.referrer_uri + "'>" + item.title + "</a></div>" +
-                                  "<div class='type'>" + item.type + "</div>" +
-                                  "<div class='summary'>" + truncate(item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + "</div>" +
+                                  "<div class='existdates'>" + Utils.formatDate(item.fromDate) + " - " + Utils.formatDate(item.toDate) + "</div>" +
+                                  //"<div class='type'>" + item.type + "</div>" +
+                                  "<div class='summary'>" + Utils.truncate(item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + "</div>" +
                                   "</div>" ;
                     var lat = item.location_0_coordinate;
                     var lng = item.location_1_coordinate;
@@ -186,4 +150,4 @@ function MapController($scope, SolrSearchService, MapMarkerService, CONSTANTS) {
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','CONSTANTS'];
+MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','Utils','CONSTANTS'];

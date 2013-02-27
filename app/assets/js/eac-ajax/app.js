@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eacajax', ['Directives','Filters','MapServices','SearchServices']);
+var app = angular.module('eacajax', ['Directives','Filters','MapServices','SearchServices','Utils']);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');
@@ -45,7 +45,7 @@ app.config(['$routeProvider', function($routeProvider) {
  * @constant SOLR_VERSION Version of Solr search interface, result format
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS : 'title,abstract,type,location,location_0_coordinate,location_1_coordinate,referrer_uri',
+    DEFAULT_FIELDS : 'title,abstract,type,location,location_0_coordinate,location_1_coordinate,referrer_uri,fromDate,toDate',
     DEFAULT_QUERY : '*:*',
     FACET_DELIMITER : '&&',
     GOOGLE_ANALYTICS : false,

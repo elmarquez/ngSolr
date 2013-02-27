@@ -46,8 +46,9 @@ function Page(Name,Num) {
  * Displays text based search results and pager.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service.
+ * @param Utils Utility functions
  */
-function DocumentSearchResultsController($scope, SolrSearchService) {
+function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
 
     // parameters
     $scope.documents = [];              // document search results
@@ -64,91 +65,6 @@ function DocumentSearchResultsController($scope, SolrSearchService) {
     $scope.view = 'list';               // presentation type
 
     ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Convert month index to common name.
-     * @param Index
-     */
-    function convertMonthIndexToName(Index) {
-        var months = {
-            '01':"January",
-            '02':"February",
-            '03':"March",
-            '04':"April",
-            '05':"May",
-            '06':"June",
-            '07':"July",
-            '08':"August",
-            '09':"September",
-            '10':"October",
-            '11':"November",
-            '12':"December"
-        };
-        return months[Index];
-    }
-
-    /**
-     * Format date to convert it to the form MMM DD, YYYY.
-     * @param Date
-     */
-    function formatDate(DateField) {
-        if (DateField) {
-            var i = DateField.indexOf("T");
-            if (i) {
-                var d = DateField.substring(0,i);
-                var parts = d.split("-");
-                var year = parts[0];
-                var month = convertMonthIndexToName(parts[1]);
-                var day = parts[2];
-                // return month + " " + day + ", " + year;
-                return month + " " + year;
-
-            }
-        }
-    }
-
-    /**
-     * Trim whitespace from start and end of string.
-     * @param Val String to trim
-     */
-    function trim(Val) {
-      if (Val) {
-        // remove preceding white space
-        while (Val.length >= 1 && Val[0] == ' ') {
-          Val = Val.substring(1,Val.length-1);
-        }
-        // remove trailing white space
-        while (Val.length >= 1 && Val[Val.length-1] == ' ') {
-          Val = Val.substring(0,Val.length-2);
-        }
-      } 
-      return Val;
-    }
-
-    /**
-     * Truncate the field to the specified length.
-     * @param Document Document
-     * @param FieldName Field name to truncate
-     * @param Length Maximum field length
-     */
-    function truncateField(Document,FieldName,Length) {
-        if (Document && Document[FieldName]) {
-            if (Document[FieldName] instanceof Array) {
-                Document[FieldName] = Document[FieldName][0];
-            }
-            if (Document[FieldName].length > Length) {
-                // remove start/end whitespace
-                Document[FieldName] = trim(Document[FieldName]);
-                // truncate the document to the specified length
-                Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
-                // find the last word and truncate after that
-                var i = Document[FieldName].lastIndexOf(" ");
-                if (i != -1) {
-                    Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
-                }
-            }
-        }
-    }
 
     /**
      * Update page index for navigation of search results.
@@ -232,9 +148,9 @@ function DocumentSearchResultsController($scope, SolrSearchService) {
             // add new results
             for (var i=0;i<$scope.itemsPerPage;i++) {
                 // clean up document fields
-                results.docs[i].fromDate = formatDate(results.docs[i].fromDate);
-                results.docs[i].toDate = formatDate(results.docs[i].toDate);
-                truncateField(results.docs[i],'abstract',$scope.maxFieldLength);
+                results.docs[i].fromDate = Utils.formatDate(results.docs[i].fromDate);
+                results.docs[i].toDate = Utils.formatDate(results.docs[i].toDate);
+                Utils.truncateField(results.docs[i],'abstract',$scope.maxFieldLength);
                 // add to result list
                 $scope.documents.push(results.docs[i]);
             }
@@ -251,4 +167,4 @@ function DocumentSearchResultsController($scope, SolrSearchService) {
 }
 
 // inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','SolrSearchService'];
+DocumentSearchResultsController.$inject = ['$scope','SolrSearchService','Utils'];

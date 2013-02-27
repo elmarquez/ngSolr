@@ -12,11 +12,12 @@
  * rudimentary, non-optimal implementation.
  * @param $scope Controller scope
  * @param SolrSearchService Document search service
+ * @param Utils Utility functions
  * @param CONSTANTS Application constants
  * @see http://jsfiddle.net/DNjSM/17/
  * @todo reimplement to use SolrSearchService to execute all queries
  */
-function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
+function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS) {
 
     $scope.target = "defaultQuery";
     $scope.userquery = "";
@@ -25,27 +26,6 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
     var fieldname = "title";
     var tokens = new Array();
     var minSearchLength = 1;
-
-    /**
-     * Determine if the string s1 starts with the string s2
-     * @param s1 String 1
-     * @param s2 String 2
-     */
-    var startsWith = function(s1,s2) {
-        if (s1 && s2) {
-            return s1.slice(0, s2.length) == s2;
-        }
-        return false;
-    };
-
-    /**
-     * Trim starting and ending spaces from the string.
-     * @param Val
-     * @returns String
-     */
-    var trim = function(Val) {
-        return Val.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    };
 
     ///////////////////////////////////////////////////////////////////////////
     
@@ -58,7 +38,7 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
         if ($scope.userquery.length>= minSearchLength) {
             for (var i=0;i<tokens.length;i++) {
                 var token = tokens[i];
-                if (startsWith(token,$scope.userquery)) {
+                if (Utils.startsWith(token,$scope.userquery)) {
                     items.push(token);
                 }
             }
@@ -68,6 +48,7 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
 
     /**
      * Initialize the controller.
+     * @todo move the query entity into the SolrSearchService
      */
     $scope.init = function() {
         // build hint list query
@@ -98,7 +79,7 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
      * Handle submit event.
      */
     $scope.submit = function() {
-        var trimmed = trim($scope.userquery);
+        var trimmed = Utils.trim($scope.userquery);
         if (trimmed === '') {
             $scope.userquery = "*:*";
         }
@@ -109,4 +90,4 @@ function SearchBoxController($scope,$http,SolrSearchService,CONSTANTS) {
 };
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','$http','SolrSearchService','CONSTANTS'];
+SearchBoxController.$inject = ['$scope','$http','SolrSearchService', 'Utils', 'CONSTANTS'];
