@@ -8,6 +8,14 @@ Interface Design
  * http://turbogears.org/2.0/docs/gettingstarted.html#getting-started
 
 -------------------------------------------------------------------------------
+Solr Queries
+
+ * createdate:[1976-03-06T23:59:59.999Z/YEAR TO 1976-03-06T23:59:59.999Z]
+ * It appears that multiple query elements should be separated by the + symbol
+   and we need to ensure that the whole string is URL encoded before being
+   used
+
+-------------------------------------------------------------------------------
 Mapping
 
  * How to activate a particular marker from another panel
