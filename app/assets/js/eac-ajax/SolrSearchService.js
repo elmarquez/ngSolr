@@ -91,12 +91,11 @@ function SolrQuery(Url,Core) {
     var self = this;
 
     // parameters
-    self.error = undefined;     // error message
     self.facets = [];           // query facets
     self.facet_counts = {};     // facet counts
     self.highlighting = {};     // query response highlighting
-    self.message = undefined;   // information message
     self.options = {};          // query options
+    self.query = [];            // query elements
     self.response = {};         // query response
     self.responseHeader = {};   // response header
     self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
@@ -126,6 +125,7 @@ function SolrQuery(Url,Core) {
      */
     self.getHash = function() {
         var query = '';
+        // append query elements
         // append query parameters
         for (var key in self.options) {
             if (self.options.hasOwnProperty(key)) query = query + "&" + key + "=" + self.options[key];
@@ -190,12 +190,15 @@ function SolrQuery(Url,Core) {
      */
     self.setOption = function(Name,Value) {
         if (Name=="fq") {
+            // facet query
             var fq = self.getOption(Name);
             if (fq != undefined && fq == "") {
                 self.options[Name] = fq + " +" + Value;
             } else {
                 self.options[Name] = "+" + Value;
             }
+        } else if (Name=="q") {
+            // query option
         } else {
             self.options[Name] = Value;
         }

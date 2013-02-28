@@ -102,10 +102,13 @@ Current:
 
 0.5.4
 
- > Revisions to SolrSearchService to enable clients to subscribe to named updates
  > Entity titles should include the exist dates
  > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
  > One map info window should be open at a time
+ ? Filtering by date ranges
+ * Partial unit tests for SolrFacet, SolrQuery, SolrSearchService
+ * SolrSearchService broadcasts updates for individual named queries
+ * Entity map marker and document record includes exist dates
 
 0.5.3
 

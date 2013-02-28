@@ -4,4 +4,5 @@
 app/assets/img/icon
 app/assets/img/maki
 app/assets/img/mapiconscollection
+scripts/npm*
 tmp/

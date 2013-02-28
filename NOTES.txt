@@ -16,7 +16,6 @@ Mapping
     * MapMarkerService keeps a map of ID to marker
     * Open info window and center in view when selected by Id
 
-
 Marker Clustering
 
  * https://developers.google.com/maps/articles/toomanymarkers
