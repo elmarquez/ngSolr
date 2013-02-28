@@ -1,49 +1,42 @@
 <!DOCTYPE html>
 <html class="no-js" ng-app="eacajax">
     <head>
-        <!-- Meta -->
+        <!-- meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Faceted Search Interface to Solr</title>
+        <title>EAC-CPF Search Interface to Solr</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
         <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Icons -->
-        <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144x144-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114x114-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72x72-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57x57-precomposed.png" />
-        <!-- Stylesheets -->
+        <!-- icons -->
+        <link rel="shortcut icon" href="ico/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144x144-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114x114-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72x72-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57x57-precomposed.png" />
+        <!-- stylesheets -->
         <style>
             [ng-cloak] {display: none;}
         </style>
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap-datepicker/datepicker.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/eac-ajax/screen.css" media="screen" />
+        <!-- scripts -->
+        <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+
+        <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/ImageSearchController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/app-imagesearch.js"></script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-
-        <!-- Scripts -->
-        <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-
-        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/Common.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/app-imagesearch.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/FacetSelectionController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/ImageSearchController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SearchHistoryController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
     </head>
     <body ng-controller="ImageSearchController" ng-init="init()">
 
@@ -63,9 +56,9 @@
                                 Logged in as <a href="#" class="navbar-link">Username</a>
                             </p>
                             <ul class="nav">
-                                <li><a href="../documents">Documents</a></li>
+                                <li><a href="documents.html">Documents</a></li>
                                 <li class="active"><a href="#">Images</a></li>
-                                <li><a href="../locations">Locations</a></li>
+                                <li><a href="locations.html">Locations</a></li>
                             </ul>
                         </div><!--/.nav-collapse -->
                     </div>
@@ -100,23 +93,6 @@
 
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
-
-                        <!-- facet selection controller -->
-                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-init="init(query.facets)" ng-show="facets.length>0">
-                            <li><b>Filtering By</b></li>
-                            <li>
-                                <ul class="items unstyled">
-                                    <li ng-repeat="facet in facets">
-                                        <i class="icon-tag"></i>
-                                        <a ng-click="remove($index)">
-                                            <span class="fieldname">{{facet.field}}:</span>
-                                            <span class="value">{{facet.value}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <!-- /facet selection controller -->
 
                         Facet controls go here.
 

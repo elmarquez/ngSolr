@@ -3,43 +3,41 @@
     <head>
         <!-- meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Search Interface</title>
+        <title>EAC-CPF Search Interface to Solr</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
         <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- icons -->
-        <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144x144-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114x114-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72x72-precomposed.png" />
-        <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57x57-precomposed.png" />
+        <link rel="shortcut icon" href="ico/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144x144-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114x114-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72x72-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57x57-precomposed.png" />
         <!-- stylesheets -->
         <style>
             [ng-cloak] {display: none;}
         </style>
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="../assets/css/eac-ajax/screen.css" media="screen" />
-
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/eac-ajax/screen.css" media="screen" />
         <!-- scripts -->
+        <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+
+        <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/MapController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/MapMarkerService.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/app-locationsearch.js"></script>
+
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&sensor=true"></script>
-        <script type="text/javascript" src="../assets/js/google/markerclusterer.js"></script>
-
-        <script type="text/javascript" src="../assets/js/jquery/jquery-1.8.2.min.js"></script>
-        <script type="text/javascript" src="../assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="../assets/js/angular/angular.js"></script>
-
-        <script type="text/javascript" src="../assets/js/eac-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/MapController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/MapMarkerService.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/Utils.js"></script>
-
-        <script type="text/javascript" src="../assets/js/eac-ajax/directives.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="../assets/js/eac-ajax/app.js"></script>
+        <script type="text/javascript" src="js/google/markerclusterer.js"></script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -60,8 +58,8 @@
                         <a class="brand-title" href="#">EAC-CPF Search</a>
                         <div class="nav-collapse collapse">
                             <ul class="nav">
-                                <li><a href="../documents">Documents</a></li>
-                                <li><a href="../images">Images</a></li>
+                                <li><a href="documents.html">Documents</a></li>
+                                <li><a href="images.html">Images</a></li>
                                 <li class="active"><a href="#">Locations</a></li>
                             </ul>
                             <p class="navbar-text pull-right">

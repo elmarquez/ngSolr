@@ -19,11 +19,11 @@ angular.module('MapServices', []).factory('MapMarkerService', ['CONSTANTS', func
 
     // a default classifer to icon path mapping
     svc.categoryToIconMap = {
-        default:"../assets/img/icon/information.png",
-        corporateBody:"../assets/img/icon/corporatebody.png",
-        government:"../assets/img/icon/corporatebody.png",
-        organization:"../assets/img/icon/corporatebody.png",
-        person:"../assets/img/icon/person.png"
+        default:"img/icon/information.png",
+        corporateBody:"img/icon/corporatebody.png",
+        government:"img/icon/corporatebody.png",
+        organization:"img/icon/corporatebody.png",
+        person:"img/icon/person.png"
     };
 
     // google map info window
