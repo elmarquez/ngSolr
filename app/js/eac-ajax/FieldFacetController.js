@@ -49,7 +49,7 @@ function FieldFacetController($scope, $http, SolrSearchService) {
      */
     $scope.add = function($event,Index) {
         // create a new facet constraint
-        var facet = new SolrFacet($scope.field,$scope.items[Index].value);
+        var facet = SolrSearchService.createFacet($scope.field,$scope.items[Index].value);
         // check to see if the selected facet is already in the list!
         if ($scope.facets.indexOf(facet) == -1) {
             // add the facet, update search results

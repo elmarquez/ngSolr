@@ -308,7 +308,7 @@ function SolrQuery(Url,Core) {
  * @param CONSTANTS Application constants
  * @todo by wrapping the SolrQuery object, we are recreating a lot of functionality ... and introducing maintenance problems ...
  */
-angular.module('SearchServices', []).factory('SolrSearchService',
+angular.module('SolrSearchService', []).factory('SolrSearchService',
     ['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
 
         // parameters
@@ -319,6 +319,16 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         svc.queries = {};                       // named search queries
 
         ///////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Create a new facet.
+         * @param FieldName
+         * @param Value
+         * @return {Facet}
+         */
+        svc.createFacet = function(FieldName,Value) {
+            return new SolrFacet(FieldName,Value);
+        };
 
         /**
          * Build a default query object.
@@ -437,7 +447,7 @@ angular.module('SearchServices', []).factory('SolrSearchService',
             } else {
                 svc.queries[defaultQueryName] = svc.createQuery(CONSTANTS, $http, $rootScope);
             }
-            svc.update();
+            // svc.update();
         };
 
         /**
@@ -572,4 +582,4 @@ angular.module('SearchServices', []).factory('SolrSearchService',
         // return the service instance
         return svc;
 
-    }]); // solr search service
+    }]).value('version','0.1'); // solr search service
