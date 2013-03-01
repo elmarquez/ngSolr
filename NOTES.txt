@@ -10,6 +10,7 @@ Interface Design
 -------------------------------------------------------------------------------
 Unit Testing
 
+ * http://pivotal.github.com/jasmine/jsdoc/symbols/jasmine.Matchers.html
  * http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-services-factories
 
 -------------------------------------------------------------------------------
@@ -52,6 +53,7 @@ Angular Implementation Examples
  * https://github.com/angular/angular.js/wiki/JsFiddle-Examples
  * http://blog.angularjs.org/2012/11/angularjs-example-applications.html
  * http://onehungrymind.com/angularjs-communicating-between-controllers/
+ * http://otaqui.com/blog/1374/event-emitter-pub-sub-or-deferred-promises-which-should-you-choose/
 
 -------------------------------------------------------------------------------
 Service Definition
@@ -63,6 +65,12 @@ Service Definition
  * http://jsfiddle.net/whnSs/
  * https://github.com/GoogleChrome/wReader-app/blob/master/js/services.js
  * https://bitbucket.org/adhilnv/contact-path/src/5fb11833841495b4be0784f8d8407a80ff30ee24/js/services.js?at=master
+
+
+-------------------------------------------------------------------------------
+Miscellaneous
+
+ * http://meyerweb.com/eric/tools/dencoder/
 
 -------------------------------------------------------------------------------
 Application Packaging 

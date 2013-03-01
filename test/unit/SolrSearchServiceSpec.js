@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
- 'use strict';
+'use strict';
 
 /*---------------------------------------------------------------------------*/
 /* Unit Tests                                                                */
@@ -89,11 +89,11 @@ describe('SolrSearchService:', function() {
     describe('SolrQuery:', function() {
 
         /*
-        it('instance should be created', function() {
-            var query = SolrSearchService.createQuery();
-            expect(query).not.toBe(null);
-        });
-        */
+         it('instance should be created', function() {
+         var query = SolrSearchService.createQuery();
+         expect(query).not.toBe(null);
+         });
+         */
 
     });
 

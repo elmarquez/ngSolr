@@ -447,7 +447,10 @@ angular.module('SolrSearchService', []).factory('SolrSearchService',
             } else {
                 svc.queries[defaultQueryName] = svc.createQuery(CONSTANTS, $http, $rootScope);
             }
-            // svc.update();
+            // update the search results
+            if (CONSTANTS.DEFER_FIRST_SEARCH_SERVICE_UPDATE !== true) {
+                svc.update();
+            }
         };
 
         /**
@@ -473,7 +476,7 @@ angular.module('SolrSearchService', []).factory('SolrSearchService',
             if (Query) {
                 svc.queries[Query].setOption("start",Start);
             } else {
-                svc.queries[defaulQueryName].setOption("start",Start);
+                svc.queries[defaultQueryName].setOption("start",Start);
             }
         };
 
@@ -582,4 +585,4 @@ angular.module('SolrSearchService', []).factory('SolrSearchService',
         // return the service instance
         return svc;
 
-    }]).value('version','0.1'); // solr search service
+    }]).value('version','0.1'); // SolrSearchService

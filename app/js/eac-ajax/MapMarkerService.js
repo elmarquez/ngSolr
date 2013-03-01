@@ -88,4 +88,4 @@ angular.module('MapServices', []).factory('MapMarkerService', ['CONSTANTS', func
     // return the service instance
     return svc;
 
-}]);
+}]).value('version','0.1'); // MapMarkerService

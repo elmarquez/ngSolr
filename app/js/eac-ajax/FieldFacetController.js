@@ -5,19 +5,6 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
-
-/**
- * Facet result
- * @param Name Facet field name
- * @param Score Facet score
- */
-function FacetResult(Value,Score) {
-    this.value = Value;
-    this.score = Score;
-}
-
-/*---------------------------------------------------------------------------*/
 /* Controller                                                                */
 
 /**
@@ -40,6 +27,18 @@ function FieldFacetController($scope, $http, SolrSearchService) {
     $scope.maxItems = 7;            // max number of results to display
     $scope.queryname = '';          // query name
     $scope.target = 'defaultQuery'; // the target search query
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Facet result
+     * @param Name Facet field name
+     * @param Score Facet score
+     */
+    function FacetResult(Value,Score) {
+        this.value = Value;
+        this.score = Score;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 

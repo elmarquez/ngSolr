@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eacajax', ['Directives', 'Filters', 'SolrSearchService', 'Utils']);
+var app = angular.module('eacajax', ['Directives','Filters','SolrSearchService','Utils']);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');
@@ -53,10 +53,11 @@ app.constant("CONSTANTS", {
     GOOGLE_MAPS_SENSOR : 'false',
     ICONS: null,
     ITEMS_PER_PAGE : 10,
+    MAP_FORCE_START_LOCATION: true,
     MAP_LEFT_PANEL_COLLAPSED: false,
     MAP_LEFT_PANEL_WIDTH: "320px",
-    MAP_START_LATITUDE : '-35.2828',
-    MAP_START_LONGITUDE : '149.1314',
+    MAP_START_LATITUDE : '-32.3456',
+    MAP_START_LONGITUDE : '141.4346',
     MAX_FIELD_LENGTH : 256,
     QUERY_DELIMITER : '!',
     SOLR_BASE : 'http://dev02.internal:8080',
