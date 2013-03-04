@@ -93,11 +93,15 @@ Current:
 
 0.5.4
 
- > Controller unit tests
- > Query index for a list of all entities by location
- > Listen for updates on specific data sets from the SolrSearchService
- > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
+ > Service, controller unit tests!
+ > Icon or coloured identifier for state in document search results
+ > Fix formatting of document search results in map view
  > One map info window should be open at a time
+ > Clicking on document item in map view puts focus, zoom, centers, opens info window in map view
+ > Document result list on map display a separate query from the map query
+
+ > MapController listens for updates on the SelectionSetService and puts map focus on markers as required
+ * Created SelectionSetService
 
 0.5.4
 

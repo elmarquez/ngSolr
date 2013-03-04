@@ -32,13 +32,13 @@
         <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/app-imagesearch.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/app.js"></script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
     </head>
-    <body ng-controller="ImageSearchController" ng-init="init()">
+    <body>
 
         <!-- page-header -->
         <header id="page-header">
@@ -121,27 +121,6 @@
 
                     <!-- metadata panel -->
                     <div id="metadata-panel" class="span5" ng-show="sidebar">
-                        <div class="column-320 pull-right">
-                            <p>This is an optional metadata or document preview panel.</p>
-                            <div id="graphics"></div>
-                            <table class="table table-hover table-condensed" style="width:100%">
-                                <thead><tr><th>Option</th><th>Value</th></tr></thead>
-                                <tbody>
-                                <tr><td>Fields</td><td>{{ fields }}</td></tr>
-                                <tr><td>Items Per Page</td><td>{{ itemsPerPage }}</td></tr>
-                                <tr><td>Max Result Score</td><td>{{ queryMaxScore }}</td></tr>
-                                <tr><td>Page (start)</td><td>{{ page }}</td></tr>
-                                <tr><td>Pages per Set</td><td>{{ pagesPerSet }}</td></tr>
-                                <tr><td>Query</td>
-                                    <td><a ng-href="{{query.getUrl()}}" target="_blank">{{ query.getUserQuery() }}</a></td>
-                                </tr>
-                                <tr><td>Query Time</td><td>{{ queryTime }}</td></tr>
-                                <tr><td>Total Items Found</td><td>{{ queryNumFound }}</td></tr>
-                                <tr><td>Total Pages</td><td>{{ totalPages }}</td></tr>
-                                <tr><td>Total Sets</td><td>{{ totalSets }}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div><!-- /metadata panel -->
 
                 </div><!-- /row -->

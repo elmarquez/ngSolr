@@ -5,9 +5,9 @@
  'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Register Filters                                                          */
+/* Filters                                                                   */
 
-var filters = angular.module('Filters', []);
+var filters = angular.module('Filters',[]);
 
 filters.filter('interpolate', ['version', function(version) {
     return function(text) {

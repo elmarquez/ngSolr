@@ -12,7 +12,7 @@
  * controllers to open, close, center the screen on selected markers.
  * @param CONSTANTS Application constants
  */
-angular.module('MapServices', []).factory('MapMarkerService', ['CONSTANTS', function (CONSTANTS) {
+angular.module('MapMarkerService',[]).factory('MapMarkerService', ['CONSTANTS', function (CONSTANTS) {
 
     // the service instance
     var svc = {};

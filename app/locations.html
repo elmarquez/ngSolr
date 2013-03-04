@@ -32,6 +32,7 @@
         <script type="text/javascript" src="js/eac-ajax/MapController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/MapMarkerService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/SelectionSetService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
         <script type="text/javascript" src="js/eac-ajax/app-locationsearch.js"></script>
@@ -98,7 +99,7 @@
                         <h6>Search Results</h6>
 
                         <div class="document" ng-repeat="doc in documents">
-                            <a ng-href="{{doc.url}}" class="title">{{doc.title}}</a>
+                            <a ng-href="{{doc.url}}" ng-click="clearSelection();select(doc.id)" class="title">{{doc.title}}</a>
                             <div class="location">{{doc.location}}</div>
                             <div class="type">{{doc.type}}</div>
                             <div class="summary">{{doc.abstract}}</div>

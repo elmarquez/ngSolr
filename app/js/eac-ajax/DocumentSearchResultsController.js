@@ -47,8 +47,9 @@ function Page(Name,Num) {
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service.
  * @param Utils Utility functions
+ * @param SelectionSetService Selection set service
  */
-function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
+function DocumentSearchResultsController($scope, SolrSearchService, Utils, SelectionSetService) {
 
     // parameters
     $scope.documents = [];              // document search results
@@ -113,6 +114,18 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Clear the selection set. If an Id is provided, remove the specific
+     * document by Id. Otherwise, clear all values.
+     */
+    $scope.clearSelection = function(Id) {
+        if (Id) {
+            SelectionSetService.remove(Id);
+        } else {
+            SelectionSetService.clear();
+        }
+    };
+
+    /**
      * Initialize the controller.
      */
     $scope.init = function() {
@@ -122,6 +135,14 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
         });
         // update the search results
         $scope.update();
+    };
+
+    /**
+     * Add the selected document to the selection set.
+     * @param Id Document identifier
+     */
+    $scope.select = function(Id) {
+        SelectionSetService.add(Id,null);
     };
 
     /**
@@ -168,4 +189,4 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
 }
 
 // inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','SolrSearchService','Utils'];
+DocumentSearchResultsController.$inject = ['$scope','SolrSearchService','Utils','SelectionSetService'];

@@ -89,6 +89,9 @@ body {
 /*--------------------------------------------------------*/
 /* General Styles                                         */
 
+a {
+    cursor: pointer;
+}
 .clickable {
   cursor: hand;
 }

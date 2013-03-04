@@ -310,10 +310,9 @@ function SolrQuery(Url,Core) {
  * @param $http HTTP service
  * @param $location Location service
  * @param CONSTANTS Application constants
- * @todo by wrapping the SolrQuery object, we are recreating a lot of functionality ... and introducing maintenance problems ...
  */
-angular.module('SolrSearchService', []).factory('SolrSearchService',
-    ['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
+angular.module('SolrSearchService',[]).
+    factory('SolrSearchService',['$rootScope', '$http', '$location', 'CONSTANTS', function ($rootScope, $http, $location, CONSTANTS) {
 
         // parameters
         var defaultQueryName = "defaultQuery";  // the name of the default query

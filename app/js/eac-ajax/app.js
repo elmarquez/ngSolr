@@ -2,12 +2,13 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
- 'use strict';
+
+'use strict';
 
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('eacajax', ['Directives','Filters','MapServices','SolrSearchService','Utils']);
+var app = angular.module('eacajax', ['Directives','Filters','MapMarkerService','SelectionSetService','SolrSearchService','Utils']);
 
 // @see https://groups.google.com/forum/#!msg/angular/FUPnNj7CwhY/_U1S7PpvCtcJ
 // $locationProvider.html5Mode(false).hashPrefix('');
@@ -17,14 +18,14 @@ var app = angular.module('eacajax', ['Directives','Filters','MapServices','SolrS
  */
 /*
 app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-      when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
-      when('/documents/:query', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
-      when('/images', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
-      when('/images/:query', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
-      when('/locations', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
-      when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
-      otherwise({redirectTo: '/documents'});
+    $routeProvider.
+        when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
+        when('/documents/:query', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
+        when('/images', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
+        when('/images/:query', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
+        when('/locations', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
+        when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
+        otherwise({redirectTo: '/documents'});
 }]);
 */
 
@@ -49,7 +50,7 @@ app.config(['$routeProvider', function($routeProvider) {
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'title,abstract,type,location,location_0_coordinate,location_1_coordinate,referrer_uri,fromDate,toDate,region,country',
+    DEFAULT_FIELDS: 'abstract,country,fromDate,id,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate,type',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',

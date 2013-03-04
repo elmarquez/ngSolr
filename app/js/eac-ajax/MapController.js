@@ -2,6 +2,7 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
 
 /*---------------------------------------------------------------------------*/
@@ -13,42 +14,24 @@
  * @param $scope Controller scope
  * @param SolrSearchService Search service
  * @param MapMarkerService Map marker service
+ * @param SelectionSetService Selection set service
  * @param Utils Utility functions
  * @param CONSTANTS Application constants
  */
-function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONSTANTS) {
+function MapController($scope, SolrSearchService, MapMarkerService, SelectionSetService, Utils, CONSTANTS) {
     // parameters
-    // create a marker clusterer
-    var clusterOptions = {
-        styles: [{
-            height: 53,
-            url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",
-            width: 53
-            },
-            {
-                height: 56,
-                url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m2.png",
-                width: 56
-            },
-            {
-                height: 66,
-                url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m3.png",
-                width: 66
-            },
-            {
-                height: 78,
-                url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m4.png",
-                width: 78
-            },
-            {
-                height: 90,
-                url: "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m5.png",
-                width: 90
-            }
+    $scope.clusterOptions = {
+        styles: [
+            { height: 53, url: "img/map/m1.png", width: 53   },
+            { height: 56, url: "img/map/m2.png", width: 56   },
+            { height: 66, url: "img/map/m3.png", width: 66   },
+            { height: 78, url: "image/map/m4.png", width: 78 },
+            { height: 90, url: "image/map/m5.png", width: 90 }
         ]};
-    $scope.clusterResults = true;       // use cluster manager
-    $scope.markers = [];                // list of markers
-    $scope.queryname = "defaultQuery";  // name of the query
+    $scope.clusterResults = true;                       // use cluster manager
+    $scope.infoWindow = new google.maps.InfoWindow();   // google map info window
+    $scope.markers = [];                                // list of markers
+    $scope.queryname = "defaultQuery";                  // name of the query
     $scope.settings = {
         center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
@@ -69,10 +52,12 @@ function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONST
             style:google.maps.ZoomControlStyle.LARGE
         }
     };
-    $scope.showMessages = true;     // show info messages window
-    $scope.showErrors = true;       // show error messages window
+    $scope.showMessages = true;                         // show info messages window
+    $scope.showErrors = true;                           // show error messages window
+
     $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
-    $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers, clusterOptions);
+    $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
+    $scope.userquery = "*:*";                           // user query
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -80,14 +65,38 @@ function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONST
      * Initialize the controller.
      */
     $scope.init = function () {
-        // update the search query to include geolocation properties
-        var query = SolrSearchService.getQuery($scope.queryname);
-        query.setOption("rows","3000"); // @todo need to get all records, or get all records near the starting location
-         // handle update events from the search service.
+        // handle update events from the search service.
         $scope.$on($scope.queryname, function () {
             $scope.update();
         });
-        // update the result set and the display
+        // handle update events from the selection set service
+        $scope.$on("selectionSetUpdate", function() {
+            $scope.select();
+        });
+        // update the search results
+        $scope.setUserQuery($scope.userquery);
+    };
+
+    /**
+     * Handle selection events.
+     */
+    $scope.select = function() {
+        console.log("Marker selection event");
+    };
+
+    /**
+     * Set the user query. Because the default Solr search query does not include the additional parameters required
+     * for location based search, we provide this method here to handle updates on the user query before passing them
+     * on to the search service.
+     * @param Query
+     */
+    $scope.setUserQuery = function(Query) {
+        var query = SolrSearchService.getQuery($scope.queryname);
+        var parameters = ["+location_0_coordinate:[* TO *]"]; // select only those documents that have location data
+        // @todo to get ALL records we need two queries ... one for the total document count and the other for the actual records
+        query.setOption("rows","5000"); // we're assuming the count will always be less than this
+        query.setUserQuery(Query);
+        query.setUserQueryParameters(parameters);
         SolrSearchService.updateQuery($scope.queryname);
     };
 
@@ -108,12 +117,13 @@ function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONST
                 var item = results.docs[i];
                 if (item.location) {
                     // marker metadata
-                    var content = "<div class='infowindow'>" +
-                                  "<div class='title'><a href='" + item.referrer_uri + "'>" + item.title + "</a></div>" +
-                                  "<div class='existdates'>" + Utils.formatDate(item.fromDate) + " - " + Utils.formatDate(item.toDate) + "</div>" +
-                                  //"<div class='type'>" + item.type + "</div>" +
-                                  "<div class='summary'>" + Utils.truncate(item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + "</div>" +
-                                  "</div>" ;
+                    var content = "";
+                    content += "<div class='infowindow'>";
+                    content += "<div class='title'><a href='" + item.referrer_uri + "'>" + item.title + "</a></div>";
+                    content += "<div class='existdates'>" + Utils.formatDate(item.fromDate) + " - " + Utils.formatDate(item.toDate) + "</div>";
+                    // content +=  "<div class='type'>" + item.type + "</div>";
+                    content += "<div class='summary'>" + Utils.truncate(item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + "</div>";
+                    content += "</div>" ;
                     var lat = item.location_0_coordinate;
                     var lng = item.location_1_coordinate;
                     // create a marker
@@ -150,4 +160,4 @@ function MapController($scope, SolrSearchService, MapMarkerService, Utils, CONST
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','Utils','CONSTANTS'];
+MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','SelectionSetService','Utils','CONSTANTS'];

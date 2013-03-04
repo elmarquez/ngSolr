@@ -10,7 +10,7 @@
 /**
  * Utility functions used across the application.
  */
-angular.module('Utils', []).factory('Utils', [function () {
+angular.module('Utils',[]).factory('Utils', [function () {
 
     // the service
     var svc = {};
@@ -57,6 +57,7 @@ angular.module('Utils', []).factory('Utils', [function () {
 
             }
         }
+        return '';
     };
 
     /**
@@ -115,7 +116,7 @@ angular.module('Utils', []).factory('Utils', [function () {
      * @return {*}
      */
     svc.truncate = function(Field,Length) {
-        if (Field.length > Length) {
+        if (Field && Length && Field.length > Length) {
             // remove start/end whitespace
             Field = svc.trim(Field);
             // truncate the document to the specified length

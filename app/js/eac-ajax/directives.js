@@ -7,7 +7,7 @@
 /*---------------------------------------------------------------------------*/
 /* Register Directives                                                       */
 
-var directives = angular.module('Directives', []);
+var directives = angular.module('Directives',[]);
 
 /**
  * Directive to support Bootstrap typeahead.
