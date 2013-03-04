@@ -96,11 +96,13 @@ Current:
  > Service, controller unit tests!
  > Icon or coloured identifier for state in document search results
  > Fix formatting of document search results in map view
- > One map info window should be open at a time
  > Clicking on document item in map view puts focus, zoom, centers, opens info window in map view
  > Document result list on map display a separate query from the map query
 
+ > Need to be able to redefine the default SolrSearchService query
+
  > MapController listens for updates on the SelectionSetService and puts map focus on markers as required
+ * One map info window should be open at a time
  * Created SelectionSetService
 
 0.5.4

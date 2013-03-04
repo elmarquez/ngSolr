@@ -13,26 +13,39 @@
  * error and warning messages to the user.
  * @param $scope Controller scope
  * @param SolrSearchService Search service
- * @param MapMarkerService Map marker service
  * @param SelectionSetService Selection set service
  * @param Utils Utility functions
  * @param CONSTANTS Application constants
  */
-function MapController($scope, SolrSearchService, MapMarkerService, SelectionSetService, Utils, CONSTANTS) {
+function MapController($scope, SolrSearchService, SelectionSetService, Utils, CONSTANTS) {
     // parameters
-    $scope.clusterOptions = {
-        styles: [
-            { height: 53, url: "img/map/m1.png", width: 53   },
-            { height: 56, url: "img/map/m2.png", width: 56   },
-            { height: 66, url: "img/map/m3.png", width: 66   },
-            { height: 78, url: "image/map/m4.png", width: 78 },
-            { height: 90, url: "image/map/m5.png", width: 90 }
-        ]};
+    $scope.clusterManager = null;                       // clustering marker manager
     $scope.clusterResults = true;                       // use cluster manager
-    $scope.infoWindow = new google.maps.InfoWindow();   // google map info window
+    $scope.idToMarkerMap = {};                          // id to marker map
+    $scope.map = undefined;                             // google map
     $scope.markers = [];                                // list of markers
     $scope.queryname = "defaultQuery";                  // name of the query
-    $scope.settings = {
+    $scope.showMessages = true;                         // show info messages window
+    $scope.showErrors = true;                           // show error messages window
+    $scope.userquery = "*:*";                           // user query
+
+    var categoryToIconMap = {
+        default:"img/icon/information.png",
+        corporateBody:"img/icon/corporatebody.png",
+        government:"img/icon/corporatebody.png",
+        organization:"img/icon/corporatebody.png",
+        person:"img/icon/person.png"
+    };
+    var clusterOptions = {
+        styles: [
+            { height: 53, url: "img/map/m1.png", width: 53 },
+            { height: 56, url: "img/map/m2.png", width: 56 },
+            { height: 66, url: "img/map/m3.png", width: 66 },
+            { height: 78, url: "img/map/m4.png", width: 78 },
+            { height: 90, url: "img/map/m5.png", width: 90 }
+        ]};
+    var infoWindow = new google.maps.InfoWindow();      // google map info window
+    var settings = {                                    // map settings
         center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
         // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
@@ -52,14 +65,36 @@ function MapController($scope, SolrSearchService, MapMarkerService, SelectionSet
             style:google.maps.ZoomControlStyle.LARGE
         }
     };
-    $scope.showMessages = true;                         // show info messages window
-    $scope.showErrors = true;                           // show error messages window
-
-    $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
-    $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
-    $scope.userquery = "*:*";                           // user query
 
     ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Get a map marker.
+     * @param Map Map
+     * @param Title Tooltip label
+     * @param Content Popup window HTML content
+     * @param Category Item category
+     * @param Lat Latitude
+     * @param Lng Longitude
+     */
+    $scope.getMarker = function (Map, Title, Content, Category, Lat, Lng) {
+        // get the marker icon
+        var icon = categoryToIconMap['default'];
+        if (Category != null && Category in categoryToIconMap) {
+            icon = categoryToIconMap[Category];
+        }
+        // create the marker
+        var marker = new google.maps.Marker({
+            icon: icon,
+            map: Map,
+            position: new google.maps.LatLng(Lat, Lng),
+            title: Title
+        });
+        // attach an info window to the marker
+        $scope.setInfoWindow(Map, marker, Content);
+        // return result
+        return marker;
+    };
 
     /**
      * Initialize the controller.
@@ -81,7 +116,44 @@ function MapController($scope, SolrSearchService, MapMarkerService, SelectionSet
      * Handle selection events.
      */
     $scope.select = function() {
-        console.log("Marker selection event");
+        var selected = SelectionSetService.getSelectionSet();
+        if (selected) {
+            // @todo enable multiple selection .. ie. multiple infowindows!
+            // this is a bit complicated because the selection set service can hold either single or multiple
+            // values. however, for the moment, we want to show only a single info window here.
+            var keys = [];
+            for (var key in selected) {
+                if (selected.hasOwnProperty(key)) {
+                    keys.push(key);
+                }
+            }
+            // get the first key only
+            if (keys.length > 0) {
+                var id = keys[0];
+                var marker = $scope.idToMarkerMap[id];
+                if (marker) {
+                    var bounds = new google.maps.LatLngBounds();
+                    bounds.extend(marker.position);
+                    $scope.map.setCenter(bounds.getCenter());
+                    $scope.map.fitBounds(bounds);
+                    google.maps.event.trigger(marker,'click');
+                }
+            }
+        }
+    };
+
+    /**
+     * Add info window to marker
+     * @param Map Google map
+     * @param Marker Map marker
+     * @param Content HTML content to be displayed in the info window
+     */
+    $scope.setInfoWindow = function (Map, Marker, Content) {
+        google.maps.event.addListener(Marker, 'click', function () {
+            infoWindow.close();
+            infoWindow.setContent(Content);
+            infoWindow.open(Map, Marker);
+        });
     };
 
     /**
@@ -105,7 +177,9 @@ function MapController($scope, SolrSearchService, MapMarkerService, SelectionSet
      */
     $scope.update = function () {
         // clear current markers
-        $scope.markerClusterer.clearMarkers();
+        $scope.idToMarkerMap = {};
+        infoWindow.close();
+        $scope.clusterManager.clearMarkers();
         $scope.markers = [];
         // create marker bounds
         var bounds = new google.maps.LatLngBounds();
@@ -127,16 +201,17 @@ function MapController($scope, SolrSearchService, MapMarkerService, SelectionSet
                     var lat = item.location_0_coordinate;
                     var lng = item.location_1_coordinate;
                     // create a marker
-                    var marker = MapMarkerService.getMarker($scope.map, item.title, content, item.type, lat, lng);
+                    var marker = $scope.getMarker($scope.map, item.title, content, item.type, lat, lng);
                     // add marker to bounds
                     bounds.extend(marker.position);
                     // add marker to list
                     $scope.markers.push(marker);
+                    $scope.idToMarkerMap[item.id] = marker;
                 }
             }
         }
         // add markers to clusterer
-        $scope.markerClusterer.addMarkers($scope.markers);
+        $scope.clusterManager.addMarkers($scope.markers);
         // if the force center on start property is set, recenter the view
         if (CONSTANTS.hasOwnProperty('MAP_FORCE_START_LOCATION') &&
             CONSTANTS.MAP_FORCE_START_LOCATION === true) {
@@ -157,7 +232,20 @@ function MapController($scope, SolrSearchService, MapMarkerService, SelectionSet
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+
+    // handle close click event on info window
+    google.maps.event.addListener(infoWindow, 'close', function () {
+        infoWindow.close();
+    });
+
+    // create map
+    $scope.map = new google.maps.Map(document.getElementById("map"), settings);
+
+    // create marker cluster manager
+    $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
+
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope','SolrSearchService','MapMarkerService','SelectionSetService','Utils','CONSTANTS'];
+MapController.$inject = ['$scope','SolrSearchService','SelectionSetService','Utils','CONSTANTS'];

@@ -19,7 +19,8 @@ angular.module('SelectionSetService',[]).factory('SelectionSetService', ['$rootS
 
     // parameters
     var svc = {};
-    svc.documents = {}; // selected documents list
+    svc.documents = {};             // selected documents list
+    svc.multipleSelection = false;  // allow multiple selection
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +39,10 @@ angular.module('SelectionSetService',[]).factory('SelectionSetService', ['$rootS
      * @param Doc Optional document
      */
     svc.add = function(Key,Doc) {
+        if (!svc.multipleSelection) {
+            svc.documents = {};
+        }
         svc.documents[Key] = (Doc);
-        console.log("Added document identified by " + Key);
         $rootScope.$broadcast("selectionSetUpdate");
     };
 
@@ -48,7 +51,6 @@ angular.module('SelectionSetService',[]).factory('SelectionSetService', ['$rootS
      */
     svc.clear = function() {
         svc.documents = {};
-        console.log("Cleared selection set");
         $rootScope.$broadcast("selectionSetUpdate");
     };
 
@@ -62,12 +64,19 @@ angular.module('SelectionSetService',[]).factory('SelectionSetService', ['$rootS
     };
 
     /**
+     * Get the selection set.
+     * @return {*}
+     */
+    svc.getSelectionSet = function() {
+        return svc.documents;
+    };
+
+    /**
      * Remove the document from the selection list.
      * @param Key Document identifier
      */
     svc.remove = function(Key) {
         delete svc.documents[Key];
-        console.log("Removed " + Key + " from selection set");
         $rootScope.$broadcast("selectionSetUpdate");
     };
 
