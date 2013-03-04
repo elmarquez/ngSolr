@@ -75,8 +75,9 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils) {
         // get query results
         var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs && results.docs.length > 0) {
-            // calculate the total number of pages
-            $scope.totalPages = results.docs.length;
+            // calculate the total number of pages and sets
+            $scope.totalPages = Math.ceil(results.numFound / $scope.itemsPerPage);
+            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
             // determine the current page, current page set
             var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
             var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
