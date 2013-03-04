@@ -94,35 +94,6 @@
             <div id="search-panel" class="column-320 bs-docs-sidebar">
                 <div class="inset">
 
-                    <!-- date range facet controller -->
-                    <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
-                        <li><b>Dates</b></li>
-                        <li>
-                            <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
-                                <table>
-                                    <tr>
-                                        <td style="font-size:small">From</td>
-                                        <td style="font-size:small">To</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-right: 10px;">
-                                            <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
-                                        </td>
-                                        <td>
-                                            <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
-                                        </td>
-                                    </tr>
-                                </table>
-                                <button>Submit</button>
-                                <!--
-                                <label for="fromDate">From</label>
-                                <label for="toDate">To</label>
-                                -->
-                            </form>
-                        </li>
-                    </ul>
-                    <!-- /date range facet controller -->
-
                     <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="querynamme='docsQuery';itemsPerPage=5;pagesPerSet=5;maxFieldLength=128;init();">
                         <h6>Search Results</h6>
 
@@ -140,6 +111,35 @@
                                 </li>
                             </ul>
                         </div><!-- /pagination -->
+
+                        <!-- date range facet controller -->
+                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
+                            <li><b>Dates</b></li>
+                            <li>
+                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
+                                    <table>
+                                        <tr>
+                                            <td style="font-size:small">From</td>
+                                            <td style="font-size:small">To</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-right: 10px;">
+                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                            </td>
+                                            <td>
+                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <button>Update</button>
+                                    <!--
+                                    <label for="fromDate">From</label>
+                                    <label for="toDate">To</label>
+                                    -->
+                                </form>
+                            </li>
+                        </ul>
+                        <!-- /date range facet controller -->
 
                     </div>
                 </div>

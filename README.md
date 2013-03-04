@@ -93,19 +93,17 @@ Current:
 
 0.5.4
 
- > SolrSearchService passes the name of the query on update
- > Other controllers listen for changes on their target named query, or 'default' if none is set
- > Created a location facet controller
  > Controller unit tests
  > Query index for a list of all entities by location
  > Listen for updates on specific data sets from the SolrSearchService
+ > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
+ > One map info window should be open at a time
 
 0.5.4
 
- > Entity titles should include the exist dates
- > MapMarkerService maintains a list of markers by ID and can focus on a marker by that ID
- > One map info window should be open at a time
- ? Filtering by date ranges
+ * Entity titles include the exist dates
+ * Modified SolrSearchService to allow multiple query parts
+ * Filter results by date ranges using DateFacetController
  * Partial unit tests for SolrFacet, SolrQuery, SolrSearchService
  * SolrSearchService broadcasts updates for individual named queries
  * Entity map marker and document record includes exist dates
