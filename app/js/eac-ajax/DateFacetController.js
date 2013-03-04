@@ -25,10 +25,11 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
     $scope.endDateQueryName = 'endDate';        // end date query name
     $scope.max = 0;                             // the maximum date value, as discovered in the data set
     $scope.min = 0;                             // the minimum date value, as discovered in the data set
+    $scope.inclusive = true;                    // use inclusive search method if true, or exclusive if false
     $scope.startDate = 0;                       // start date
     $scope.startDateField = 'startDate';        // facet field name
     $scope.startDateQueryName = 'startDate';    // start date query name
-    $scope.target = 'defaultQuery';                  // named query to filter
+    $scope.target = 'defaultQuery';             // named query to filter
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -73,14 +74,14 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
         var startDateQuery = SolrSearchService.createQuery();
         startDateQuery.setOption("fl", $scope.startDateField);
         startDateQuery.setOption("rows","1");
-        startDateQuery.setOption("sort",$scope.startDateField + "%20asc");
+        startDateQuery.setOption("sort",$scope.startDateField + " asc");
         startDateQuery.setOption("wt","json");
         SolrSearchService.setQuery(startDateQuery,$scope.startDateQueryName);
         // build a query that will fetch the latest date in the list
         var endDateQuery = SolrSearchService.createQuery();
         endDateQuery.setOption("fl", $scope.endDateField);
         endDateQuery.setOption("rows","1");
-        endDateQuery.setOption("sort",$scope.endDateField + "%20desc");
+        endDateQuery.setOption("sort",$scope.endDateField + " desc");
         endDateQuery.setOption("wt","json");
         SolrSearchService.setQuery(endDateQuery,$scope.endDateQueryName);
         // listen for updates on queries
@@ -115,31 +116,34 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
 
     /**
      * Set date range constraint on the target query.
-     * q=*:*:[2011-01-01T00:00:00Z TO 2011-12-31T00:00:00Z]
      */
     $scope.submit = function() {
-        // if the current query has an existing date range constraint, remove it
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
-            // get query parameters
-            var q = query.getOption('q');
-            if (q.hasOwnProperty($scope.startDateField)) {
-
+            var parameters = [];
+            var yearStart = "-01-01T00:00:00Z";
+            var yearEnd = "-12-31T00:00:00Z";
+            var dateRange = '';
+            if ($scope.inclusive === true) {
+                // inclusive date constraint: +(startDateField:(startDate TO endDate) OR endDateField:(startDate TO endDate))
+                dateRange += "+(";
+                dateRange += $scope.startDateField + ":[ " + $scope.startDate + yearStart + " TO " + $scope.endDate + yearEnd + " ]";
+                dateRange += " OR ";
+                dateRange += $scope.endDateField + ":[ " + $scope.startDate + yearStart + " TO " + $scope.endDate + yearEnd + " ]";
+                dateRange += ")";
+                parameters.push(dateRange);
+            } else {
+                // exclusive date constraint: +(startDateField:(startDate TO *) OR endDateField:(* TO endDate))
+                dateRange += "+(";
+                dateRange += $scope.startDateField + ":[ " + $scope.startDate + yearStart + " TO * ] AND ";
+                dateRange += $scope.endDateField + ":[ * TO " + $scope.endDate + yearEnd + " ]";
+                dateRange += ")";
+                parameters.push(dateRange);
             }
-            if (q.hasOwnProperty($scope.endDateField)) {
-
-            }
-            // create a new date range constrain
-            var yearstart = "-01-01T00:00:00Z";
-            var yearto = "%20TO%20";
-            var yearend = "-12-31T00:00:00Z";
-            var fromconstraint = encodeURIComponent($scope.startDateField) + ":[" + $scope.startDate + yearstart + yearto + "*]";
-            var toconstraint = encodeURIComponent($scope.endDateField) + ":[*" + yearto + $scope.endDate + yearend + "]";
-            console.log(fromconstraint);
-            console.log(toconstraint);
-            // add it to the target query
-            query.setOption("q",fromconstraint);
-            query.setOption("q",toconstraint);
+            // update the query parameters
+            query.setUserQueryParameters(parameters);
+            // update the query results
+            SolrSearchService.updateQuery($scope.target);
         }
     };
 

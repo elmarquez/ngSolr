@@ -26,6 +26,8 @@ describe('SolrSearchService:', function() {
     //-------------------------------------------------------------------------
     // SolrFacet tests
 
+    /*
+
     describe('SolrFacet:', function() {
 
         beforeEach(function() {
@@ -82,6 +84,7 @@ describe('SolrSearchService:', function() {
         }));
 
     });
+     */
 
     //-------------------------------------------------------------------------
     // SolrQuery tests
@@ -96,5 +99,6 @@ describe('SolrSearchService:', function() {
          */
 
     });
+
 
 });

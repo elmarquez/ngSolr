@@ -97,15 +97,15 @@ function SolrQuery(Url,Core) {
     var self = this;
 
     // parameters
-    self.facets = [];           // query facets
-    self.facet_counts = {};     // facet counts
-    self.highlighting = {};     // query response highlighting
-    self.options = {};          // query options
-    self.response = {};         // query response
-    self.responseHeader = {};   // response header
+    self.facets = [];               // query facets
+    self.facet_counts = {};         // facet counts
+    self.highlighting = {};         // query response highlighting
+    self.options = {};              // query options
+    self.response = {};             // query response
+    self.responseHeader = {};       // response header
     self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
-    self.userQuery = "*:*";     // the primary query
-    self.userQueryOptions = {}; // query elements
+    self.userQuery = "*:*";         // the primary query
+    self.userQueryParameters = [];  // additional query parameters
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -128,6 +128,14 @@ function SolrQuery(Url,Core) {
     };
 
     /**
+     * Add query parameter.
+     * @param Param
+     */
+    self.addQueryParameter = function(Param) {
+        self.userQueryParameters.push(Param);
+    };
+
+    /**
      * Get the hash portion of the query URL. We UrlEncode the search terms rather than the entire fragment because
      * it comes out in a much more readable form and still valid.
      */
@@ -135,11 +143,8 @@ function SolrQuery(Url,Core) {
         var query = '';
         // append query elements
         query += "q=" + self.userQuery;
-        if (self.userQueryOptions && self.userQueryOptions.length > 0) {
-            for (var key in self.userQueryOptions) {
-                var val = self.userQueryOptions[key];
-                query += "+" + key + ":" + val;
-            }
+        for (var i=0;i< self.userQueryParameters.length;i++) {
+            query += self.userQueryParameters[i];
         }
         // append query parameters
         for (var key in self.options) {
@@ -171,21 +176,21 @@ function SolrQuery(Url,Core) {
      * Get the fully specified Solr query URL.
      */
     self.getUrl = function() {
-        return self.url + self.getHash();
+        return self.url + encodeURI(self.getHash());
     };
 
     /**
-     * Get the user query portion of the query.
+     * Get the primary user query value.
      */
     self.getUserQuery = function() {
         return self.userQuery;
     };
 
     /**
-     * Get the user query options portion of the query.
+     * Get the user query parameters.
      */
-    self.getUserQueryOptions = function() {
-        return self.userQueryOptions;
+    self.getUserQueryParameters = function() {
+        return self.userQueryParameters;
     };
 
     /**
@@ -283,12 +288,11 @@ function SolrQuery(Url,Core) {
     };
 
     /**
-     * Set an additional user query element.
-     * @param Name
-     * @param Value
+     * Set the user query parameters.
+     * @param Parameters
      */
-    self.setUserQueryElement = function(Name,Value) {
-        self.userQueryOption[Name] = Value;
+    self.setUserQueryParameters = function(Parameters) {
+        self.userQueryParameters = Parameters;
     };
 
 } // end SolrQuery
