@@ -19,15 +19,15 @@
  */
 function MapController($scope, SolrSearchService, SelectionSetService, Utils, CONSTANTS) {
     // parameters
-    $scope.clusterManager = null;                       // clustering marker manager
-    $scope.clusterResults = true;                       // use cluster manager
-    $scope.idToMarkerMap = {};                          // id to marker map
-    $scope.map = undefined;                             // google map
-    $scope.markers = [];                                // list of markers
-    $scope.queryname = "defaultQuery";                  // name of the query
-    $scope.showMessages = true;                         // show info messages window
-    $scope.showErrors = true;                           // show error messages window
-    $scope.userquery = "*:*";                           // user query
+    $scope.clusterManager = null;   // clustering marker manager
+    $scope.clusterResults = true;   // use cluster manager
+    $scope.idToMarkerMap = {};      // id to marker map
+    $scope.map = undefined;         // google map
+    $scope.markers = [];            // list of markers
+    $scope.queryname = "mapQuery";  // name of the query
+    $scope.showMessages = true;     // show info messages window
+    $scope.showErrors = true;       // show error messages window
+    $scope.userquery = "*:*";       // user query
 
     var categoryToIconMap = {
         default:"img/icon/information.png",
@@ -46,7 +46,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         ]};
     var infoWindow = new google.maps.InfoWindow();      // google map info window
     var settings = {                                    // map settings
-        center:new google.maps.LatLng(-32.3456, 141.4346), // hard code to start at Australia
+        center:new google.maps.LatLng(-30.3456, 141.4346), // hard code to start at Australia
         mapTypeControl:false,
         // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
         mapTypeId:google.maps.MapTypeId.TERRAIN,
@@ -67,6 +67,43 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
     };
 
     ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Handle update event for a related map view query.  If the user query
+     * portion of that query has changed, construct a new query in the current
+     * view to correspond.
+     */
+    $scope.checkUpdate = function() {
+        var defaultQuery = SolrSearchService.getQuery();
+        var userQuery = defaultQuery.getUserQuery();
+        var userQueryParams = defaultQuery.getUserQueryParameters();
+        var existingMapQuery = SolrSearchService.getQuery($scope.queryname);
+        // if the user specified query elements have changed, then create a
+        // new location query and update the view
+        if (defaultQuery.getUserQuery() !== existingMapQuery.getUserQuery() ||
+            $.param(defaultQuery.getUserQueryParameters()) !== $.param(existingMapQuery.getUserQueryParameters())) {
+            var query = $scope.getMapQuery();
+            query.setUserQuery(userQuery);
+            userQueryParams.push("+location_0_coordinate:[* TO *]");
+            query.setUserQueryParameters(userQueryParams);
+            SolrSearchService.setQuery(query,$scope.queryname);
+            SolrSearchService.updateQuery($scope.queryname);
+        }
+    };
+
+    /**
+     * Create a default map query.
+     */
+    $scope.getMapQuery = function() {
+        var query = SolrSearchService.createQuery();
+        // we've modified the default query elsewhere to include only those documents that have location data
+        // var parameters = ["+location_0_coordinate:[* TO *]"];
+        // query.setUserQueryParameters(parameters);
+        // @todo to get ALL records we need two queries ... one for the total document count and the other for the actual records
+        query.setOption('fl','abstract,country,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate');
+        query.setOption("rows","5000"); // we're assuming the count will always be less than this
+        return query;
+    };
 
     /**
      * Get a map marker.
@@ -100,16 +137,37 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
      * Initialize the controller.
      */
     $scope.init = function () {
-        // handle update events from the search service.
-        $scope.$on($scope.queryname, function () {
+        // redefine the default search query to ensure that only records with
+        // location properties show up in the results
+        SolrSearchService.createQuery = function() {
+            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
+            query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
+            query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
+            query.setOption("wt", "json");
+            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setUserQueryParameters(["+location_0_coordinate:[* TO *]"]);
+            return query;
+        };
+        var defaultQuery = SolrSearchService.createQuery();
+        SolrSearchService.setQuery(defaultQuery,'defaultQuery');
+        SolrSearchService.updateQuery();
+        // handle update events from the search service on the map query
+        $scope.$on($scope.queryname, function() {
             $scope.update();
+        });
+        // handle update events from the search service on the default query
+        $scope.$on('defaultQuery', function() {
+            $scope.checkUpdate();
         });
         // handle update events from the selection set service
         $scope.$on("selectionSetUpdate", function() {
             $scope.select();
         });
-        // update the search results
-        $scope.setUserQuery($scope.userquery);
+        // create a new mapping query
+        var mapQuery = $scope.getMapQuery();
+        // set and update the query
+        SolrSearchService.setQuery(mapQuery,$scope.queryname);
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -154,22 +212,6 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             infoWindow.setContent(Content);
             infoWindow.open(Map, Marker);
         });
-    };
-
-    /**
-     * Set the user query. Because the default Solr search query does not include the additional parameters required
-     * for location based search, we provide this method here to handle updates on the user query before passing them
-     * on to the search service.
-     * @param Query
-     */
-    $scope.setUserQuery = function(Query) {
-        var query = SolrSearchService.getQuery($scope.queryname);
-        var parameters = ["+location_0_coordinate:[* TO *]"]; // select only those documents that have location data
-        // @todo to get ALL records we need two queries ... one for the total document count and the other for the actual records
-        query.setOption("rows","5000"); // we're assuming the count will always be less than this
-        query.setUserQuery(Query);
-        query.setUserQueryParameters(parameters);
-        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**

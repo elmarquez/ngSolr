@@ -450,10 +450,6 @@ angular.module('SolrSearchService',[]).
             } else {
                 svc.queries[defaultQueryName] = svc.createQuery(CONSTANTS, $http, $rootScope);
             }
-            // update the search results
-            if (CONSTANTS.DEFER_FIRST_SEARCH_SERVICE_UPDATE !== true) {
-                svc.update();
-            }
         };
 
         /**

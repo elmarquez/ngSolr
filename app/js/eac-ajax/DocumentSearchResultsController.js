@@ -134,7 +134,7 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
             $scope.update();
         });
         // update the search results
-        $scope.update();
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**

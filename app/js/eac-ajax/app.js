@@ -50,9 +50,9 @@ app.config(['$routeProvider', function($routeProvider) {
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate',
+    DEFAULT_FIELDS: 'abstract,country,fromDate,id,localtype,referrer_uri,region,title,toDate',
     DEFAULT_QUERY: '*:*',
-    DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
+    DEFER_FIRST_SEARCH_SERVICE_UPDATE: true,
     FACET_DELIMITER: '&&',
     GOOGLE_ANALYTICS: false,
     GOOGLE_MAPS_API: 'AIzaSyAKoxr2KxRN2tSE7skC8_bqXQgmstFlmwU',
@@ -61,7 +61,7 @@ app.constant("CONSTANTS", {
     ITEMS_PER_PAGE: 10,
     MAP_FORCE_START_LOCATION: true,
     MAP_LEFT_PANEL_WIDTH: "320px",
-    MAP_START_LATITUDE: '-32.3456',
+    MAP_START_LATITUDE: '-30.3456',
     MAP_START_LONGITUDE: '141.4346',
     MAX_FIELD_LENGTH: 256,
     QUERY_DELIMITER: '!',

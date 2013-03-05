@@ -34,7 +34,7 @@
         <script type="text/javascript" src="js/eac-ajax/SelectionSetService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/app-locationsearch.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/app.js"></script>
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&sensor=true"></script>
         <script type="text/javascript" src="js/google/markerclusterer.js"></script>
@@ -79,7 +79,7 @@
                     <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
                         <div id="search-box" class="input-append">
                             <input type="text" id="query" name="q" ng-model="userquery" placeholder="Enter keywords to search for" ui-items="getHints(userquery)" auto-complete autocomplete="off" style="width:380px" />
-                            <button class="btn" ng-click="submit()">Search</button>
+                            <button class="btn">Search</button>
                         </div>
                     </form>
                 </div>
@@ -88,13 +88,13 @@
         <!-- /search-bar -->
 
         <!-- content -->
-        <section id="content">
+        <section id="content" ng-controller="MapController" ng-init="init()">
 
             <!-- search panel -->
             <div id="search-panel" class="column-320 bs-docs-sidebar">
                 <div class="inset">
 
-                    <div class="notice">Please be aware that some location results may be inaccurate. We appreciate your <a href="#">feedback</a> to help improve the accuracy of our records.</div>
+                    <div class="notice">Please be aware that some location results may be inaccurate. We appreciate your <a href="#">feedback</a> to help improve their accuracy.</div>
 
                     <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="querynamme='docsQuery';itemsPerPage=5;pagesPerSet=5;maxFieldLength=128;init();">
                         <h6>Search Results ({{totalResults}} found)</h6>
@@ -149,7 +149,7 @@
 
             <!-- result panel -->
             <div id="result-panel">
-                <div id="map" ng-controller="MapController" ng-init="init()"></div>
+                <div id="map"></div>
             </div>
             <!-- result panel -->
 
