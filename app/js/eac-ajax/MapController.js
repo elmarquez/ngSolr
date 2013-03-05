@@ -66,6 +66,15 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         }
     };
 
+    /**
+     * Compare two arrays are determine if they are equal.
+     * @param ary1
+     * @param ary2
+     */
+    function arraysAreEqual(ary1,ary2){
+        return (ary1.join('') == ary2.join(''));
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -75,13 +84,13 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
      */
     $scope.checkUpdate = function() {
         var defaultQuery = SolrSearchService.getQuery();
-        var userQuery = defaultQuery.getUserQuery();
-        var userQueryParams = defaultQuery.getUserQueryParameters();
         var existingMapQuery = SolrSearchService.getQuery($scope.queryname);
         // if the user specified query elements have changed, then create a
         // new location query and update the view
         if (defaultQuery.getUserQuery() !== existingMapQuery.getUserQuery() ||
-            $.param(defaultQuery.getUserQueryParameters()) !== $.param(existingMapQuery.getUserQueryParameters())) {
+            !arraysAreEqual(defaultQuery.getUserQueryParameters(),existingMapQuery.getUserQueryParameters())) {
+            var userQuery = defaultQuery.getUserQuery();
+            var userQueryParams = defaultQuery.getUserQueryParameters();
             var query = $scope.getMapQuery();
             query.setUserQuery(userQuery);
             userQueryParams.push("+location_0_coordinate:[* TO *]");
