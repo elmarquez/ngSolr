@@ -31,7 +31,6 @@
         <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/FacetSelectionController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/MapMarkerService.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SearchHistoryController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SelectionSetService.js"></script>
@@ -135,7 +134,7 @@
                         <!-- function facet controller -->
 
                         <!-- type facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('type')" ng-cloak>
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('localtype')" ng-cloak>
                             <li><b>Type</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -212,6 +211,7 @@
                         <div id="search-results" class="column-512" ng-cloak>
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
+                            <div id="summary">Search Results ({{totalResults}} found)</div>
                             <article ng-repeat="doc in documents" class="document">
                                 <a ng-href="{{doc.referrer_uri}}" class="title">{{doc.title}}</a>
                                 <div class="source">{{doc.referrer_uri}}</div>

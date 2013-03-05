@@ -102,6 +102,13 @@ a {
 label {
     font-size: small;
 }
+.notice {
+    background: #ffffe0;
+    border: 1px solid #ffe4b5;
+    font-size: small;
+    line-height: 1.4em;
+    padding: 5px;
+}
 
 /*--------------------------------------------------------*/
 /* Search Results Graphics                                */
@@ -109,9 +116,14 @@ label {
 /*--------------------------------------------------------*/
 /* Document Search Results                                */
 
-.document-search-results {}
-.document-search-results-pager {
-    padding-top: 20px;
+#search-results>#summary {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    padding-bottom: 20px;
+}
+.search-results-pager {
 }
 .reading-column {
     max-width: 512px;
@@ -201,6 +213,8 @@ label {
     font-weight: bold;
 }
 .infowindow .address {
+    font-size: small;
+    font-style: italic;
 }
 .infowindow .existdates {
     font-size: small;

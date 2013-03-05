@@ -50,7 +50,7 @@ app.config(['$routeProvider', function($routeProvider) {
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,fromDate,id,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate,type',
+    DEFAULT_FIELDS: 'abstract,country,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',

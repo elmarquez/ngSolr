@@ -164,7 +164,7 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
         // get new results
         var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
-            $scope.totalResults = results.docs.length;
+            $scope.totalResults = results.numFound;
             $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
             $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
             // add new results
