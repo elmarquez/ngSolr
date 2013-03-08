@@ -90,14 +90,16 @@ Current:
    if there is a starting search query.  Execute that query.
  > Query term highlighting in search results
  > Add date field into the title output
+ > Create documentation that explains how to use the tool, what it does
 
 0.5.4
 
  > Service, controller unit tests!
  > Icon or coloured identifier for state in document search results
+ > May need to encapsulate user search query in () before submitting
 
- ? Split map query from document query in location based search view
-
+ * Created a diagram explaining workflow around indexing, visualization
+ * Split map query from document query in location based search view
  * Fixed formatting of document search results in map view
  * MapController listens for updates on the SelectionSetService and puts focus on selected item
  * One map info window should be open at a time
