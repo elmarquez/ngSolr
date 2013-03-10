@@ -43,7 +43,7 @@ function SolrFacet(Field,Value) {
     self.getUrlFragment = function() {
         // this is used to delimit the start of the facet query in the URL and aid parsing
         var query = '&&'; // delimiter should come from the CONSTANTS field
-        query += '&fq=' + self.field + ':' + self.replaceSpaces(self.value);
+        query += '&fq=' + self.field + ':(' + self.replaceSpaces(self.value) + ")";
         for (var option in self.options) {
             if (self.options.hasOwnProperty(option)) {
                 query = query + "&" + option + "=" + self.options[option];
@@ -57,7 +57,7 @@ function SolrFacet(Field,Value) {
      * @param Str
      */
     self.replaceSpaces  = function(Str) {
-        return Str.replace(' ','*');
+        return Str.replace(' ','?');
     };
 
     /**
