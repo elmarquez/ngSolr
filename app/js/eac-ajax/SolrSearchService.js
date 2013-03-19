@@ -14,7 +14,7 @@
  * @param Value Field value
  * @see http://wiki.apache.org/solr/SimpleFacetParameters#rangefaceting
  */
-function SolrFacet(Field,Value) {
+function SolrFacet(Field, Value) {
 
     var self = this;
 
@@ -100,7 +100,7 @@ function SolrFacet(Field,Value) {
  * @param Url URL to Solr host
  * @param Core Name of Solr core
  */
-function SolrQuery(Url,Core) {
+function SolrQuery(Url, Core) {
 
     var self = this;
 
