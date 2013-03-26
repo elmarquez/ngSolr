@@ -80,22 +80,6 @@ angular.module('Utils',[]).factory('Utils', [function () {
         return Val.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     };
 
-    /*
-    svc.trim = function(Val) {
-        if (Val) {
-            // remove preceding white space
-            while (Val.length >= 1 && Val[0] == ' ') {
-                Val = Val.substring(1,Val.length-1);
-            }
-            // remove trailing white space
-            while (Val.length >= 1 && Val[Val.length-1] == ' ') {
-                Val = Val.substring(0,Val.length-2);
-            }
-        }
-        return Val;
-    };
-    */
-
     /**
      * Remove leading zero from a string.
      * @param Val

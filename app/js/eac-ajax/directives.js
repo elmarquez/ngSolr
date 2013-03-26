@@ -23,3 +23,9 @@ directives.directive('autoComplete', function ($timeout) {
         }, true);
     };
 });
+
+directives.directive('imagegrid', function() {
+   return function (scope, element, attrs) {
+
+   }
+});

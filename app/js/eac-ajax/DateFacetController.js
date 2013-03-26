@@ -42,9 +42,11 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
         if (Items && Items.docs && Items.docs.length > 0) {
             var item = Items.docs[0];
             var date = item[FieldName];
-            // clip the date portion of the field
-            var i = date.indexOf('-');
-            return date.substring(0,i);
+            if (date != undefined) {
+                // clip the date portion of the field
+                var i = date.indexOf('-');
+                return date.substring(0,i);
+            }
         }
         return 0;
     }

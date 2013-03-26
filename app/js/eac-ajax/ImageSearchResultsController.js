@@ -16,20 +16,18 @@
 function ImageSearchResultsController($scope, SolrSearchService, Utils) {
 
 	// parameters
-    $scope.columns = 4;                 // the number of items per row
-    $scope.documents = [];              // document search results
+    $scope.itemsPerPage = 16;           // the number of items per page
+    $scope.itemsPerRow = 4;             // the number of items per row
     $scope.page = 0;                    // the current search result page
     $scope.pages = [];                  // list of pages in the current navigation set
     $scope.pagesPerSet = 10;            // the number of pages in a navigation set
-    $scope.rows = 4;                    // the number of rows per page
+    $scope.rows = [];                   // document search results
     $scope.queryname = "defaultQuery";  // the query name
     $scope.startPage = 0;               // zero based start page index
     $scope.totalPages = 1;              // count of the total number of result pages
     $scope.totalResults = 0;            // count of the total number of search results
     $scope.totalSets = 1;               // count of the number of search result sets
 	$scope.userQuery = '';
-
-    $scope.itemsPerPage = $scope.rows * $scope.columns; // the number of items per page
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -95,11 +93,21 @@ function ImageSearchResultsController($scope, SolrSearchService, Utils) {
 	};
 
     /**
+     * Set the current page.
+     * @param PageNumber
+     */
+    $scope.setPage = function(PageNumber) {
+        $scope.page = PageNumber;
+        SolrSearchService.setPage(PageNumber,$scope.queryname);
+        SolrSearchService.updateQuery($scope.queryname);
+    };
+
+    /**
      * Update the controller state.
      */
 	$scope.update = function() {
         // clear current results
-        $scope.documents = [];
+        $scope.rows = [];
         // get new results
         var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
@@ -107,16 +115,20 @@ function ImageSearchResultsController($scope, SolrSearchService, Utils) {
             $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
             $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
             // add new results
+            var count = 0;
+            var row = [];
             for (var i=0;i<results.docs.length && i<$scope.itemsPerPage;i++) {
-                // clean up document fields
-                results.docs[i].fromDate = Utils.formatDate(results.docs[i].fromDate);
-                results.docs[i].toDate = Utils.formatDate(results.docs[i].toDate);
-                Utils.truncateField(results.docs[i],'abstract',$scope.maxFieldLength);
-                // add to result list
-                $scope.documents.push(results.docs[i]);
+                row.push(results.docs[i]);
+                count++;
+                // create a new row
+                if (count >= $scope.itemsPerRow) {
+                    count = 0;
+                    $scope.rows.push(row);
+                    row = [];
+                }
             }
         } else {
-            $scope.documents = [];
+            $scope.rows = [];
             $scope.totalResults = 0;
             $scope.totalPages = 1;
             $scope.totalSets = 1;

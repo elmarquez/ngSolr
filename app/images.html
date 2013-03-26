@@ -27,7 +27,9 @@
 
         <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
         <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/DateFacetController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/eac-ajax/FieldFacetController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/ImageSearchResultsController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
         <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
@@ -73,9 +75,9 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                        <form class="form-inline" ng-submit="$parent.update()">
-                            <div id="search-box" class="input-append" ng-controller="SearchBoxController">
-                                <input type="text" id="query" name="q" ng-model="$parent.userQuery" ng-init="init()" ng-submit="$parent.update()" placeholder="Enter keywords to search for" ui-items="getHints($parent.userQuery)" auto-complete autocomplete="off" style="width:380px" />
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
+                            <div id="search-box" class="input-append">
+                                <input type="text" id="query" name="q" ng-model="userquery" placeholder="Enter keywords to search for" ui-items="getHints(userquery)" auto-complete autocomplete="off" style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
                         </form>
@@ -93,34 +95,92 @@
 
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
-                        Facet controls go here.
+
+                        <!-- type facet controller -->
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('localtype')" ng-cloak>
+                            <li><b>Type</b></li>
+                            <li>
+                                <ul class="facets unstyled">
+                                    <li ng-repeat="item in items" ng-show="items">
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score">({{item.score}})</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- /type facet controller -->
+
+                        <!-- location facet controller -->
+                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('region')" ng-cloak>
+                            <li><b>Region</b></li>
+                            <li>
+                                <ul class="facets unstyled">
+                                    <li ng-repeat="item in items" ng-show="items">
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score">({{item.score}})</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- /location facet controller -->
+
+                        <!-- date range facet controller -->
+                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
+                            <li><b>Dates</b></li>
+                            <li>
+                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
+                                    <table>
+                                        <tr>
+                                            <td style="font-size:small">From</td>
+                                            <td style="font-size:small">To</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-right: 10px;">
+                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                            </td>
+                                            <td>
+                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <button>Update</button>
+                                    <!--
+                                    <label for="fromDate">From</label>
+                                    <label for="toDate">To</label>
+                                    -->
+                                </form>
+                            </li>
+                        </ul>
+                        <!-- /date range facet controller -->
+
                     </div>
                     <!-- /search panel -->
 
                     <!-- result panel -->
-                    <div id="result-panel" class="span5">
-                        <div id="search-results" ng-controller="ImageSearchResultsController" ng-cloak>
-                            <div class="alert alert-error" ng-show="error">{{error}}</div>
-                            <div class="alert alert-info" ng-show="message">{{message}}</div>
-                            <div id="summary">Search Results ({{totalResults}} found)</div>
-                            <!-- images -->
-                            <ul class="thumbnails">
-                                <li ng-repeat="doc in documents" class="image span4">
-                                    <a ng-href="{{doc.referrer_uri}}" class="thumbnail"><img ng-src="{{doc.dobject_proxy}}" alt="{{doc.title}}" /></a>
-                                    <h3>{{doc.title}}</h3>
-                                    <p>{{doc.abstract}}</p>
-                                </li>
-                            </ul>
-                        </div><!-- /search results -->
-
-                        <div class="pagination" ng-hide="error">
-                            <ul>
-                                <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.page=page.number;updateResults();">{{page.name}}</a>
-                                </li>
-                            </ul>
-                        </div><!-- /pagination -->
-
+                    <div id="result-panel" class="span6">
+                        <div ng-controller="ImageSearchResultsController" ng-init="init()" ng-cloak>
+                            <div id="search-results">
+                                <div class="alert alert-error" ng-show="error">{{error}}</div>
+                                <div class="alert alert-info" ng-show="message">{{message}}</div>
+                                <div id="summary">Search Results ({{totalResults}} found)</div>
+                                <!-- images -->
+                                <div ng-repeat="row in rows" class="image-grid-row thumbnails">
+                                    <div ng-repeat="doc in row" class="thumbnail span3">
+                                        <a ng-href="{{doc.html_uri}}" class="thumbnail"><img ng-src="{{doc.dobject_proxy}}" alt="{{doc.title}}" /></a>
+                                        <div class="caption">
+                                            <span class="text-small">{{doc.title}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- /search results -->
+                            <div class="search-results-pager pagination" >
+                                <ul>
+                                    <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
+                                        <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
+                                    </li>
+                                </ul>
+                            </div><!-- /pagination -->
+                        </div>
                     </div><!-- result panel, center column -->
 
                     <!-- metadata panel -->

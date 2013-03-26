@@ -111,9 +111,6 @@ label {
 }
 
 /*--------------------------------------------------------*/
-/* Search Results Graphics                                */
-
-/*--------------------------------------------------------*/
 /* Document Search Results                                */
 
 #search-results>#summary {
@@ -195,6 +192,13 @@ label {
 }
 .pagination ul > li > a {
     cursor: pointer;
+}
+
+/*--------------------------------------------------------*/
+/* Image Search Results                                   */
+
+.image-grid-row {
+    margin-bottom: 20px;
 }
 
 /*--------------------------------------------------------*/

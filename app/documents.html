@@ -215,7 +215,7 @@
                             <article ng-repeat="doc in documents" class="document">
                                 <a ng-href="{{doc.referrer_uri}}" class="title">{{doc.title}}</a>
                                 <div class="source">{{doc.referrer_uri}}</div>
-                                <div class="text">{{doc.abstract}}</div>
+                                <div class="text">{{doc.abstract|trim|truncate}}</div>
                                 <div class="inline">
                                     <span class="region" ng-show="doc.region">{{doc.region}}</span>
                                     <span class="country" ng-show="doc.country">{{doc.country}}</span>
@@ -240,7 +240,8 @@
                     <!-- metadata panel -->
                     <div id="metadata-panel" class="span5" ng-show="sidebar">
                         <div class="column-320 pull-right">
-                            <p>This is an optional metadata or document preview panel.</p>
+                            <p>This is an optional metadata or document preview panel.</p>docs: [
+
                             <div id="graphics"></div>
                             <table class="table table-hover table-condensed" style="width:100%">
                                 <thead><tr><th>Option</th><th>Value</th></tr></thead>
@@ -284,14 +285,6 @@
 
         <!-- view specific scripts -->
         <script type="text/javascript">
-            var data = [40,35,32,29,24,16,9,2];
-            var chart = d3.select("#graphics").append("div").attr("class","chart");
-            chart.selectAll("div")
-                    .data(data)
-                    .enter()
-                    .append("div")
-                    .style("width", function(d) { return d * 5 + "px"; })
-                    .text(function(d) { return d; });
         </script>
 
     </body>
