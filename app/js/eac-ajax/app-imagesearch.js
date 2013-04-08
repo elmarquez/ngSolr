@@ -58,7 +58,7 @@ app.constant("CONSTANTS", {
     GOOGLE_MAPS_API: 'AIzaSyAKoxr2KxRN2tSE7skC8_bqXQgmstFlmwU',
     GOOGLE_MAPS_SENSOR: 'false',
     ICONS: null,
-    ITEMS_PER_PAGE: 10,
+    ITEMS_PER_PAGE: 16,
     MAP_FORCE_START_LOCATION: true,
     MAP_LEFT_PANEL_WIDTH: "320px",
     MAP_START_LATITUDE: null,
