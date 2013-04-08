@@ -50,7 +50,7 @@ var app = angular.module('eacajax', ['Directives','Filters','SolrSearchService',
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,dobject_proxy,dobject_type,dobject_uri,html_uri,id,referrer_uri,region,title',
+    DEFAULT_FIELDS: 'abstract,country,dobj_proxy_medium,dobj_proxy_large,dobj_type,presentation_url,id,region,title',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',
