@@ -50,7 +50,7 @@ var app = angular.module('eacajax', ['Directives','Filters','SolrSearchService',
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,dobj_proxy_medium,dobj_proxy_large,dobj_type,presentation_url,id,region,title',
+    DEFAULT_FIELDS: 'abstract,country,dobj_proxy_large,dobj_proxy_medium,dobj_proxy_small,dobj_type,presentation_url,id,region,title',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',
@@ -67,6 +67,6 @@ app.constant("CONSTANTS", {
     QUERY_DELIMITER: '!',
     SIDEBAR_OPEN: true,
     SOLR_BASE: 'http://dev02.internal:8080',
-    SOLR_CORE: 'EOAS',
+    SOLR_CORE: 'FACP_img',
     SOLR_VERSION: '2.2'
 });

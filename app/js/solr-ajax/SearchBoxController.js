@@ -74,7 +74,7 @@ function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS)
         }
         // create a new query
         var query = SolrSearchService.createQuery();
-        query.setUserQuery($scope.userquery);
+        query.setQuery($scope.userquery);
         SolrSearchService.setQuery(query,$scope.target);
         // update the search results
         SolrSearchService.updateQuery($scope.target);

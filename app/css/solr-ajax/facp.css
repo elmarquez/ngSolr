@@ -1,0 +1,55 @@
+/*--------------------------------------------------------*/
+/* Find and Connect Screen Styles                         */
+
+/*
+.document .region {
+    background: #666;
+    border-radius: 1px;
+    color: #fff;
+    font-size: small;
+    font-weight: normal;
+    padding: 1px 2px 1px 2px;
+}
+
+.document .region .act {
+    background: #ffd700;
+}
+
+.document .region .nsw {
+    background: #87ceeb;
+}
+
+.document .region .nt {
+    background: #ff4500;
+}
+
+.document .region .qld {
+    background: maroon;
+}
+
+.document .region .sa {
+    background: red;
+}
+
+.document .region .tas {
+    background: #006400;
+}
+
+.document .region .vic {
+    background: navy;
+}
+
+.document .region .wa {
+    background: #ffd700;
+}
+*/
+
+.infowindow .thumb {
+    float: left;
+    height: 64px;
+    margin: 0;
+    margin-right: 10px;
+    overflow: hidden;
+    padding: 0;
+    width: 64px;
+}

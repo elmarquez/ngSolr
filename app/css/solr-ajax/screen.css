@@ -129,34 +129,27 @@ label {
     margin-bottom: 10px;
 }
 .document .country {
-    color: #666;
     display: inline;
-    font-size: small;
-    font-style: italic;
-    padding-right: 5px;
-    padding-top: 3px;
 }
 .document .existdates {
-    color: #666;
     display: inline;
-    font-size: small;
-    font-style: italic;
-    padding-top: 3px;
 }
 .document .existdates:before {
-  /* content: "Exist dates: "; */
+    display: inline;
 }
 .document .facets {
     color: #aaa;
     display: none;
     font-size: small;
 }
-.document .region {
-    color: #666;
+.document .meta {
+    color: #708090;
     display: inline;
     font-size: small;
-    font-style: italic;
     padding-top: 3px;
+}
+.document .region {
+    display: inline;
 }
 .document .more {
     font-size: small;
@@ -179,16 +172,18 @@ label {
 .document .text em {
     background: yellow;
 }
+.document .thumb {
+    display: inline;
+    float: right;
+}
 .document .title {
     display: table;
     font-size: medium;
     font-weight: bold;
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 .document .type {
-    color: #999;
-    font-size: small;
-    font-style: italic;
+    display: inline;
 }
 .pagination ul > li > a {
     cursor: pointer;

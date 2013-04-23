@@ -11,9 +11,8 @@
  * Date facet controller filters a query by year range.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
- * @param CONSTANTS Application constants
  */
-function DateFacetController($scope, SolrSearchService, CONSTANTS) {
+function DateFacetController($scope, SolrSearchService) {
 
     var year = new Date();
 
@@ -122,7 +121,6 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
     $scope.submit = function() {
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
-            var parameters = [];
             var yearStart = "-01-01T00:00:00Z";
             var yearEnd = "-12-31T00:00:00Z";
             var dateRange = '';
@@ -133,17 +131,15 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
                 dateRange += " OR ";
                 dateRange += $scope.endDateField + ":[ " + $scope.startDate + yearStart + " TO " + $scope.endDate + yearEnd + " ]";
                 dateRange += ")";
-                parameters.push(dateRange);
+                query.setQueryParameter("dateRange",dateRange);
             } else {
                 // exclusive date constraint: +(startDateField:(startDate TO *) OR endDateField:(* TO endDate))
                 dateRange += "+(";
                 dateRange += $scope.startDateField + ":[ " + $scope.startDate + yearStart + " TO * ] AND ";
                 dateRange += $scope.endDateField + ":[ * TO " + $scope.endDate + yearEnd + " ]";
                 dateRange += ")";
-                parameters.push(dateRange);
+                query.setQueryParameter("dateRange",dateRange);
             }
-            // update the query parameters
-            query.setUserQueryParameters(parameters);
             // update the query results
             SolrSearchService.updateQuery($scope.target);
         }
@@ -182,4 +178,4 @@ function DateFacetController($scope, SolrSearchService, CONSTANTS) {
 };
 
 // inject controller dependencies
-DateFacetController.$inject = ['$scope','SolrSearchService','CONSTANTS'];
+DateFacetController.$inject = ['$scope','SolrSearchService'];

@@ -19,24 +19,25 @@
         </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/eac-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 
-        <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/FacetSelectionController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SearchHistoryController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SelectionSetService.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/app.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/FacetSelectionController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/FieldFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SearchHistoryController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SelectionSetService.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/Utils.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app.js"></script>
 
         <script type="text/javascript" src="js/d3/d3.min.js"></script>
         <script type="text/javascript" src="js/d3/d3.layout.min.js"></script>
@@ -149,7 +150,7 @@
 
                         <!-- location facet controller -->
                         <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('region')" ng-cloak>
-                            <li><b>Region</b></li>
+                            <li><b>State</b></li>
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
@@ -207,25 +208,32 @@
                     <!-- /search panel -->
 
                     <!-- result panel -->
-                    <div id="result-panel" class="span5" ng-controller="DocumentSearchResultsController" ng-init="itemsPerPage=6;init();">
+                    <div id="result-panel" class="span5" ng-controller="DocumentSearchResultsController" ng-init="init();">
                         <div id="search-results" class="column-512" ng-cloak>
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                             <div id="summary">Search Results ({{totalResults}} found)</div>
+
                             <article ng-repeat="doc in documents" class="document">
-                                <a ng-href="{{doc.referrer_uri}}" class="title">{{doc.title}}</a>
-                                <div class="source">{{doc.referrer_uri}}</div>
-                                <div class="text">{{doc.abstract|trim|truncate}}</div>
-                                <div class="inline">
+                                <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
+                                <!-- <div class="source">{{doc.presentation_url}}</div> -->
+                                <div class="thumb" ng-show="doc.dobj_proxy_small">
+                                    <a ng-href="{{doc.presentation_url}}" class="thumbnail">
+                                        <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
+                                    </a>
+                                </div>
+                                <div class="text">{{doc.abstract}}</div>
+                                <div class="meta inline">
                                     <span class="region" ng-show="doc.region">{{doc.region}}</span>
                                     <span class="country" ng-show="doc.country">{{doc.country}}</span>
                                     <div class="existdates">
                                         <span>{{doc.fromDate}}</span>
-                                        <span ng-show="doc.toDate">to</span>
+                                        <span ng-show="doc.toDate">&ndash;</span>
                                         <span>{{doc.toDate}}</span>
                                     </div>
                                 </div>
                             </article>
+
                         </div><!-- /search results -->
                         <div class="search-results-pager pagination" ng-hide="error">
                             <ul>

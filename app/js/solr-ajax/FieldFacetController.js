@@ -102,7 +102,7 @@ function FieldFacetController($scope, $http, SolrSearchService) {
         var results = SolrSearchService.getFacetCounts($scope.queryname);
         if (results && results.facet_fields) {
             if (results.hasOwnProperty('facet_fields')) {
-                for (var i = 0; i < results.facet_fields[$scope.field].length && i <$scope.maxItems; i+=2) {
+                for (var i = 0; i < results.facet_fields[$scope.field].length && $scope.items.length <$scope.maxItems; i+=2) {
                     var label = results.facet_fields[$scope.field][i];
                     var count = results.facet_fields[$scope.field][i+1];
                     var result = new FacetResult(label,count);

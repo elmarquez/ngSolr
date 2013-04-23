@@ -13,7 +13,7 @@
  * @param SolrSearchService Solr search service.
  * @param Utils Utility functions
  */
-function ImageSearchResultsController($scope, SolrSearchService, Utils) {
+function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Utils) {
 
 	// parameters
     $scope.itemsPerPage = 16;           // the number of items per page
@@ -27,7 +27,7 @@ function ImageSearchResultsController($scope, SolrSearchService, Utils) {
     $scope.totalPages = 1;              // count of the total number of result pages
     $scope.totalResults = 0;            // count of the total number of search results
     $scope.totalSets = 1;               // count of the number of search result sets
-	$scope.userQuery = '';
+	$scope.query = '';
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -81,13 +81,24 @@ function ImageSearchResultsController($scope, SolrSearchService, Utils) {
      * Initialize the controller.
      */
 	$scope.init = function() {
+        // redefine the default search query to ensure that only records with
+        // digital objects show up in the results
+        SolrSearchService.createQuery = function() {
+            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
+            query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
+            query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
+            query.setOption("wt", "json");
+            query.setQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setQueryParameter("imageQuery","+dobj_type:*");
+            return query;
+        };
+        var query = SolrSearchService.createQuery();
+        query.setOption("rows",$scope.itemsPerPage);
+        SolrSearchService.setQuery(query,$scope.queryname);
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
             $scope.update();
         });
-        // update the query
-        var query = SolrSearchService.getQuery($scope.queryname);
-        query.setOption("rows",$scope.itemsPerPage);
         // update the search results
         SolrSearchService.updateQuery($scope.queryname);
 	};
@@ -140,4 +151,4 @@ function ImageSearchResultsController($scope, SolrSearchService, Utils) {
 }
 
 // inject dependencies
-ImageSearchResultsController.$inject = ['$scope','SolrSearchService','Utils'];
+ImageSearchResultsController.$inject = ['$scope','CONSTANTS','SolrSearchService','Utils'];

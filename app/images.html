@@ -19,22 +19,23 @@
         </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/eac-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 
-        <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/ImageSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/app-imagesearch.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/FacetSelectionController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/FieldFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/ImageSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/Utils.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app-imagesearch.js"></script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -45,14 +46,14 @@
         <!-- page-header -->
         <header id="page-header">
             <div class="navbar navbar-inverse">
-                <div class="navbar-inner">
+                <div class="navbar-inner" style="padding:0;">
                     <div class="container-fluid">
                         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </a>
-                        <a class="brand" href="#">EAC-CPF Search</a>
+                        <a class="brand-title" href="#">EAC-CPF Search</a>
                         <div class="nav-collapse collapse">
                             <p class="navbar-text pull-right">
                                 Logged in as <a href="#" class="navbar-link">Username</a>
@@ -62,7 +63,7 @@
                                 <li class="active"><a href="#">Images</a></li>
                                 <li><a href="locations.html">Locations</a></li>
                             </ul>
-                        </div><!--/.nav-collapse -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,6 +96,23 @@
 
                     <!-- search panel -->
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
+
+                        <!-- facet selection controller -->
+                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-show="facets.length>0" ng-cloak>
+                            <li><b>Filtering By</b></li>
+                            <li>
+                                <ul class="items unstyled">
+                                    <li ng-repeat="facet in facets">
+                                        <i class="icon-tag"></i>
+                                        <a ng-click="remove($index)">
+                                            <span class="fieldname">{{facet.field}}:</span>
+                                            <span class="value">{{facet.value}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- /facet selection controller -->
 
                         <!-- type facet controller -->
                         <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('localtype')" ng-cloak>

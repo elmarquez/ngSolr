@@ -50,7 +50,7 @@ var app = angular.module('eacajax', ['Directives','Filters','SelectionSetService
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,fromDate,id,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate,type',
+    DEFAULT_FIELDS: 'abstract,country,dobj_proxy_small,fromDate,id,location,location_0_coordinate,location_1_coordinate,presentation_url,region,title,toDate,type',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',
@@ -58,7 +58,7 @@ app.constant("CONSTANTS", {
     GOOGLE_MAPS_API: 'AIzaSyAKoxr2KxRN2tSE7skC8_bqXQgmstFlmwU',
     GOOGLE_MAPS_SENSOR: 'false',
     ICONS: null,
-    ITEMS_PER_PAGE: 10,
+    ITEMS_PER_PAGE: 5,
     MAP_FORCE_START_LOCATION: true,
     MAP_LEFT_PANEL_WIDTH: "320px",
     MAP_START_LATITUDE: '-32.3456',
@@ -67,6 +67,6 @@ app.constant("CONSTANTS", {
     QUERY_DELIMITER: '!',
     SIDEBAR_OPEN: true,
     SOLR_BASE: 'http://dev02.internal:8080',
-    SOLR_CORE: 'EOAS',
+    SOLR_CORE: 'FACP_loc',
     SOLR_VERSION: '2.2'
 });

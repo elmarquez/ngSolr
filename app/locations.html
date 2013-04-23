@@ -19,22 +19,23 @@
         </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/eac-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 
-        <script type="text/javascript" src="js/eac-ajax/directives.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/filters.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/MapController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SelectionSetService.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/eac-ajax/app.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/MapController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SelectionSetService.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/SolrSearchService.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/Utils.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app-locationsearch.js"></script>
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&sensor=true"></script>
         <script type="text/javascript" src="js/google/markerclusterer.js"></script>
@@ -101,8 +102,15 @@
 
                         <div class="document" ng-repeat="doc in documents">
                             <a ng-href="{{doc.url}}" ng-click="clearSelection();select(doc.id)" class="title">{{doc.title}}</a>
-                            <div class="region">{{doc.region[0]}}</div>
                             <div class="summary">{{doc.abstract}}</div>
+                            <div class="meta">
+                                <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                                <div class="existdates">
+                                    <span>{{doc.fromDate}}</span>
+                                    <span ng-show="doc.toDate">&ndash;</span>
+                                    <span>{{doc.toDate}}</span>
+                                </div>
+                            </div>
                         </div><!-- /search results -->
 
                         <div class="search-results-pager pagination" ng-hide="error">

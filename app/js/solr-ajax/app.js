@@ -50,7 +50,7 @@ app.config(['$routeProvider', function($routeProvider) {
  * @constant SOLR_VERSION Version of Solr search interface, result format.
  */
 app.constant("CONSTANTS", {
-    DEFAULT_FIELDS: 'abstract,country,fromDate,id,localtype,referrer_uri,region,title,toDate',
+    DEFAULT_FIELDS: 'abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate',
     DEFAULT_QUERY: '*:*',
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: true,
     FACET_DELIMITER: '&&',
@@ -67,6 +67,6 @@ app.constant("CONSTANTS", {
     QUERY_DELIMITER: '!',
     SIDEBAR_OPEN: true,
     SOLR_BASE: 'http://dev02.internal:8080',
-    SOLR_CORE: 'EOAS',
+    SOLR_CORE: 'FACP_doc',
     SOLR_VERSION: '2.2'
 });

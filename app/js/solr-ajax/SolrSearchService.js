@@ -96,24 +96,24 @@ function SolrFacet(Field, Value) {
 } // end SolrFacet
 
 /**
- * A Solr search query.
+ * A Solr search query. The query is composed of four parts: the user query,
+ * the query parameters, the result options, and the facet parameters. Each
+ * part of the query can be managed individually.
  * @param Url URL to Solr host
  * @param Core Name of Solr core
  */
 function SolrQuery(Url, Core) {
 
     var self = this;
-
-    // parameters
     self.facets = [];               // query facets
     self.facet_counts = {};         // facet counts
     self.highlighting = {};         // query response highlighting
     self.options = {};              // query options
     self.response = {};             // query response
     self.responseHeader = {};       // response header
+    self.query = "*:*";             // the user query
+    self.queryParameters = {};      // query parameters
     self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
-    self.userQuery = "*:*";         // the primary query
-    self.userQueryParameters = [];  // additional query parameters
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -136,25 +136,26 @@ function SolrQuery(Url, Core) {
     };
 
     /**
-     * Add query parameter.
-     * @param Param
+     * Get the facet constraints.
+     * @return {Array}
      */
-    self.addQueryParameter = function(Param) {
-        self.userQueryParameters.push(Param);
+    self.getFacets = function() {
+        return self.facets;
     };
 
     /**
-     * Get the hash portion of the query URL. We UrlEncode the search terms rather than the entire fragment because
-     * it comes out in a much more readable form and still valid.
+     * Get the hash portion of the query URL. We UrlEncode the search terms
+     * rather than the entire fragment because it comes out in a much more
+     * readable form and is still valid.
      */
     self.getHash = function() {
         var query = '';
-        // append query elements
-        query += "q=" + self.userQuery;
-        for (var i=0;i< self.userQueryParameters.length;i++) {
-            query += self.userQueryParameters[i];
+        // append query
+        query += "q=" + self.query;
+        for (var key in self.queryParameters) {
+            query += self.queryParameters[key];
         }
-        // append query parameters
+        // append options
         for (var key in self.options) {
             var val = self.options[key];
             query += "&" + key + "=" + val;
@@ -191,14 +192,14 @@ function SolrQuery(Url, Core) {
      * Get the primary user query value.
      */
     self.getUserQuery = function() {
-        return self.userQuery;
+        return self.query;
     };
 
     /**
      * Get the user query parameters.
      */
     self.getUserQueryParameters = function() {
-        return self.userQueryParameters;
+        return self.queryParameters;
     };
 
     /**
@@ -217,6 +218,14 @@ function SolrQuery(Url, Core) {
             index++;
         }
         if (found) self.facets.splice(index-1,1);
+    };
+
+    /**
+     * Remove a query option by name,
+     * @param Name
+     */
+    self.removeOption = function(Name) {
+        delete self.options[Name];
     };
 
     /**
@@ -255,11 +264,19 @@ function SolrQuery(Url, Core) {
     };
 
     /**
-     * Build a SolrQuery fro the hash portion of the current window location.
+     * Set the primary user query.
+     * @param Query User query
+     */
+    self.setQuery = function(Query) {
+        self.query = Query;
+    };
+
+    /**
+     * Build a SolrQuery from the hash portion of the current window location.
      * @param Query Query or hash portion of the window location
      * @todo this function is completely out of date and needs to be fixed
      */
-    self.setOptionsFromQuery = function(Query) {
+    self.setQueryFromHash = function(Query) {
         var elements = Query.split('&');
         for (var i=0;i<elements.length;i++) {
             var element = elements[i];
@@ -269,6 +286,22 @@ function SolrQuery(Url, Core) {
                 (parts.length==2) ? self.setOption(name,decodeURI(parts[1])) : self.setOption(name,'');
             }
         }
+    };
+
+    /**
+     * Set the user query parameters.
+     * @param Parameter Dictionary of parameters.
+     */
+    self.setQueryParameter = function(Name, Parameter) {
+        self.queryParameters[Name] = Parameter;
+    };
+
+    /**
+     * Set the user query parameters.
+     * @param Parameters Dictionary of parameters.
+     */
+    self.setQueryParameters = function(Parameters) {
+        self.queryParameters = Parameters;
     };
 
     /**
@@ -285,22 +318,6 @@ function SolrQuery(Url, Core) {
      */
     self.setResponseHeader = function(Header) {
         self.responseHeader = Header;
-    };
-
-    /**
-     * Set the primary user query.
-     * @param Query User query
-     */
-    self.setUserQuery = function(Query) {
-        self.userQuery = Query;
-    };
-
-    /**
-     * Set the user query parameters.
-     * @param Parameters
-     */
-    self.setUserQueryParameters = function(Parameters) {
-        self.userQueryParameters = Parameters;
     };
 
 } // end SolrQuery
@@ -349,7 +366,7 @@ angular.module('SolrSearchService',[]).
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
             query.setOption("wt", "json");
-            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setQuery(CONSTANTS.DEFAULT_QUERY);
             return query;
         };
 
@@ -381,8 +398,8 @@ angular.module('SolrSearchService',[]).
                     query.setOption("start", 0);
                     query.setOption("version", CONSTANTS.SOLR_VERSION);
                     query.setOption("wt", "json");
-                    query.setOptionsFromQuery(elements[0]);
-                    query.setUserQuery("q", CONSTANTS.DEFAULT_QUERY);
+                    query.setQueryFromHash(elements[0]);
+                    query.setQuery("q", CONSTANTS.DEFAULT_QUERY);
                     // subsequent elements are facets
                     for (var j = 1; j < elements.length; j++) {
                         var q = elements[j];

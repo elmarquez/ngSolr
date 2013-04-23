@@ -21,6 +21,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
     // parameters
     $scope.clusterManager = null;   // clustering marker manager
     $scope.clusterResults = true;   // use cluster manager
+    $scope.count = 5000;            // the total number of records
     $scope.idToMarkerMap = {};      // id to marker map
     $scope.map = undefined;         // google map
     $scope.markers = [];            // list of markers
@@ -67,18 +68,53 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
     };
 
     /**
-     * Compare two arrays are determine if they are equal.
-     * @param ary1
-     * @param ary2
+     * Determine if two arrays are equal.
+     * @param A Array
+     * @param B Array
+     * @return {Boolean}
      */
-    function arraysAreEqual(ary1,ary2){
-        return (ary1.join('') == ary2.join(''));
+    function arraysAreEqual(A, B) {
+        return (A.join('') == B.join(''));
+    }
+
+    /**
+     * Determine if two objects are equal.
+     * @param A Object
+     * @param B Object
+     * @return {Boolean}
+     * @see http://stackoverflow.com/questions/1068834/object-comparison-in-javascript
+     */
+    function objectsAreEqual(A, B) {
+        // if both x and y are null or undefined and exactly the same
+        if ( A === B ) return true;
+        // if they are not strictly equal, they both need to be Objects
+        if ( ! ( A instanceof Object ) || ! ( B instanceof Object ) ) return false;
+        // they must have the exact same prototype chain, the closest we can do is
+        // test there constructor.
+        if ( A.constructor !== B.constructor ) return false;
+        for ( var p in A ) {
+            // other properties were tested using x.constructor === y.constructor
+            if ( ! A.hasOwnProperty( p ) ) continue;
+            // allows to compare x[ p ] and y[ p ] when set to undefined
+            if ( ! B.hasOwnProperty( p ) ) return false;
+            // if they have the same strict value or identity then they are equal
+            if ( A[ p ] === B[ p ] ) continue;
+            // Numbers, Strings, Functions, Booleans must be strictly equal
+            if ( typeof( A[ p ] ) !== "object" ) return false;
+            // Objects and Arrays must be tested recursively
+            if ( ! Object.equals( A[ p ],  B[ p ] ) ) return false;
+        }
+        for ( p in B ) {
+            // allows x[ p ] to be set to undefined
+            if ( B.hasOwnProperty( p ) && ! A.hasOwnProperty( p ) ) return false;
+        }
+        return true;
     }
 
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Handle update event for a related map view query.  If the user query
+     * Handle update event for a related map view query. If the user query
      * portion of that query has changed, construct a new query in the current
      * view to correspond.
      */
@@ -88,12 +124,12 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         // if the user specified query elements have changed, then create a
         // new location query and update the view
         if (defaultQuery.getUserQuery() !== existingMapQuery.getUserQuery() ||
-            !arraysAreEqual(defaultQuery.getUserQueryParameters(),existingMapQuery.getUserQueryParameters())) {
+            !objectsAreEqual(defaultQuery.getUserQueryParameters(),existingMapQuery.getUserQueryParameters())) {
             var userQuery = defaultQuery.getUserQuery();
             var userQueryParams = defaultQuery.getUserQueryParameters();
             var query = $scope.getMapQuery();
             query.setUserQuery(userQuery);
-            userQueryParams.push("+location_0_coordinate:[* TO *]");
+            userQueryParams[$scope.queryname] = "+location_0_coordinate:[* TO *]";
             query.setUserQueryParameters(userQueryParams);
             SolrSearchService.setQuery(query,$scope.queryname);
             SolrSearchService.updateQuery($scope.queryname);
@@ -105,12 +141,14 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
      */
     $scope.getMapQuery = function() {
         var query = SolrSearchService.createQuery();
-        // we've modified the default query elsewhere to include only those documents that have location data
-        // var parameters = ["+location_0_coordinate:[* TO *]"];
-        // query.setUserQueryParameters(parameters);
-        // @todo to get ALL records we need two queries ... one for the total document count and the other for the actual records
-        query.setOption('fl','abstract,country,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,referrer_uri,region,title,toDate');
-        query.setOption("rows","5000"); // we're assuming the count will always be less than this
+        query.setOption('fl','abstract,country,dobj_proxy_small,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,presentation_url,region,title,toDate');
+        // there is no way to tell Solr to return ALL records, consequently we
+        // need to either tell it to return a very large number of records or
+        // we need to tell it to return exactly the number of records that are
+        // available. There is no processing required if we just ask for a
+        // really large number of documents, so we'll do that here.
+        query.setOption("rows",$scope.count);
+        query.setQueryParameter($scope.queryname,"+location_0_coordinate:[* TO *]");
         return query;
     };
 
@@ -153,13 +191,10 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
             query.setOption("wt", "json");
-            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
-            query.setUserQueryParameters(["+location_0_coordinate:[* TO *]"]);
+            query.setQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setQueryParameter($scope.queryname,"+location_0_coordinate:[* TO *]");
             return query;
         };
-        var defaultQuery = SolrSearchService.createQuery();
-        SolrSearchService.setQuery(defaultQuery,'defaultQuery');
-        SolrSearchService.updateQuery();
         // handle update events from the search service on the map query
         $scope.$on($scope.queryname, function() {
             $scope.update();
@@ -174,7 +209,11 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         });
         // create a new mapping query
         var mapQuery = $scope.getMapQuery();
-        // set and update the query
+        // set and update the document query
+        var defaultQuery = SolrSearchService.createQuery();
+        SolrSearchService.setQuery(defaultQuery,'defaultQuery');
+        SolrSearchService.updateQuery();
+        // set and update the map query
         SolrSearchService.setQuery(mapQuery,$scope.queryname);
         SolrSearchService.updateQuery($scope.queryname);
     };
@@ -244,7 +283,10 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
                     // marker metadata
                     var content = "";
                     content += "<div class='infowindow'>";
-                    content += "<div class='title'><a href='" + item.referrer_uri + "'>" + item.title + "</a></div>";
+                    if (item.dobj_proxy_small) {
+                        content += "<div class='thumb'><a href='" + item.presentation_url + "'>" + "<img src='" + item.dobj_proxy_small + "' />" + "</a></div>";
+                    }
+                    content += "<div class='title'><a href='" + item.presentation_url + "'>" + item.title + "</a></div>";
                     content += "<div class='existdates'>" + Utils.formatDate(item.fromDate) + " - " + Utils.formatDate(item.toDate) + "</div>";
                     // content +=  "<div class='type'>" + item.type + "</div>";
                     content += "<div class='summary'>" + Utils.truncate(item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + "</div>";

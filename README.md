@@ -1,9 +1,10 @@
-EAC-AJAX: Faceted Search Interface to Solr EAC Data Index
-=========================================================
+SOLR-AJAX: AJAX Faceted Search Interface to Apache Solr/Lucene Search Index
+===========================================================================
 
-EAC-AJAX is a single page, Javascript web application for searching and
-presenting EAC-CPF data in Apache Solr. The application is easy to customize
-and deploy. Includes interfaces and display components for:
+SOLR-AJAX is a single page, Javascript web application for searching and
+presenting document, image and location data from an Apache Solr/Lucene search
+index. The application is easy to customize and deploy. It includes interfaces
+and display components for:
 
  * Document search
  * Image search
@@ -18,9 +19,9 @@ Setup
    the EAC-Solr configuration. Use the Solr administration interface to ensure
    that search data is now available. Copy the EAC transform file to your
    project folder.
-3. Download and unzip the EAC-Ajax package. The unzipped archive will contain a
-   number of subdirectories.  Copy the app subdirectory to your web server.
-4. Edit the assets/js/eac-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE
+3. Download and unzip the package. The unzipped archive will contain a number
+   of subdirectories.  Copy the app subdirectory to your web server.
+4. Edit the assets/js/solr-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE
    values with the URL to your Solr search engine interface and the name of the
    Solr core respectively.
 5. Load the index.html page and attempt to execute searches against your
@@ -39,7 +40,7 @@ Testing
 Credits
 -------
 
-EAC-AJAX is a project of the eScholarship Research Center at the University of
+SOLR-AJAX is a project of the eScholarship Research Center at the University of
 Melbourne. For more information about the project, please contact us at:
 
   > eScholarship Research Center
@@ -91,14 +92,13 @@ Current:
  > Query term highlighting in search results
  > Add date field into the title output
  > Create documentation that explains how to use the tool, what it does
-
-0.5.4
-
  > Service, controller unit tests!
  > Icon or coloured identifier for state in document search results
  > May need to encapsulate user search query in () before submitting
 
- * Created a diagram explaining workflow around indexing, visualization
+0.5.4
+
+ * Query parameters are now named so that they can be individually managed by different controllers
  * Split map query from document query in location based search view
  * Fixed formatting of document search results in map view
  * MapController listens for updates on the SelectionSetService and puts focus on selected item
