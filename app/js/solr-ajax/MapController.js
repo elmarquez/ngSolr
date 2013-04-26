@@ -31,7 +31,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
     $scope.userquery = "*:*";       // user query
 
     var categoryToIconMap = {
-        default:"img/icon/information.png",
+        default:"img/icon/house.png",
         corporateBody:"img/icon/corporatebody.png",
         government:"img/icon/corporatebody.png",
         organization:"img/icon/corporatebody.png",

@@ -12,31 +12,48 @@
  * @param $scope Controller scope
  * @param SolrSearchService Document search service
  * @param Utils Utility functions
- * @param CONSTANTS Application constants
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS) {
+function SearchBoxController($scope, SolrSearchService, Utils) {
 
-    $scope.queryname = "searchHintsQuery";
+    // the list of search hints
+    $scope.hints = [];
+
+    // If true, when a user enters a new query string, the target query will be
+    // replaced with a new query and the user query property will be set, If
+    // false, only the user query and start properties will be changed and the
+    // query results will be reloaded.
+    $scope.resetOnChange = false;
+
+    // the field name where search hints are taken from
+    $scope.searchHintsField = 'title';
+
+    // the name of the query that returns the list of search hints
+    $scope.searchHintsQuery = "searchHintsQuery";
+
+    // the name of the main query
     $scope.target = "defaultQuery";
+
+    // the query string provided by the user
     $scope.userquery = "";
 
     // private
-    var fieldname = "title";
-    var tokens = new Array();
+
+    // the minimum number characters that the user should enter before the list
+    // of search hints is displayed
     var minSearchLength = 1;
 
     ///////////////////////////////////////////////////////////////////////////
     
     /**
      * Update the list of search hints.
-     * @param userQuery Current user query fragment
+     * @return {Array}
      */
     $scope.getHints = function() {
-        var items = new Array();
-        if ($scope.userquery.length>= minSearchLength) {
-            for (var i=0;i<tokens.length;i++) {
-                var token = tokens[i];
+        var items = [];
+        if ($scope.userquery.length >= minSearchLength) {
+            for (var i=0;i<$scope.hints.length;i++) {
+                var token = $scope.hints[i];
                 if (Utils.startsWith(token,$scope.userquery)) {
                     items.push(token);
                 }
@@ -49,33 +66,44 @@ function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS)
      * Initialize the controller.
      */
     $scope.init = function() {
-        // create a query to get the list of search hints
+        // create a query to get a list of search hints
         var query = SolrSearchService.createQuery();
         query.setOption("wt","json");
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
-        query.setOption("facet.field",fieldname);
-        SolrSearchService.setQuery(query,$scope.queryname);
+        query.setOption("facet.field",$scope.searchHintsField);
+        SolrSearchService.setQuery(query,$scope.searchHintsQuery);
         // handle update events from the search service.
-        $scope.$on($scope.queryname, function() {
+        $scope.$on($scope.searchHintsQuery, function() {
             $scope.update();
         });
         // update the result set and the display
-        SolrSearchService.updateQuery($scope.queryname);
+        SolrSearchService.updateQuery($scope.searchHintsQuery);
     };
 
     /**
      * Handle submit event.
      */
     $scope.submit = function() {
+        // clean up the user query
         var trimmed = Utils.trim($scope.userquery);
         if (trimmed === '') {
             $scope.userquery = "*:*";
         }
-        // create a new query
-        var query = SolrSearchService.createQuery();
-        query.setQuery($scope.userquery);
-        SolrSearchService.setQuery(query,$scope.target);
+        // if we need to reset the query parameters
+        if ($scope.resetOnChange) {
+            // create a new query and set the user query property
+            // to the value provided by the user
+            var query = SolrSearchService.createQuery();
+            query.setQuery($scope.userquery);
+            SolrSearchService.setQuery(query,$scope.target);
+        } else {
+            // keep the existing search query but change the current user query
+            // value and set the starting document number to 0
+            var query = SolrSearchService.getQuery($scope.target);
+            query.setQuery($scope.userquery);
+            query.setOption("start","0");
+        }
         // update the search results
         SolrSearchService.updateQuery($scope.target);
     };
@@ -84,22 +112,22 @@ function SearchBoxController($scope, $http, SolrSearchService, Utils, CONSTANTS)
      * Update the controller state.
      */
     $scope.update = function() {
-        var results = SolrSearchService.getFacetCounts($scope.queryname);
+        var results = SolrSearchService.getFacetCounts($scope.searchHintsQuery);
         if (results && results.hasOwnProperty('facet_fields')) {
-            // get the term list, which we expect is already
+            // get the hint list, which we expect is already
             // sorted and contains only unique terms
-            var result = results.facet_fields[fieldname];
+            var result = results.facet_fields[$scope.searchHintsField];
             if (result) {
                 // transform all results to lowercase, add to list
                 for (var i=0;i<result.length;i+=2) {
                     var item = result[i].toLowerCase();
-                    tokens.push(item);
+                    $scope.hints.push(item);
                 }
             }
         }
     };
 
-};
+}
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','$http','SolrSearchService', 'Utils', 'CONSTANTS'];
+SearchBoxController.$inject = ['$scope','SolrSearchService', 'Utils'];

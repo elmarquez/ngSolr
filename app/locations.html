@@ -97,12 +97,12 @@
 
                     <div class="notice">Please be aware that some location results may be incorrect. We appreciate your <a href="#">feedback</a> to help improve their accuracy.</div>
 
-                    <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="querynamme='docsQuery';itemsPerPage=5;pagesPerSet=5;maxFieldLength=128;init();">
+                    <div class="document-search-results" ng-controller="DocumentSearchResultsController" ng-init="querynamme='docsQuery';pagesPerSet=5;maxFieldLength=128;init();">
                         <h6>Search Results ({{totalResults}} found)</h6>
 
                         <div class="document" ng-repeat="doc in documents">
                             <a ng-href="{{doc.url}}" ng-click="clearSelection();select(doc.id)" class="title">{{doc.title}}</a>
-                            <div class="summary">{{doc.abstract}}</div>
+                            <!-- <div class="summary">{{doc.abstract}}</div> -->
                             <div class="meta">
                                 <span class="region" ng-show="doc.region">{{doc.region}}</span>
                                 <div class="existdates">

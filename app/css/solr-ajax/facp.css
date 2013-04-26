@@ -1,7 +1,6 @@
 /*--------------------------------------------------------*/
 /* Find and Connect Screen Styles                         */
 
-/*
 .document .region {
     background: #666;
     border-radius: 1px;
@@ -42,7 +41,6 @@
 .document .region .wa {
     background: #ffd700;
 }
-*/
 
 .infowindow .thumb {
     float: left;

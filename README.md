@@ -15,17 +15,18 @@ Setup
 -----
 
 1. Install and configure a web server and Apache Solr search engine.
-2. Install EAC-Solr schema in your Apache Solr core. Index your EAC data using
-   the EAC-Solr configuration. Use the Solr administration interface to ensure
-   that search data is now available. Copy the EAC transform file to your
-   project folder.
+2. Install EACCPF-Solr schema in your Apache Solr core. Index and commit your
+   search data to Solr. Use the Solr administration interface to ensure
+   that search data is now available.
 3. Download and unzip the package. The unzipped archive will contain a number
-   of subdirectories.  Copy the app subdirectory to your web server.
+   of subdirectories. Copy the contents of the app subdirectory to your web
+   server.
 4. Edit the assets/js/solr-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE
    values with the URL to your Solr search engine interface and the name of the
    Solr core respectively.
 5. Load the index.html page and attempt to execute searches against your
-   index. You should see search results appear.
+   index. You should see search results appear. If you have problems, open your
+   browser's console to look for error messages.
 
  
 Testing
@@ -69,9 +70,7 @@ See the LICENSE.txt file for copyright and license information.
 Version History
 ---------------
 
-Current:  
-
-0.6.0
+Backlog:
 
  > Map document search results should update to reflect the zoom level and current view position
  > When a facet constraint is added, it should impact the typeahead filter
@@ -81,22 +80,25 @@ Current:
    than just showing literal matches
  > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
 
-0.5.5
-
- > Diagram and narritive explaining workflow around crawler, visualization
  > Update the location URL when another page is selected
  > Stuck on updating fragment to reflect the current facet query -- facet query
    clears hash
  > On page load, parse the fragment portion of the location URL to determine
    if there is a starting search query.  Execute that query.
  > Query term highlighting in search results
- > Add date field into the title output
- > Create documentation that explains how to use the tool, what it does
  > Service, controller unit tests!
- > Icon or coloured identifier for state in document search results
  > May need to encapsulate user search query in () before submitting
+ > Add date field into the title output
 
-0.5.4
+Current:  
+
+0.5.6
+
+ * Document search results include state and exist dates.
+ * Document and location search results include a thumbnail image.
+ * Minor fixes to
+
+0.5.5
 
  * Query parameters are now named so that they can be individually managed by different controllers
  * Split map query from document query in location based search view
