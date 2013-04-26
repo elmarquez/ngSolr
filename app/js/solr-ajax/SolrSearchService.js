@@ -105,7 +105,7 @@ function SolrFacet(Field, Value) {
 function SolrQuery(Url, Core) {
 
     var self = this;
-    self.facets = [];               // query facets
+    self.facets = {};               // query facets
     self.facet_counts = {};         // facet counts
     self.highlighting = {};         // query response highlighting
     self.options = {};              // query options
@@ -119,34 +119,32 @@ function SolrQuery(Url, Core) {
 
     /**
      * Add facet constraint.
+     * @param Name Facet name
      * @param Facet
      */
-    self.addFacet = function(Facet) {
-        // if the facet is not already present
-        var found = false;
-        var count = 0;
-        while (!found && count < self.facets.length) {
-            var fct = self.facets[count];
-            if (fct.field === Facet.field && fct.value === Facet.value) {
-                found = true;
-            }
-            count++;
+    self.addFacet = function(Name, Facet) {
+        if (!(Name in self.facets)) {
+            self.facets[Name] = Facet;
         }
-        if (!found) self.facets.push(Facet);
     };
 
     /**
-     * Get the facet constraints.
+     * Get the list of facets.
      * @return {Array}
      */
     self.getFacets = function() {
-        return self.facets;
+        var facets = [];
+        for (var facet in self.facets) {
+            facets.push(self.facets[facet]);
+        }
+        return facets;
     };
 
     /**
      * Get the hash portion of the query URL. We UrlEncode the search terms
      * rather than the entire fragment because it comes out in a much more
      * readable form and is still valid.
+     * @return {String}
      */
     self.getHash = function() {
         var query = '';
@@ -161,8 +159,8 @@ function SolrQuery(Url, Core) {
             query += "&" + key + "=" + val;
         }
         // append faceting parameters
-        for (var i=0;i<self.facets.length;i++) {
-            var facet = self.facets[i];
+        for (var key in self.facets) {
+            var facet = self.facets[key];
             query += facet.getUrlFragment();
         }
         // return results
@@ -172,7 +170,7 @@ function SolrQuery(Url, Core) {
     /**
      * Get option value.
      * @param Name Option name
-     * @return undefined value or undefined if not found.
+     * @return {String} undefined value or undefined if not found.
      */
     self.getOption = function(Name) {
         if (self.options[Name]) {
@@ -204,20 +202,16 @@ function SolrQuery(Url, Core) {
 
     /**
      * Remove facet constraint.
-     * @param Facet
+     * @param Name Facet name
      */
-    self.removeFacet = function(Facet) {
-        // if the facet is found
-        var found = false;
-        var index = 0;
-        while (!found && index < self.facets.length) {
-            var fct = self.facets[index];
-            if (fct.field === Facet.field && fct.value === Facet.value) {
-                found = true;
+    self.removeFacet = function(Name) {
+        for (var key in self.facets) {
+            var facet = self.facets[key];
+            if (facet.field == Name) {
+                delete self.facets[key];
+                return;
             }
-            index++;
         }
-        if (found) self.facets.splice(index-1,1);
     };
 
     /**

@@ -21,12 +21,14 @@
 function FieldFacetController($scope, $http, SolrSearchService) {
 
     // parameters
-    $scope.facets = [];             // list of current query facets
-    $scope.field = '';              // facet field name and name of query
-    $scope.items = [];              // list of facet values for the specified field
-    $scope.maxItems = 7;            // max number of results to display
-    $scope.queryname = '';          // query name
-    $scope.target = 'defaultQuery'; // the target search query
+    $scope.facets = [];                 // list of current query facets
+    $scope.field = '';                  // facet field name and name of query
+    $scope.items = [];                  // list of facet values for the specified field
+    $scope.maxItems = 7;                // max number of results to display
+    $scope.queryname = '';              // query name
+    $scope.target = 'defaultQuery';     // the target search query
+    $scope.updateOnInit = false;        // update the facet list during init
+    $scope.updateOnTargetChange = true; // update facet list to reflect target results
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -49,17 +51,30 @@ function FieldFacetController($scope, $http, SolrSearchService) {
     $scope.add = function($event,Index) {
         // create a new facet constraint
         var facet = SolrSearchService.createFacet($scope.field,$scope.items[Index].value);
-        // check to see if the selected facet is already in the list!
+        // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) == -1) {
             // add the facet, update search results
             var query = SolrSearchService.getQuery($scope.target);
             if (query) {
-                query.addFacet(facet);
+                query.addFacet($scope.queryname,facet);
                 SolrSearchService.updateQuery($scope.target);
             }
         }
         // @see https://github.com/angular/angular.js/issues/1179
         $event.preventDefault();
+    };
+
+    /**
+     * Handle update event from the target query. Update the facet list to
+     * reflect the target query result set.
+     */
+    $scope.handleTargetUpdate = function() {
+        // get the target user query
+        var query = SolrSearchService.getQuery($scope.target);
+        var userquery = query.getUserQuery();
+        query = SolrSearchService.getQuery($scope.queryname);
+        query.setQuery(userquery);
+        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -83,13 +98,23 @@ function FieldFacetController($scope, $http, SolrSearchService) {
         query.setOption("rows","0");
         query.setOption("wt","json");
         SolrSearchService.setQuery(query,$scope.queryname);
-        SolrSearchService.updateQuery($scope.queryname);
-        // handle update events on the query
+        // handle update events on the query and refresh
+        // the facet list
         $scope.$on($scope.queryname, function () {
             $scope.update();
         });
-        // update the query
-        $scope.update();
+        // watch the target query for updates and refresh our
+        // facet list when the target changes
+        if ($scope.updateOnTargetChange) {
+            $scope.$on($scope.target, function () {
+                $scope.handleTargetUpdate();
+            });
+        }
+        // if we should update the facet list during init
+        if ($scope.updateOnInit) {
+            SolrSearchService.updateQuery($scope.queryname);
+            $scope.update();
+        }
     };
 
     /**

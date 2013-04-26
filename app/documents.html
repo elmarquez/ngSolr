@@ -19,11 +19,15 @@
         </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider/slider.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
+
+        <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" media="screen" />
         <!-- scripts -->
-        <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 
         <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
@@ -108,10 +112,9 @@
                             <li><b>Filtering By</b></li>
                             <li>
                                 <ul class="items unstyled">
-                                    <li ng-repeat="facet in facets">
+                                    <li class="facet" ng-repeat="facet in facets">
                                         <i class="icon-tag"></i>
                                         <a ng-click="remove($index)">
-                                            <span class="fieldname">{{facet.field}}:</span>
                                             <span class="value">{{facet.value}}</span>
                                         </a>
                                     </li>
@@ -127,7 +130,7 @@
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
                                         <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                        <span class="facet-score">({{item.score}})</span>
+                                        <span class="facet-score" ng-show="item.score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>
@@ -141,7 +144,7 @@
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
                                         <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                        <span class="facet-score">({{item.score}})</span>
+                                        <span class="facet-score" ng-show="item.score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>
@@ -155,7 +158,7 @@
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
                                         <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                        <span class="facet-score">({{item.score}})</span>
+                                        <span class="facet-score" ng-show="item.score">({{item.score}})</span>
                                     </li>
                                 </ul>
                             </li>
@@ -163,7 +166,7 @@
                         <!-- /location facet controller -->
 
                         <!-- date range facet controller -->
-                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
+                        <ul id="date-range-panel" class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
                                 <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
@@ -181,11 +184,7 @@
                                             </td>
                                         </tr>
                                     </table>
-                                    <button>Update</button>
-                                    <!--
-                                    <label for="fromDate">From</label>
-                                    <label for="toDate">To</label>
-                                    -->
+                                    <button style="position: absolute; left: -9999px; width: 1px; height: 1px;">Update</button>
                                 </form>
                             </li>
                         </ul>
@@ -242,6 +241,16 @@
                                 </li>
                             </ul>
                         </div><!-- /pagination -->
+
+                        <!-- display results on map -->
+                        <div style="display:block;font-size:small;margin:0 0 10px 0;padding:0px;" class="span4">
+                            <a href="locations.html"><img src="img/map-results-32.png" class="thumbnail" style="display:inline;"></a>
+                            <span style="display:inline;padding-left:10px;">
+                                <a href="locations.html" style="font-size:x-small;font-weight:normal">Show search results on map</a>
+                            </span>
+                        </div>
+                        <!-- /display results on map -->
+
                     </div>
                     <!-- /result panel -->
 

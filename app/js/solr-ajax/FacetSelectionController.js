@@ -9,6 +9,7 @@
  * @param $scope Controller scope
  */
 function FacetSelectionController($scope, SolrSearchService) {
+
 	// fields
     $scope.facets = [];              // list of facets
     $scope.target = 'defaultQuery';  // target query name
@@ -23,7 +24,7 @@ function FacetSelectionController($scope, SolrSearchService) {
         var facet = $scope.facets[Index];
         var query = SolrSearchService.getQuery($scope.target);
         if (query && facet) {
-            query.removeFacet(facet);
+            query.removeFacet(facet.field);
             SolrSearchService.updateQuery($scope.target);
         }
     };
@@ -35,8 +36,9 @@ function FacetSelectionController($scope, SolrSearchService) {
         $scope.facets = [];
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
-            for (var i=0;i<query.facets.length;i++) {
-                $scope.facets.push(query.facets[i]);
+            var facets = query.getFacets();
+            for (var i=0;i<facets.length;i++) {
+                $scope.facets.push(facets[i]);
             }
         }
     };
@@ -44,11 +46,11 @@ function FacetSelectionController($scope, SolrSearchService) {
     /**
      * Handle update events from the search service.
      */
-    $scope.$on($scope.target, function () {
+    $scope.$on($scope.target, function() {
         $scope.update();
     });
 
-};
+}
 
 // inject controller dependencies
 FacetSelectionController.$inject = ['$scope','SolrSearchService'];

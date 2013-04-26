@@ -29,6 +29,8 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.startDateField = 'startDate';        // facet field name
     $scope.startDateQueryName = 'startDate';    // start date query name
     $scope.target = 'defaultQuery';             // named query to filter
+    $scope.updateOnInit = false;                // update the facet list during init
+    $scope.updateOnTargetChange = true;         // update the date range to reflect the target query results
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +53,24 @@ function DateFacetController($scope, SolrSearchService) {
     }
 
     //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Handle update event from the target query. Update the facet list to
+     * reflect the target query result set.
+     */
+    $scope.handleTargetUpdate = function() {
+        // get the target user query
+        var query = SolrSearchService.getQuery($scope.target);
+        var userquery = query.getUserQuery();
+        // update the start date
+        query = SolrSearchService.getQuery($scope.startDateQueryName);
+        query.setQuery(userquery);
+        SolrSearchService.updateQuery($scope.startDateQueryName);
+        // update the end date
+        query = SolrSearchService.getQuery($scope.endDateQueryName);
+        query.setQuery(userquery);
+        SolrSearchService.updateQuery($scope.endDateQueryName);
+    };
 
     /**
      * Initialize the controller.
@@ -92,9 +112,18 @@ function DateFacetController($scope, SolrSearchService) {
         $scope.$on($scope.endDateQueryName, function () {
             $scope.updateEndDate();
         });
-        // update the start, end dates
-        SolrSearchService.updateQuery($scope.startDateQueryName);
-        SolrSearchService.updateQuery($scope.endDateQueryName);
+        // watch the target query for updates and refresh our
+        // facet list when the target changes
+        if ($scope.updateOnTargetChange) {
+            $scope.$on($scope.target, function () {
+                $scope.handleTargetUpdate();
+            });
+        }
+        // if we should update the date list during init
+        if ($scope.updateOnInit) {
+            SolrSearchService.updateQuery($scope.startDateQueryName);
+            SolrSearchService.updateQuery($scope.endDateQueryName);
+        }
     };
 
     /**
@@ -151,6 +180,28 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.update = function() {
         $scope.updateStartDate();
         $scope.updateEndDate();
+        // create and configure the slider control
+        /*
+        $("#range-slider").slider({
+            min: $scope.startDate,
+            max: $scope.endDate,
+            values: [ $scope.startDate, $scope.endDate ],
+            change: function(event,ui) {
+                $scope.startDate = ui.values[0];
+                $scope.endDate = ui.values[1];
+                // $scope.$apply();
+            },
+            slide: function(event,ui) {
+                // console.log("Slide: " + ui.values[0]  + " " + ui.values[1]);
+            },
+            start: function(event,ui) {
+                // console.log("Start :");
+            },
+            stop: function(event,ui) {
+                // console.log("Stop: " + ui.values[0]  + " " + ui.values[1]);
+            }
+        });
+        */
     };
 
     /**

@@ -268,12 +268,8 @@ label {
 .facet-panel>li:last-child {
     border-bottom: none;
 }
-/*.facet-panel .items li:hover:after {
-    content: " remove";
-    font-style: italic;
-}*/
 .facet-panel .fieldname {
-    font-weight: bold;
+    font-weight: normal;
 }
 .facet-panel .facet-name {
     font-size: small;
@@ -282,8 +278,9 @@ label {
     color: #666;
     font-size: small;
 }
-
-
+.facet-panel .facet a:hover {
+    text-decoration: line-through;
+}
 
 .year-input {
     width: auto;
