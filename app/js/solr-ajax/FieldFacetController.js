@@ -23,6 +23,7 @@ function FieldFacetController($scope, $http, SolrSearchService) {
     // parameters
     $scope.facets = [];                 // list of current query facets
     $scope.field = '';                  // facet field name and name of query
+    $scope.isSelected = false;          // if the field is part of the target query
     $scope.items = [];                  // list of facet values for the specified field
     $scope.maxItems = 7;                // max number of results to display
     $scope.queryname = '';              // query name
@@ -65,10 +66,41 @@ function FieldFacetController($scope, $http, SolrSearchService) {
     };
 
     /**
+     * Update the list of facet values.
+     */
+    $scope.handleFacetListUpdate = function() {
+        // clear current results
+        $scope.items = [];
+        // determine if we've added a facet constraint for this field in the target query
+        // we do if there is, then we will set isSelected for this field controller so that
+        // we can change the display to reflect that
+        var targetquery = SolrSearchService.getQuery($scope.target);
+        var facets = targetquery.getFacetsAsDictionary();
+        if ($scope.queryname in facets) {
+            $scope.isSelected = true;
+        } else {
+            $scope.isSelected = false;
+        }
+        // get the list of facets for the query
+        var query = SolrSearchService.getQuery($scope.queryname);
+        var results = query.getFacetCounts();
+        if (results && results.facet_fields) {
+            if (results.hasOwnProperty('facet_fields')) {
+                for (var i = 0; i < results.facet_fields[$scope.field].length && $scope.items.length <$scope.maxItems; i+=2) {
+                    var label = results.facet_fields[$scope.field][i];
+                    var count = results.facet_fields[$scope.field][i+1];
+                    var result = new FacetResult(label,count);
+                    $scope.items.push(result);
+                }
+            }
+        }
+    };
+
+    /**
      * Handle update event from the target query. Update the facet list to
      * reflect the target query result set.
      */
-    $scope.handleTargetUpdate = function() {
+    $scope.handleTargetQueryUpdate = function() {
         // get the target user query
         var query = SolrSearchService.getQuery($scope.target);
         var userquery = query.getUserQuery();
@@ -101,39 +133,19 @@ function FieldFacetController($scope, $http, SolrSearchService) {
         // handle update events on the query and refresh
         // the facet list
         $scope.$on($scope.queryname, function () {
-            $scope.update();
+            $scope.handleFacetListUpdate();
         });
         // watch the target query for updates and refresh our
         // facet list when the target changes
         if ($scope.updateOnTargetChange) {
             $scope.$on($scope.target, function () {
-                $scope.handleTargetUpdate();
+                $scope.handleTargetQueryUpdate();
             });
         }
         // if we should update the facet list during init
         if ($scope.updateOnInit) {
             SolrSearchService.updateQuery($scope.queryname);
-            $scope.update();
-        }
-    };
-
-    /**
-     * Update the list of facet values.
-     */
-    $scope.update = function() {
-        // clear current results
-        $scope.items = [];
-        // get new results
-        var results = SolrSearchService.getFacetCounts($scope.queryname);
-        if (results && results.facet_fields) {
-            if (results.hasOwnProperty('facet_fields')) {
-                for (var i = 0; i < results.facet_fields[$scope.field].length && $scope.items.length <$scope.maxItems; i+=2) {
-                    var label = results.facet_fields[$scope.field][i];
-                    var count = results.facet_fields[$scope.field][i+1];
-                    var result = new FacetResult(label,count);
-                    $scope.items.push(result);
-                }
-            }
+            $scope.handleFacetListUpdate();
         }
     };
 

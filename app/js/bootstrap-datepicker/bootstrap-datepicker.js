@@ -37,7 +37,7 @@
 			this.element.on({
 				focus: $.proxy(this.show, this),
 				blur: $.proxy(this.hide, this),
-				keyup: $.proxy(this.update, this)
+				keyup: $.proxy(this.handleFacetListUpdate, this)
 			});
 		} else {
 			if (this.component){
@@ -79,7 +79,7 @@
 		this.weekEnd = this.weekStart === 0 ? 6 : this.weekStart - 1;
 		this.fillDow();
 		this.fillMonths();
-		this.update();
+		this.handleFacetListUpdate();
 		this.showMode();
 	};
 	
@@ -150,7 +150,7 @@
 			});
 		},
 		
-		update: function(newDate){
+		handleFacetListUpdate: function(newDate){
 			this.date = DPGlobal.parseDate(
 				typeof newDate === 'string' ? newDate : (this.isInput ? this.element.prop('value') : this.element.data('date')),
 				this.format

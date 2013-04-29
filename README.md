@@ -94,6 +94,7 @@ Current:
 
 0.5.6
 
+ * Added isSelected property to FieldFacetController
  * Document search results include state and exist dates.
  * Document and location search results include a thumbnail image.
  * Minor fixes to

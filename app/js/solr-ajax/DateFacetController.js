@@ -58,7 +58,7 @@ function DateFacetController($scope, SolrSearchService) {
      * Handle update event from the target query. Update the facet list to
      * reflect the target query result set.
      */
-    $scope.handleTargetUpdate = function() {
+    $scope.handleTargetQueryUpdate = function() {
         // get the target user query
         var query = SolrSearchService.getQuery($scope.target);
         var userquery = query.getUserQuery();
@@ -116,7 +116,7 @@ function DateFacetController($scope, SolrSearchService) {
         // facet list when the target changes
         if ($scope.updateOnTargetChange) {
             $scope.$on($scope.target, function () {
-                $scope.handleTargetUpdate();
+                $scope.handleTargetQueryUpdate();
             });
         }
         // if we should update the date list during init
@@ -136,7 +136,7 @@ function DateFacetController($scope, SolrSearchService) {
             $scope.startDate = Start;
             $scope.endDate = End;
             // update the facet constraint
-            $scope.update();
+            $scope.handleFacetListUpdate();
         } else {
             console.log("WARNING: start date is greater than end date");
         }
@@ -177,7 +177,7 @@ function DateFacetController($scope, SolrSearchService) {
     /**
      * Update the controller state.
      */
-    $scope.update = function() {
+    $scope.handleFacetListUpdate = function() {
         $scope.updateStartDate();
         $scope.updateEndDate();
         // create and configure the slider control

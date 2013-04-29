@@ -40,7 +40,7 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
     /**
      * Update the controller state.
      */
-    $scope.update = function() {
+    $scope.handleFacetListUpdate = function() {
         // get the new query
         var newquery = SolrSearchService.getQuery($scope.queryName);
         // if there are existing queries
@@ -64,7 +64,7 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
      * Handle update events from the search service.
      */
     $scope.$on($scope.queryName, function() {
-        $scope.update();
+        $scope.handleFacetListUpdate();
     });
 
 };

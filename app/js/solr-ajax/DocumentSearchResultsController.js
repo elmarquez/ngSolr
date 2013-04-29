@@ -131,7 +131,7 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
     $scope.init = function() {
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
-            $scope.update();
+            $scope.handleFacetListUpdate();
         });
         // update the search results
         SolrSearchService.updateQuery($scope.queryname);
@@ -158,7 +158,7 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
     /**
      * Update the controller state.
      */
-    $scope.update = function() {
+    $scope.handleFacetListUpdate = function() {
         // clear current results
         $scope.documents = [];
         // get new results

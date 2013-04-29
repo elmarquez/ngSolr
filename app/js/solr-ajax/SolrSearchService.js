@@ -105,6 +105,7 @@ function SolrFacet(Field, Value) {
 function SolrQuery(Url, Core) {
 
     var self = this;
+
     self.facets = {};               // query facets
     self.facet_counts = {};         // facet counts
     self.highlighting = {};         // query response highlighting
@@ -119,18 +120,24 @@ function SolrQuery(Url, Core) {
 
     /**
      * Add facet constraint.
-     * @param Name Facet name
+     * @param Name
      * @param Facet
      */
     self.addFacet = function(Name, Facet) {
-        if (!(Name in self.facets)) {
-            self.facets[Name] = Facet;
-        }
+        self.facets[Name] = Facet;
+    };
+
+    /**
+     * Get the facet counts.
+     * @returns {Int} Solr facet counts.
+     */
+    self.getFacetCounts = function() {
+        return self.facet_counts;
     };
 
     /**
      * Get the list of facets.
-     * @return {Array}
+     * @returns {Array} List of facets.
      */
     self.getFacets = function() {
         var facets = [];
@@ -141,10 +148,18 @@ function SolrQuery(Url, Core) {
     };
 
     /**
+     * Get facets as dictionary.
+     * @returns {object}
+     */
+    self.getFacetsAsDictionary = function() {
+        return self.facets;
+    };
+
+    /**
      * Get the hash portion of the query URL. We UrlEncode the search terms
      * rather than the entire fragment because it comes out in a much more
      * readable form and is still valid.
-     * @return {String}
+     * @returns {String} Hash portion of URL
      */
     self.getHash = function() {
         var query = '';
@@ -409,31 +424,6 @@ angular.module('SolrSearchService',[]).
         };
 
         /**
-         * Get the query facet counts.
-         * @param Name Query name
-         */
-        svc.getFacetCounts = function (Name) {
-            if (Name) {
-                return svc.queries[Name].facet_counts;
-            } else {
-                return svc.queries[defaultQueryName].facet_counts;
-            }
-        };
-
-        /**
-         * Get the query facet list.
-         * @param Name Query name
-         * @returns Array Facet list for the named query, or for the default query if no name is specified.
-         */
-        svc.getFacets = function (Name) {
-            if (Name) {
-                return svc.queries[Name].facets;
-            } else {
-                return svc.queries[defaultQueryName].facets;
-            }
-        };
-
-        /**
          * Get the query object. Where a name is not provided, the default query is returned.
          * @param Name Query name
          * @return The query object or undefined if not found.
@@ -535,7 +525,7 @@ angular.module('SolrSearchService',[]).
         /**
          * Update the search results for all queries.
          */
-        svc.update = function () {
+        svc.handleFacetListUpdate = function () {
             // reset messages
             svc.error = null;
             svc.message = null;

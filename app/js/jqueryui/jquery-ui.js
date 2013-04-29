@@ -3798,7 +3798,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 					return el;
 				},
-				update: function(container, p) {
+				handleFacetListUpdate: function(container, p) {
 
 					// 1. If a className is set as 'placeholder option, we don't force sizes - the class is responsible for that
 					// 2. The option 'forcePlaceholderSize can be enabled to force it even if a class name is specified
@@ -3818,7 +3818,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		that.currentItem.after(that.placeholder);
 
 		//Update the size of the placeholder (TODO: Logic to fuzzy, see line 316/317)
-		o.placeholder.update(that, that.placeholder);
+		o.placeholder.handleFacetListUpdate(that, that.placeholder);
 
 	},
 
@@ -3892,7 +3892,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 			this.containers[innermostIndex]._trigger("change", event, this._uiHash(this));
 
 			//Update the placeholder
-			this.options.placeholder.update(this.currentContainer, this.placeholder);
+			this.options.placeholder.handleFacetListUpdate(this.currentContainer, this.placeholder);
 
 			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
 			this.containers[innermostIndex].containerCache.over = 1;

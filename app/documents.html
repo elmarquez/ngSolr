@@ -19,7 +19,6 @@
         </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-slider/slider.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
 
@@ -108,7 +107,10 @@
                     <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
 
                         <!-- facet selection controller -->
-                        <ul class="facet-panel" ng-controller="FacetSelectionController" ng-show="facets.length>0" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FacetSelectionController"
+                            ng-show="facets.length>0"
+                            ng-cloak>
                             <li><b>Filtering By</b></li>
                             <li>
                                 <ul class="items unstyled">
@@ -124,7 +126,11 @@
                         <!-- /facet selection controller -->
 
                         <!-- function facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('function')" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            ng-init="init('function')"
+                            ng-hide="isSelected"
+                            ng-cloak>
                             <li><b>Function</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -138,7 +144,11 @@
                         <!-- function facet controller -->
 
                         <!-- type facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('localtype')" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            ng-init="init('localtype')"
+                            ng-hide="isSelected"
+                            ng-cloak>
                             <li><b>Type</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -152,7 +162,11 @@
                         <!-- /type facet controller -->
 
                         <!-- location facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('region')" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            ng-init="init('region')"
+                            ng-hide="isSelected"
+                            ng-cloak>
                             <li><b>State</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -166,7 +180,11 @@
                         <!-- /location facet controller -->
 
                         <!-- date range facet controller -->
-                        <ul id="date-range-panel" class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
+                        <ul id="date-range-panel"
+                            class="facet-panel"
+                            ng-controller="DateFacetController"
+                            ng-init="init('fromDate','toDate')"
+                            ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
                                 <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
@@ -216,7 +234,7 @@
                             <article ng-repeat="doc in documents" class="document">
                                 <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
                                 <!-- <div class="source">{{doc.presentation_url}}</div> -->
-                                <div class="thumb" ng-show="doc.dobj_proxy_small">
+                                <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
                                     <a ng-href="{{doc.presentation_url}}" class="thumbnail">
                                         <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
                                     </a>

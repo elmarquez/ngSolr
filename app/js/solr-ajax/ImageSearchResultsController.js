@@ -97,7 +97,7 @@ function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Util
         SolrSearchService.setQuery(query,$scope.queryname);
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
-            $scope.update();
+            $scope.handleFacetListUpdate();
         });
         // update the search results
         SolrSearchService.updateQuery($scope.queryname);
@@ -116,7 +116,7 @@ function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Util
     /**
      * Update the controller state.
      */
-	$scope.update = function() {
+	$scope.handleFacetListUpdate = function() {
         // clear current results
         $scope.rows = [];
         // get new results

@@ -8782,7 +8782,7 @@ jQuery.extend({
 
 jQuery.fx.prototype = {
 	// Simple function for setting a style value
-	update: function() {
+	handleFacetListUpdate: function() {
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
 		}
@@ -8878,7 +8878,7 @@ jQuery.fx.prototype = {
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
-			this.update();
+			this.handleFacetListUpdate();
 
 			options.animatedProperties[ this.prop ] = true;
 
@@ -8939,7 +8939,7 @@ jQuery.fx.prototype = {
 				this.now = this.start + ( (this.end - this.start) * this.pos );
 			}
 			// Perform the next step of the animation
-			this.update();
+			this.handleFacetListUpdate();
 		}
 
 		return true;

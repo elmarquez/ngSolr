@@ -197,7 +197,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         };
         // handle update events from the search service on the map query
         $scope.$on($scope.queryname, function() {
-            $scope.update();
+            $scope.handleFacetListUpdate();
         });
         // handle update events from the search service on the default query
         $scope.$on('defaultQuery', function() {
@@ -265,7 +265,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
     /**
      * Update the controller state.
      */
-    $scope.update = function () {
+    $scope.handleFacetListUpdate = function () {
         // clear current markers
         $scope.idToMarkerMap = {};
         infoWindow.close();

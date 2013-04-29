@@ -75,7 +75,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         SolrSearchService.setQuery(query,$scope.searchHintsQuery);
         // handle update events from the search service.
         $scope.$on($scope.searchHintsQuery, function() {
-            $scope.update();
+            $scope.handleFacetListUpdate();
         });
         // update the result set and the display
         SolrSearchService.updateQuery($scope.searchHintsQuery);
@@ -111,8 +111,9 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     /**
      * Update the controller state.
      */
-    $scope.update = function() {
-        var results = SolrSearchService.getFacetCounts($scope.searchHintsQuery);
+    $scope.handleFacetListUpdate = function() {
+        var query = SolrSearchService.getQuery($scope.searchHintsQuery);
+        var results = query.getFacetCounts();
         if (results && results.hasOwnProperty('facet_fields')) {
             // get the hint list, which we expect is already
             // sorted and contains only unique terms

@@ -32,7 +32,7 @@ function FacetSelectionController($scope, SolrSearchService) {
     /**
      * Update the controller state.
      */
-    $scope.update = function() {
+    $scope.handleFacetListUpdate = function() {
         $scope.facets = [];
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
@@ -47,7 +47,7 @@ function FacetSelectionController($scope, SolrSearchService) {
      * Handle update events from the search service.
      */
     $scope.$on($scope.target, function() {
-        $scope.update();
+        $scope.handleFacetListUpdate();
     });
 
 }

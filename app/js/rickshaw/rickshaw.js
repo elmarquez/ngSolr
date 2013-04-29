@@ -500,7 +500,7 @@ Rickshaw.Graph = function(args) {
 		} );
 	};
 
-	this.update = this.render;
+	this.handleFacetListUpdate = this.render;
 
 	this.stackData = function() {
 
@@ -1064,7 +1064,7 @@ Rickshaw.Graph.Annotate = function(args) {
 		self.data[time].boxes.push({content: content, end: end_time});
 	};
 
-	this.update = function() {
+	this.handleFacetListUpdate = function() {
 
 		Rickshaw.keys(self.data).forEach( function(time) {
 
@@ -1149,7 +1149,7 @@ Rickshaw.Graph.Annotate = function(args) {
 		}, this );
 	};
 
-	this.graph.onUpdate( function() { self.update() } );
+	this.graph.onUpdate( function() { self.handleFacetListUpdate() } );
 };
 Rickshaw.namespace('Rickshaw.Graph.Axis.Time');
 
@@ -1354,7 +1354,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				line.series.color = d3.interpolateRgb(line.series.color, d3.rgb('#d8d8d8'))(0.8).toString();
 			} );
 
-			self.graph.update();
+			self.graph.handleFacetListUpdate();
 
 		}, false );
 
@@ -1366,7 +1366,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				}
 			} );
 
-			self.graph.update();
+			self.graph.handleFacetListUpdate();
 
 		}, false );
 	};
@@ -1391,7 +1391,7 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 		$(self.legend.list).sortable( { 
 			containment: 'parent',
 			tolerance: 'pointer',
-			update: function( event, ui ) {
+			handleFacetListUpdate: function( event, ui ) {
 				var series = [];
 				$(self.legend.list).find('li').each( function(index, item) {
 					if (!item.series) return;
@@ -1402,7 +1402,7 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 					self.graph.series[i] = series.shift();
 				}
 
-				self.graph.update();
+				self.graph.handleFacetListUpdate();
 			}
 		} );
 		$(self.legend.list).disableSelection();
@@ -1519,12 +1519,12 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				}
 				
 				s.disabled = true;
-				self.graph.update();
+				self.graph.handleFacetListUpdate();
 			};
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
+				self.graph.handleFacetListUpdate();
 			};
 		} );
 	};
@@ -1569,7 +1569,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		return series.name + ':&nbsp;' + formattedY;
 	},
 
-	update: function(e) {
+	handleFacetListUpdate: function(e) {
 
 		e = e || this.lastEvent;
 		if (!e) return;
@@ -1722,12 +1722,12 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			'mousemove',
 			function(e) {
 				this.visible = true;
-				this.update(e)
+				this.handleFacetListUpdate(e)
 			}.bind(this),
 			false
 		);
 
-		this.graph.onUpdate( function() { this.update() }.bind(this) );
+		this.graph.onUpdate( function() { this.handleFacetListUpdate() }.bind(this) );
 
 		this.graph.element.addEventListener(
 			'mouseout',
@@ -1836,7 +1836,7 @@ Rickshaw.Graph.RangeSlider = function(args) {
 
 				graph.window.xMin = ui.values[0];
 				graph.window.xMax = ui.values[1];
-				graph.update();
+				graph.handleFacetListUpdate();
 
 				// if we're at an extreme, stick there
 				if (graph.dataDomain()[0] == ui.values[0]) {
@@ -2324,7 +2324,7 @@ Rickshaw.Graph.Smoother = function(args) {
 				max: 100,
 				slide: function( event, ui ) {
 					self.setScale(ui.value);
-					self.graph.update();
+					self.graph.handleFacetListUpdate();
 				}
 			} );
 		} );
@@ -2368,7 +2368,7 @@ Rickshaw.Graph.Smoother = function(args) {
 		}
 
 		this.aggregationScale = scale;
-		this.graph.update();
+		this.graph.handleFacetListUpdate();
 	}
 };
 
