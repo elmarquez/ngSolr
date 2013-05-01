@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html class="no-js" ng-app="eacajax">
+<html class="no-js" ng-app="solr-ajax">
     <head>
         <!-- meta -->
         <meta charset="utf-8">
-        <title>EAC-CPF Search Interface to Solr</title>
+        <title>Search Interface to Apache Solr/Lucene</title>
         <meta name="author" content="eScholarship Research Centre, University of Melbourne">
-        <meta name="description" content="Web interface for faceted search of EAC collections in Solr.">
+        <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- icons -->
+        <!--
         <link rel="shortcut icon" href="ico/favicon.ico" />
         <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144x144-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114x114-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72x72-precomposed.png" />
         <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57x57-precomposed.png" />
+        -->
         <!-- stylesheets -->
         <style>
             [ng-cloak] {display: none;}
@@ -20,22 +22,11 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
         <!-- scripts -->
-        <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-
-        <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/FacetSelectionController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/ImageSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/SolrSearchService.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/Utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app-imagesearch.js"></script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -53,7 +44,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </a>
-                        <a class="brand-title" href="#">EAC-CPF Search</a>
+                        <a class="brand-title" href="#">Solr-Ajax</a>
                         <div class="nav-collapse collapse">
                             <p class="navbar-text pull-right">
                                 Logged in as <a href="#" class="navbar-link">Username</a>
@@ -226,9 +217,12 @@
             </div>
         </footer><!-- /footer -->
 
-        <!-- view specific scripts -->
-        <script type="text/javascript">
-        </script>
+        <!-- scripts -->
+        <script type="text/javascript" src="js/solr-ajax/controllers.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app/imageSearch.js"></script>
 
     </body>
 </html>

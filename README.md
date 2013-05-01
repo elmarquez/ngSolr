@@ -1,5 +1,5 @@
-SOLR-AJAX: AJAX Faceted Search Interface to Apache Solr/Lucene Search Index
-===========================================================================
+AJAX Faceted Search Interface to Apache Solr/Lucene Search Index
+================================================================
 
 SOLR-AJAX is a single page, Javascript web application for searching and
 presenting document, image and location data from an Apache Solr/Lucene search
@@ -95,6 +95,7 @@ Current:
 0.5.6
 
  * Added isSelected property to FieldFacetController
+ * Moved getFacets, getFacetCounts methods from SolrSearchService into SolrQuery
  * Document search results include state and exist dates.
  * Document and location search results include a thumbnail image.
  * Minor fixes to

@@ -1,20 +1,17 @@
 #!/bin/bash
 
-SOURCE="../dependencies/angular.js"
-TARGET="../app/assets/js/angular/"
-
-# pull changes from source repo
-cd ../dependencies/angular.js/
-git pull origin master
-
-# build updated angular
-npm install
-rake package
+# pull changes from source repo into temporary directory
+mkdir angular
+cd angular
+wget http://code.angularjs.org/1.0.6/angular-1.0.6.zip
+unzip angular-1.0.6.zip
 
 # copy to target directory
-rm ../../app/assets/js/angular/*
-cp build/* ../../app/assets/js/angular
+rm -fr ../../app/lib/angular/*
+cp -a angular-1.0.6/* ../../app/lib/angular/
 
 # change back to script directory
-cd ../../scripts
+cd ../
 
+# remove the temporary directory
+rm -fr angular
