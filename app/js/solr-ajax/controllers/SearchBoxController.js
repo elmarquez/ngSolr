@@ -26,7 +26,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     $scope.resetOnChange = false;
 
     // the field name where search hints are taken from
-    $scope.searchHintsField = 'title';
+    $scope.searchHintsField = 'title_city';
 
     // the name of the query that returns the list of search hints
     $scope.searchHintsQuery = "searchHintsQuery";
