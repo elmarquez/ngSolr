@@ -1,7 +1,8 @@
-/*
+/**
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
  'use strict';
 
 /*---------------------------------------------------------------------------*/
@@ -11,9 +12,9 @@
  * Image based search controller.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service.
- * @param Utils Utility functions
+ * @param CONSTANTS Application constants
  */
-function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Utils) {
+function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
 
 	// parameters
     $scope.itemsPerPage = 16;           // the number of items per page
@@ -88,7 +89,7 @@ function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Util
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
             query.setOption("wt", "json");
-            query.setQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
             query.setQueryParameter("imageQuery","+dobj_type:*");
             return query;
         };
@@ -151,4 +152,4 @@ function ImageSearchResultsController($scope, CONSTANTS, SolrSearchService, Util
 }
 
 // inject dependencies
-ImageSearchResultsController.$inject = ['$scope','CONSTANTS','SolrSearchService','Utils'];
+ImageSearchResultsController.$inject = ['$scope','SolrSearchService','CONSTANTS'];

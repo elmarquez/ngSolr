@@ -1,4 +1,5 @@
 *~
+*.min.js
 *.zip
 .idea
 app/assets/img/icon
