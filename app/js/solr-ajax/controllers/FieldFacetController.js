@@ -111,6 +111,9 @@ function FieldFacetController($scope, SolrSearchService) {
             }
             // add facets to the item list if they have not already been
             // selected
+            if (!$scope.exclusive && selected_values.length > 0) {
+
+            }
             for (var i=0; i< facet_fields.length; i+=2) {
                 var value = results.facet_fields[$scope.field][i];
                 if (selected_values.indexOf(value) == -1) {

@@ -2,6 +2,7 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
 
 /*---------------------------------------------------------------------------*/
@@ -16,7 +17,6 @@ function DateFacetController($scope, SolrSearchService) {
 
     var year = new Date();
 
-    // parameters
     $scope.dataMaxDate = 0;                     // the latest date found in the result set
     $scope.dataMinDate = 0;                     // the earliest date found in the result set
     $scope.endDate = year.getFullYear();        // end date
@@ -70,6 +70,14 @@ function DateFacetController($scope, SolrSearchService) {
         query = SolrSearchService.getQuery($scope.endDateQueryName);
         query.setUserQuery(userquery);
         SolrSearchService.updateQuery($scope.endDateQueryName);
+    };
+
+    /**
+     * Update the controller state.
+     */
+    $scope.handleUpdate = function() {
+        $scope.updateStartDate();
+        $scope.updateEndDate();
     };
 
     /**
@@ -128,6 +136,7 @@ function DateFacetController($scope, SolrSearchService) {
 
     /**
      * Set the start and end date facet constraint. The start year must be equal to or less than the end year.
+     * @param $event
      * @param Start Start year
      * @param End End year
      */
@@ -136,7 +145,7 @@ function DateFacetController($scope, SolrSearchService) {
             $scope.startDate = Start;
             $scope.endDate = End;
             // update the facet constraint
-            $scope.handleFacetListUpdate();
+            $scope.handleUpdate();
         } else {
             console.log("WARNING: start date is greater than end date");
         }
@@ -175,36 +184,6 @@ function DateFacetController($scope, SolrSearchService) {
     };
 
     /**
-     * Update the controller state.
-     */
-    $scope.handleFacetListUpdate = function() {
-        $scope.updateStartDate();
-        $scope.updateEndDate();
-        // create and configure the slider control
-        /*
-        $("#range-slider").slider({
-            min: $scope.startDate,
-            max: $scope.endDate,
-            values: [ $scope.startDate, $scope.endDate ],
-            change: function(event,ui) {
-                $scope.startDate = ui.values[0];
-                $scope.endDate = ui.values[1];
-                // $scope.$apply();
-            },
-            slide: function(event,ui) {
-                // console.log("Slide: " + ui.values[0]  + " " + ui.values[1]);
-            },
-            start: function(event,ui) {
-                // console.log("Start :");
-            },
-            stop: function(event,ui) {
-                // console.log("Stop: " + ui.values[0]  + " " + ui.values[1]);
-            }
-        });
-        */
-    };
-
-    /**
      * Update the end date field.
      */
     $scope.updateEndDate = function() {
@@ -226,7 +205,7 @@ function DateFacetController($scope, SolrSearchService) {
         }
     };
 
-};
+}
 
 // inject controller dependencies
 DateFacetController.$inject = ['$scope','SolrSearchService'];
