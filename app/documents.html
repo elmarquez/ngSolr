@@ -115,8 +115,8 @@
                         <!-- function facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="init('function')"
-                            ng-hide="isSelected"
+                            ng-init="exclusive=false;init('function')"
+                            ng-hide="selected && exclusive"
                             ng-cloak>
                             <li><b>Function</b></li>
                             <li>
@@ -133,8 +133,8 @@
                         <!-- type facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="init('localtype')"
-                            ng-hide="isSelected"
+                            ng-init="exclusive=false;init('localtype')"
+                            ng-hide="selected && exclusive"
                             ng-cloak>
                             <li><b>Type</b></li>
                             <li>
@@ -151,8 +151,8 @@
                         <!-- location facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="init('region')"
-                            ng-hide="isSelected"
+                            ng-init="exclusive=true;init('region')"
+                            ng-hide="selected && exclusive"
                             ng-cloak>
                             <li><b>State</b></li>
                             <li>
@@ -306,7 +306,6 @@
         <!-- /footer -->
 
         <!-- view specific scripts -->
-        <!--
         <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/controllers/FacetSelectionController.js"></script>
@@ -318,12 +317,14 @@
         <script type="text/javascript" src="js/solr-ajax/services/SelectionSetService.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/SolrSearchService.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/Utils.js"></script>
-        -->
+        <script type="text/javascript" src="js/solr-ajax/app/documentSearch.js"></script>
+        <!--
         <script type="text/javascript" src="js/solr-ajax/controllers.js"></script>
         <script type="text/javascript" src="js/solr-ajax/directives.js"></script>
         <script type="text/javascript" src="js/solr-ajax/filters.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services.js"></script>
         <script type="text/javascript" src="js/solr-ajax/app/documentSearch.js"></script>
+        -->
 
     </body>
 </html>

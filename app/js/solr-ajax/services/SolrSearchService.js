@@ -137,23 +137,10 @@ function SolrQuery(Url, Core) {
     };
 
     /**
-     * Get the list of facets.
-     * @returns {Array} List of facets.
-     * @todo this function should return a dictionary; remove getFacetsAsDictionary()
+     * Get the facet dictionary.
+     * @returns {Array}
      */
     self.getFacets = function() {
-        var facets = [];
-        for (var facet in self.facets) {
-            facets.push(self.facets[facet]);
-        }
-        return facets;
-    };
-
-    /**
-     * Get facets as dictionary.
-     * @returns {object}
-     */
-    self.getFacetsAsDictionary = function() {
         return self.facets;
     };
 
@@ -220,17 +207,11 @@ function SolrQuery(Url, Core) {
     };
 
     /**
-     * Remove facet constraint.
-     * @param Name Facet name
+     * Remove facet by key.
+     * @param Key Facet key
      */
-    self.removeFacet = function(Name) {
-        for (var key in self.facets) {
-            var facet = self.facets[key];
-            if (facet.field == Name) {
-                delete self.facets[key];
-                return;
-            }
-        }
+    self.removeFacet = function(Key) {
+        delete self.facets[Key];
     };
 
     /**
@@ -444,7 +425,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * Get the query response.
          * @param Name Query name
          */
-        svc.getResponse = function (Name) {
+        svc.getResponse = function(Name) {
             if (Name) {
                 return svc.queries[Name].response;
             } else {
@@ -457,7 +438,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * URL when the controller initializes then use that as the initial query,
          * otherwise use the default.
          */
-        svc.init = function (CONSTANTS, $http, $rootScope) {
+        svc.init = function(CONSTANTS, $http, $rootScope) {
             if (svc.windowLocationHasQuery(window.location.hash, CONSTANTS.QUERY_DELIMITER)) {
                 svc.queries[defaultQueryName] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
             } else {
@@ -470,7 +451,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param Val
          * @todo Develop this further
          */
-        svc.isValidQuery = function (Val) {
+        svc.isValidQuery = function(Val) {
             for (var i = 0; i < Val.length; i++) {
                 if (Val[i] != null && Val[i] != ' ') {
                     return true;
@@ -484,7 +465,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param Start The index of the starting document.
          * @param Query Query name
          */
-        svc.setPage = function (Start,Query) {
+        svc.setPage = function(Start,Query) {
             if (Query) {
                 svc.queries[Query].setOption("start",Start);
             } else {
@@ -497,7 +478,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param Query Query object
          * @param Name Query name
          */
-        svc.setQuery = function (Query, Name) {
+        svc.setQuery = function(Query, Name) {
             if (Name) {
                 svc.queries[Name] = Query;
             } else {
@@ -512,7 +493,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param QueryDelimiter
          * @todo this function looks like it been botched somehow in a refactoring
          */
-        svc.setWindowLocation = function (Location, Scope, QueryDelimiter) {
+        svc.setWindowLocation = function(Location, Scope, QueryDelimiter) {
             var url = "";
             if (Scope.view) {
                 url = Scope.view;
@@ -545,7 +526,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * Update the named query.
          * @param Name Query name
          */
-        svc.updateQuery = function (Name) {
+        svc.updateQuery = function(Name) {
             // reset messages
             svc.error = null;
             svc.message = null;
@@ -584,7 +565,7 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param Url Fragment portion of url
          * @param Delimiter Query delimiter
          */
-        svc.windowLocationHasQuery = function (Url, Delimiter) {
+        svc.windowLocationHasQuery = function(Url, Delimiter) {
             var i = Url.indexOf(Delimiter);
             return i != -1;
         };
