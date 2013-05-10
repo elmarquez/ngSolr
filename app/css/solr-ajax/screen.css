@@ -45,7 +45,7 @@ body {
     margin: 10px 0 10px 0;
     padding: 0;
 }
-#search-box #query {
+#search-box #search-box-input {
     font-weight: bold;
 }
 #content {
@@ -299,12 +299,12 @@ label {
 /* Graphics Panel                                         */
 
 .chart div {
-   font: 10px sans-serif;
    background-color: #ddd;
-   text-align: right;
-   padding: 3px;
-   margin: 1px;
    color: white;
+   font: 10px sans-serif;
+   margin: 1px;
+   padding: 3px;
+   text-align: right;
 }
 .chart div:hover {
     background-color: steelblue;

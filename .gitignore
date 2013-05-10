@@ -6,5 +6,6 @@ app/assets/img/icon
 app/assets/img/maki
 app/assets/img/mapiconscollection
 logs/*
+node_modules/
 scripts/npm*
 tmp/

@@ -15,10 +15,10 @@ describe('SolrSearchService:', function() {
     describe('Module:', function() {
 
         beforeEach(function() {
-            angular.mock.module('eacajax');
+            angular.mock.module('solr-ajax');
         });
 
-        it('eacajax should include SolrSearchService service', inject(['SolrSearchService',function(SolrSearchService) {
+        it('should include SolrSearchService service', inject(['SolrSearchService',function(SolrSearchService) {
             expect(SolrSearchService).toBeDefined();
         }]));
     });

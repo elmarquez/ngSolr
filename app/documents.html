@@ -23,9 +23,14 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" media="screen" />
+        <!--
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        -->
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <script>
             // include angular loader, which allows the files to load in any order
             /*
@@ -111,17 +116,36 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
+
                         <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
                             <div id="search-box" class="input-append">
-                                <input type="text" id="query" name="q" ng-model="userquery"
+                                <input searchhints
+                                       autocomplete="off"
+                                       name="q"
+                                       ng-model="userquery"
+                                       placeholder='Enter placename or keywords to search for'
+                                       style="width:380px"
+                                       type='text'
+                                       ui-items="getHints(userquery)"
+                                        />
+                                <button class="btn">Search</button>
+                            </div>
+                        </form>
+
+                        <!--
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
+                            <div id="search-box" class="input-append">
+                                <input type="text" id="search-box-input" name="q" ng-model="userquery"
                                        placeholder="Enter placename or keywords to search for"
                                        ui-items="getHints(userquery)"
-                                       auto-complete
+                                       jqautocomplete
                                        autocomplete="off"
                                        style="width:380px" />
                                 <button class="btn">Search</button>
                             </div>
                         </form>
+                        -->
+
                     </div>
                     <div class="span5">&nbsp;</div>
                 </div>
@@ -258,6 +282,7 @@
                     <!-- result panel -->
                     <div id="result-panel" class="span5" ng-controller="DocumentSearchResultsController" ng-init="init();">
                         <div id="search-results" class="column-512" ng-cloak>
+
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                             <div id="summary">Search Results ({{totalResults}} found)</div>

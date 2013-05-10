@@ -2,6 +2,7 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
 
 /*---------------------------------------------------------------------------*/
@@ -18,6 +19,12 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
 
     // the list of search hints
     $scope.hints = [];
+
+    // the subset of hints displayed to the user
+    $scope.hintlist = [];
+
+    // the maximum number of hints to display at any moment
+    $scope.maxHints = 10;
 
     // If true, when a user enters a new query string, the target query will be
     // replaced with a new query and the user query property will be set, If
@@ -37,29 +44,55 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     // the query string provided by the user
     $scope.userquery = "";
 
-    // private
-
     // the minimum number characters that the user should enter before the list
     // of search hints is displayed
     var minSearchLength = 1;
 
     ///////////////////////////////////////////////////////////////////////////
-    
+
+    $scope.getHintList = function() {
+        $scope.hintlist = $scope.hints.splice(0,10);
+    };
+
     /**
      * Update the list of search hints.
      * @return {Array}
      */
     $scope.getHints = function() {
-        var items = [];
+        var hintlist = [];
         if ($scope.userquery.length >= minSearchLength) {
-            for (var i=0;i<$scope.hints.length;i++) {
+            for (var i=0;i<$scope.hints.length, hintlist.length<$scope.maxHints;i++) {
                 var token = $scope.hints[i];
-                if (Utils.startsWith(token,$scope.userquery)) {
-                    items.push(token);
+                try {
+                    if (token.indexOf($scope.userquery) > -1) {
+                        hintlist.push(token);
+                    }
+                } catch (err) {
+                    continue;
                 }
             }
         }
-        return items;
+        return hintlist;
+    };
+
+    /**
+     * Update the controller state.
+     */
+    $scope.handleUpdate = function() {
+        var query = SolrSearchService.getQuery($scope.searchHintsQuery);
+        var results = query.getFacetCounts();
+        if (results && results.hasOwnProperty('facet_fields')) {
+            // get the hint list, which we expect is already
+            // sorted and contains only unique terms
+            var result = results.facet_fields[$scope.searchHintsField];
+            if (result) {
+                // transform all results to lowercase, add to list
+                for (var i=0;i<result.length;i+=2) {
+                    var item = result[i].toLowerCase();
+                    $scope.hints.push(item);
+                }
+            }
+        }
     };
 
     /**
@@ -75,7 +108,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         SolrSearchService.setQuery(query,$scope.searchHintsQuery);
         // handle update events from the search service.
         $scope.$on($scope.searchHintsQuery, function() {
-            $scope.handleFacetListUpdate();
+            $scope.handleUpdate();
         });
         // update the result set and the display
         SolrSearchService.updateQuery($scope.searchHintsQuery);
@@ -106,26 +139,6 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         }
         // update the search results
         SolrSearchService.updateQuery($scope.target);
-    };
-
-    /**
-     * Update the controller state.
-     */
-    $scope.handleFacetListUpdate = function() {
-        var query = SolrSearchService.getQuery($scope.searchHintsQuery);
-        var results = query.getFacetCounts();
-        if (results && results.hasOwnProperty('facet_fields')) {
-            // get the hint list, which we expect is already
-            // sorted and contains only unique terms
-            var result = results.facet_fields[$scope.searchHintsField];
-            if (result) {
-                // transform all results to lowercase, add to list
-                for (var i=0;i<result.length;i+=2) {
-                    var item = result[i].toLowerCase();
-                    $scope.hints.push(item);
-                }
-            }
-        }
     };
 
 }
