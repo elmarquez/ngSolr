@@ -22,8 +22,6 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.endDate = year.getFullYear();        // end date
     $scope.endDateField = 'endDate';            // facet field name
     $scope.endDateQueryName = 'endDate';        // end date query name
-    $scope.max = 0;                             // the maximum date value, as discovered in the data set
-    $scope.min = 0;                             // the minimum date value, as discovered in the data set
     $scope.inclusive = true;                    // use inclusive search method if true, or exclusive if false
     $scope.startDate = 0;                       // start date
     $scope.startDateField = 'startDate';        // facet field name
@@ -53,6 +51,10 @@ function DateFacetController($scope, SolrSearchService) {
     }
 
     //////////////////////////////////////////////////////////////////////////
+
+    $scope.handleHistogramQueryUpdate = function() {
+
+    };
 
     /**
      * Handle update event from the target query. Update the facet list to
@@ -189,8 +191,7 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.updateEndDate = function() {
         var endDateResults = SolrSearchService.getResponse($scope.endDateQueryName);
         if (endDateResults) {
-            $scope.max = getFirstDateRecord(endDateResults,$scope.endDateField);
-            $scope.endDate = $scope.max;
+            $scope.endDate = getFirstDateRecord(endDateResults,$scope.endDateField);
         }
     };
 
@@ -200,8 +201,7 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.updateStartDate = function() {
         var startDateResults = SolrSearchService.getResponse($scope.startDateQueryName);
         if (startDateResults) {
-            $scope.min = getFirstDateRecord(startDateResults,$scope.startDateField);
-            $scope.startDate = $scope.min;
+            $scope.startDate = getFirstDateRecord(startDateResults,$scope.startDateField);
         }
     };
 

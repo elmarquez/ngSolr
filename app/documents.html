@@ -29,8 +29,9 @@
         -->
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/d3js/d3.v3.min.js"></script>
         <script>
             // include angular loader, which allows the files to load in any order
             /*
@@ -60,6 +61,7 @@
 //                'js/solr-ajax/filters.min.js',
 //                'js/solr-ajax/directives.min.js',
                 'js/solr-ajax/controllers/DateFacetController.js',
+                'js/solr-ajax/controllers/DateRangeHistogramController.js',
                 'js/solr-ajax/controllers/DocumentSearchResultsController.js',
                 'js/solr-ajax/controllers/FacetSelectionController.js',
                 'js/solr-ajax/controllers/FieldFacetController.js',
@@ -131,20 +133,6 @@
                                 <button class="btn">Search</button>
                             </div>
                         </form>
-
-                        <!--
-                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
-                            <div id="search-box" class="input-append">
-                                <input type="text" id="search-box-input" name="q" ng-model="userquery"
-                                       placeholder="Enter placename or keywords to search for"
-                                       ui-items="getHints(userquery)"
-                                       jqautocomplete
-                                       autocomplete="off"
-                                       style="width:380px" />
-                                <button class="btn">Search</button>
-                            </div>
-                        </form>
-                        -->
 
                     </div>
                     <div class="span5">&nbsp;</div>
@@ -243,6 +231,11 @@
                             <li><b>Dates</b></li>
                             <li>
                                 <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
+                                    <div id="date-range-histogram"
+                                         ng-controller="DateRangeHistogramController"
+                                         ng-init="init(startDate,endDate)"
+                                         style="padding:0;width:100%;">
+                                    </div>
                                     <table>
                                         <tr>
                                             <td style="font-size:small">From</td>
