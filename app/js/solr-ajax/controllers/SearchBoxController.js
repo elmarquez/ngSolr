@@ -101,6 +101,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     $scope.init = function() {
         // create a query to get a list of search hints
         var query = SolrSearchService.createQuery();
+        query.setOption("rows","0");
         query.setOption("wt","json");
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
