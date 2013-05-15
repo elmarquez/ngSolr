@@ -10,32 +10,28 @@ and display components for:
  * Image search
  * Map search
 
+A live demo is available online at https://web.esrc.unimelb.edu.au/ECOM/.
+
 
 Setup
 -----
 
-1. Install and configure a web server and Apache Solr search engine.
-2. Install EACCPF-Solr schema in your Apache Solr core. Index and commit your
-   search data to Solr. Use the Solr administration interface to ensure
-   that search data is now available.
-3. Download and unzip the package. The unzipped archive will contain a number
-   of subdirectories. Copy the contents of the app subdirectory to your web
-   server.
-4. Edit the assets/js/solr-ajax/app.js file. Replace the SOLR_BASE and SOLR_CORE
-   values with the URL to your Solr search engine interface and the name of the
-   Solr core respectively.
-5. Load the index.html page and attempt to execute searches against your
-   index. You should see search results appear. If you have problems, open your
-   browser's console to look for error messages.
+This application requires a functioning web server and Apache Solr/Lucene
+search index.
 
- 
-Testing
--------
-
-1. Post and commit the Solr Input Documents from test/solr to your Solr testing 
-   core. Confirm that the data is available from the index.
-2. Configure the application to point to your Solr text core.
-3. Run test.sh
+1. Download and unzip the Solr-AJAX package. The unzipped archive will contain
+   a number of subdirectories. Copy the contents of the app subdirectory to your
+   web server.
+2. Each of the sample HTML search pages (documents.html, images.html,
+   location.html) runs a Javascript application, located in the js/solr-ajax/app
+   folder. Edit the respective application file and replace the SOLR_BASE and
+   SOLR_CORE values with the URL to your Solr search engine and the name of
+   your Solr core respectively. You may also configure any other variables in
+   those files.
+3. Load the HTML search page and attempt to execute searches against your
+   index. If you experience any problems, open your browser console. You
+   should see log entries for each search query that is executed, and
+   information about any errors that may have occurred.
 
 
 Credits
@@ -59,8 +55,11 @@ Thanks:
 
  * Angular.js - http://www.angularjs.org
  * Bootstrap - http://twitter.github.com/bootstrap
- * Bootstrap Datepicker - http://www.eyecon.ro/bootstrap-datepicker/
+ * d3js - http://d3js.org
+ * Google Maps - https://developers.google.com/maps
  * JQuery - http://www.jquery.com
+ * JQuery UI - http://www.jqueryui.com
+
 
 License
 -------
@@ -76,8 +75,6 @@ Backlog:
  > When a facet constraint is added, it should impact the typeahead filter
  > Fuzzy search support : add a "did you mean" result list on the "no results found" view to DocumentSearchResultsController
  > How to create a "related searches: a, b, c" list of queries
- > Autocomplete should show phrases that include the current search term, rather
-   than just showing literal matches
  > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
 
  > Update the location URL when another page is selected
@@ -87,7 +84,6 @@ Backlog:
    if there is a starting search query.  Execute that query.
  > Query term highlighting in search results
  > Service, controller unit tests!
- > May need to encapsulate user search query in () before submitting
  > Add date field into the title output
 
 Current:  
@@ -98,7 +94,7 @@ Current:
  * Moved getFacets, getFacetCounts methods from SolrSearchService into SolrQuery
  * Document search results include state and exist dates.
  * Document and location search results include a thumbnail image.
- * Minor fixes to
+ * Added AutoComplete filter as an alternate to the Bootstrap Typeahead.
 
 0.5.5
 
@@ -216,16 +212,7 @@ Known Issues
    the affected controllers:
    @see https://github.com/angular/angular.js/issues/1179
 
- * Autocomplete does not provide the correct (full) string to the search query.
-   Only the portion of the string entered up to the point at which a search
-   hint is recorded, is then passed on to the query function.
-
  * When the window resizes into a single column, there is a margin left on the
    right and left sides of the menu bar and content section that needs to be
    changed.  The margin needs to be adjusted to improve the appearance.
    Otherwise, the background should be changed so that it hides this problem.
-
- * The date picker fields are too wide and do not adapt their sizes.
-
- * The metadata/graphics panel stays right aligned when in a single column
-   layout.

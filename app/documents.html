@@ -230,23 +230,25 @@
                             ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
-                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
+                                <form class="form-horizontal" ng-submit="submit()" style="margin-bottom:0px;">
                                     <div id="date-range-histogram"
                                          ng-controller="DateRangeHistogramController"
                                          ng-init="init(startDate,endDate)"
                                          style="padding:0;width:100%;">
                                     </div>
-                                    <table>
+                                    <table class="table-horizontal">
                                         <tr>
-                                            <td style="font-size:small">From</td>
-                                            <td style="font-size:small">To</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-right: 10px;">
-                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                            <td style="font-size:small">
+                                                <div class="input-prepend">
+                                                    <span class="add-on">From</span>
+                                                    <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
+                                                </div>
                                             </td>
-                                            <td>
-                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
+                                            <td class="pull-right" style="font-size:small;align:right">
+                                                <div class="input-prepend pull-right">
+                                                    <span class="add-on">To</span>
+                                                    <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
+                                                </div>
                                             </td>
                                         </tr>
                                     </table>
