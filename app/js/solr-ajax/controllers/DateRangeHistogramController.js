@@ -85,7 +85,7 @@ function DateRangeHistogramController($scope, SolrSearchService) {
             startDateQuery.setOption("sort",$scope.startDateField + " asc");
             startDateQuery.setOption("wt","json");
 
-            SolrSearchService.setQuery(query,"histogramQuery" + i);
+            SolrSearchService.setQuery("histogramQuery" + i,query);
         }
         $scope.update();
     };

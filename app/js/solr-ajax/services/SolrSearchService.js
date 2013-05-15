@@ -130,6 +130,16 @@ function SolrQuery(Url, Core) {
     };
 
     /**
+     * Create a new facet.
+     * @param Name
+     * @param Value
+     * @return {Facet}
+     */
+    self.createFacet = function(Name,Value) {
+        return new SolrFacet(Name,Value);
+    };
+
+    /**
      * Get the facet counts.
      * @returns {Int} Solr facet counts.
      */
@@ -259,23 +269,6 @@ function SolrQuery(Url, Core) {
     };
 
     /**
-     * Build a SolrQuery from the hash portion of the current window location.
-     * @param Query Query or hash portion of the window location
-     * @todo this function is completely out of date and needs to be fixed
-     */
-    self.setQueryFromHash = function(Query) {
-        var elements = Query.split('&');
-        for (var i=0;i<elements.length;i++) {
-            var element = elements[i];
-            if (element != null && element != '') {
-                var parts = element.split('=');
-                var name = parts[0].replace('&','');
-                (parts.length==2) ? self.setOption(name,decodeURI(parts[1])) : self.setOption(name,'');
-            }
-        }
-    };
-
-    /**
      * Set a query parameter.
      * @param Name
      * @param Val
@@ -323,16 +316,18 @@ function SolrQuery(Url, Core) {
 /* Service                                                                   */
 
 /**
- * Executes a document search against an Apache Solr/Lucence search index.
- * Provides shared search configuration for multiple controllers in the form
- * of named queries, and a subscriber service to listen for changes on the
- * named query.
+ * Used for managing and executing queries against an Apache Solr/Lucene
+ * search index. The service provides shared search configuration for multiple
+ * controllers in the form of named queries, and a subscriber service to
+ * listen for changes on a named query.
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
  * @param CONSTANTS Application constants
  */
-angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope','$http','$location','CONSTANTS', function($rootScope,$http,$location,CONSTANTS) {
+angular.module('SolrSearchService',[])
+    .factory('SolrSearchService',['$rootScope','$http','$location','CONSTANTS',
+        function($rootScope,$http,$location,CONSTANTS) {
 
         // parameters
         var defaultQueryName = "defaultQuery";  // the name of the default query
@@ -342,16 +337,6 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
         svc.queries = {};                       // named search queries
 
         ///////////////////////////////////////////////////////////////////////////
-
-        /**
-         * Create a new facet.
-         * @param FieldName
-         * @param Value
-         * @return {Facet}
-         */
-        svc.createFacet = function(FieldName,Value) {
-            return new SolrFacet(FieldName,Value);
-        };
 
         /**
          * Build a default query object.
@@ -366,60 +351,73 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
         };
 
         /**
-         * Parse the current query URL to determine the initial view, search query and
-         * facet parameters. Valid view values are list, map, graph.
-         * @param Url Current window location
-         * http://dev02.internal:8080/eac-search/#/view/?&explainOther=&fl=uri%2Ctitle%2Ctext&hl.fl=&indent=on&q=*%3A*&rows=10&start=0&version=2.2&wt=json&&fq=identity_entityType:corporateBody&abc=xyz&zyx=abc&&fq=something:value&abc=xyz=xyz=abc
-         * http://dev02.internal:8080/eac-search/#/view/?&explainOther=&fl=uri%2Ctitle%2Ctext&hl.fl=&indent=on&q=*%3A*&rows=10&start=0&version=2.2&wt=json&&fq=identity_entityType:corporateBody
-         * http://example.com/#/[view]/?&explainOther=&fl=uri%2Ctitle%2Ctext&hl.fl=&indent=on&q=*%3A*&rows=10&start=0&version=2.2&wt=json
+         * Get the query object. Where a name is not provided, the default
+         * query is returned.
+         * @param Name Query name
+         * @return {Object} The query object or undefined if not found.
          */
-        svc.getCurrentQuery = function (Url) {
-            // get the query portion of the path
-            var i = Url.indexOf(CONSTANTS.QUERY_DELIMITER); // @todo not sure if this is correct anymore
-            if (i != -1) {
-                // get the view component of the URL fragment
-                var view = Url.substring(1, i);
-                view = view.replace(new RegExp('/', 'g'), '');
-                // get the query component of the URL fragment
-                var frag = Url.substring(i + 1);
-                var elements = frag.split(CONSTANTS.FACET_DELIMITER);
-                if (elements.length > 0) {
-                    // the first element is the query
-                    var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
-                    query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
-                    query.setOption("hl.fl", svc.highlightingParameters);
-                    query.setOption("indent", "on");
-                    query.setOption("rows", svc.itemsPerPage);
-                    query.setOption("start", 0);
-                    query.setOption("version", CONSTANTS.SOLR_VERSION);
-                    query.setOption("wt", "json");
-                    query.setQueryFromHash(elements[0]);
-                    query.setQuery("q", CONSTANTS.DEFAULT_QUERY);
-                    // subsequent elements are facets
-                    for (var j = 1; j < elements.length; j++) {
-                        var q = elements[j];
-                        var facet = new SolrFacet();
-                        facet.setOptionsFromQuery(q);
-                        // add facet
-                        query.facets.push(facet);
-                    }
-                }
-                // return query
-                return query;
-            }
+        svc.getQuery = function(Name) {
+            return svc.queries[Name];
         };
 
         /**
-         * Get the query object. Where a name is not provided, the default query is returned.
-         * @param Name Query name
-         * @return The query object or undefined if not found.
+         * Parse the current query URL to determine the initial view, search
+         * query and facet parameters. Valid view values are list, map, graph.
+         * @param Hash Window location hash
+         * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
          */
-        svc.getQuery = function(Name) {
-            if (Name) {
-                return svc.queries[Name];
-            } else {
-                return svc.queries[defaultQueryName];
+        svc.getQueryFromHash = function (Hash) {
+            var hash = Hash;
+            if (hash.indexOf('#/') == 0) {
+                hash = hash.substring(2,hash.length);
             }
+            // NOTE: we don't have an effective means of restoring the
+            // relationship between facets and the fields to which they belong,
+            // so we have to remove them from the query when we start
+            var i = hash.indexOf(CONSTANTS.FACET_DELIMITER);
+            if (i > -1) {
+                hash = hash.substring(i,hash.length);
+            }
+            // create a query
+            var query = svc.createQuery();
+            // break the hash up into components. in order, the components
+            // we expect are the user query, optional query parameters,
+            // followed by query options. assign those name/value pairs
+            // to the query
+            var elements = hash.split("&");
+            if (elements.length > 0) {
+                // the first element should be the query followed by any
+                // optional search parameters
+                var e = elements.shift();
+                var parts = e.split("+");
+                // set user query
+                var q = parts.shift();
+                var qparts = q.split('=');
+                (qparts.length==2) ? query.setUserQuery(decodeURI(qparts[1])) : query.setUserQuery('*:*');
+                // set query options
+                for (var option in parts) {
+                    console.log("query option " + option);
+                }
+            }
+            // the remaining elements are query options
+            for (var j=0;j<elements.length;j++) {
+                var element = elements[j];
+                var eparts = element.split('=');
+                var name = eparts[0].replace('&','');
+                (eparts.length==2) ? query.setOption(name,decodeURI(eparts[1])) : query.setOption(name,'');
+            }
+            // subsequent elements are facets
+            /*
+            for (var j = 1; j < elements.length; j++) {
+                var q = elements[j];
+                var facet = new SolrFacet();
+                facet.setOptionsFromQuery(q);
+                // add facet
+                query.facets.push(facet);
+            }
+            */
+            // return the query
+            return query;
         };
 
         /**
@@ -440,31 +438,18 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * otherwise use the default.
          */
         svc.init = function(CONSTANTS, $http, $rootScope) {
-            if (svc.windowLocationHasQuery(window.location.hash, CONSTANTS.QUERY_DELIMITER)) {
-                svc.queries[defaultQueryName] = svc.getCurrentQuery($scope, window.location.hash, CONSTANTS);
+            if (svc.windowLocationHasQuery()) {
+                svc.queries[defaultQueryName] = svc.getQueryFromHash(window.location.hash);
             } else {
-                svc.queries[defaultQueryName] = svc.createQuery(CONSTANTS, $http, $rootScope);
+                svc.queries[defaultQueryName] = svc.createQuery();
             }
-        };
-
-        /**
-         * Determine if the query string is valid.
-         * @param Val
-         * @todo Develop this further
-         */
-        svc.isValidQuery = function(Val) {
-            for (var i = 0; i < Val.length; i++) {
-                if (Val[i] != null && Val[i] != ' ') {
-                    return true;
-                }
-            }
-            return false;
         };
 
         /**
          * Set the starting document in the named query.
          * @param Start The index of the starting document.
          * @param Query Query name
+         * @todo get rid of this function
          */
         svc.setPage = function(Start,Query) {
             if (Query) {
@@ -479,47 +464,30 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
          * @param Query Query object
          * @param Name Query name
          */
-        svc.setQuery = function(Query, Name) {
-            if (Name) {
-                svc.queries[Name] = Query;
-            } else {
-                svc.queries[defaultQueryName] = Query;
+        svc.setQuery = function(Name,Query) {
+            svc.queries[Name] = Query;
+            if (Name === defaultQueryName) {
+                // update the location
             }
         };
 
         /**
-         * Set the fragment portion of the window location to reflect the current search query.
-         * @param Location
-         * @param Scope
-         * @param QueryDelimiter
-         * @todo this function looks like it been botched somehow in a refactoring
+         * Set the fragment portion of the window location to reflect the
+         * default query.
+         * @param Query
          */
-        svc.setWindowLocation = function(Location, Scope, QueryDelimiter) {
-            var url = "";
-            if (Scope.view) {
-                url = Scope.view;
-            }
-            if (Scope.query) {
-                url = url + "/" + QueryDelimiter + Scope.query.getHash();
-            }
-            // set the hash
-            console.log("Setting hash as: " + url);
-            window.location.hash = url;
-            // var loc = location.hash(url);
+        svc.setWindowLocation = function(Query) {
+            window.location.hash = Query.getHash();
         };
 
         /**
-         * Update the search results for all queries.
+         * Update all queries.
          */
-        svc.handleFacetListUpdate = function () {
-            // reset messages
+        svc.update = function () {
             svc.error = null;
             svc.message = null;
-            // update queries
             for (var key in svc.queries) {
-                if (svc.queries.hasOwnProperty(key)) {
-                    svc.updateQuery(key);
-                }
+                svc.updateQuery(key);
             }
         };
 
@@ -546,6 +514,11 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
                         query.setResponse(data.response);
                         query.setResponseHeader(data.responseHeader);
                         $rootScope.$broadcast(Name);
+                        // update the window location if we changed the default
+                        // query
+                        if (Name === defaultQueryName) {
+                            svc.setWindowLocation(query);
+                        }
                     }).error(function (data, status, headers, config) {
                         svc.error = "Could not get search results from server. Server responded with status code " + status + ".";
                         var response = {};
@@ -562,13 +535,16 @@ angular.module('SolrSearchService',[]).factory('SolrSearchService',['$rootScope'
         };
 
         /**
-         * Determine if the current location URL has a query.
-         * @param Url Fragment portion of url
-         * @param Delimiter Query delimiter
+         * Determine if the current location URL has a query. We use a simple
+         * text here to see if the hash starts with some standard chars.
+         * @returns {Boolean} True if the location contains a query, false otherwise.
          */
-        svc.windowLocationHasQuery = function(Url, Delimiter) {
-            var i = Url.indexOf(Delimiter);
-            return i != -1;
+        svc.windowLocationHasQuery = function() {
+            var hash = window.location.hash;
+            if (hash.indexOf('#/q=') != -1) {
+                return true;
+            }
+            return false;
         };
 
         ///////////////////////////////////////////////////////////////////////

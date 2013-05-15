@@ -107,14 +107,14 @@ function DateFacetController($scope, SolrSearchService) {
         startDateQuery.setOption("rows","1");
         startDateQuery.setOption("sort",$scope.startDateField + " asc");
         startDateQuery.setOption("wt","json");
-        SolrSearchService.setQuery(startDateQuery,$scope.startDateQueryName);
+        SolrSearchService.setQuery($scope.startDateQueryName,startDateQuery);
         // build a query that will fetch the latest date in the list
         var endDateQuery = SolrSearchService.createQuery();
         endDateQuery.setOption("fl", $scope.endDateField);
         endDateQuery.setOption("rows","1");
         endDateQuery.setOption("sort",$scope.endDateField + " desc");
         endDateQuery.setOption("wt","json");
-        SolrSearchService.setQuery(endDateQuery,$scope.endDateQueryName);
+        SolrSearchService.setQuery($scope.endDateQueryName,endDateQuery);
         // listen for updates on queries
         $scope.$on($scope.startDateQueryName, function () {
             $scope.updateStartDate();

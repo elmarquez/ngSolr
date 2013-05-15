@@ -4,7 +4,7 @@
 app/assets/img/icon
 app/assets/img/maki
 app/assets/img/mapiconscollection
-app/js/solr-ajax/*.min.js
+app/js/solr-ajax/**/*.min.js
 logs/*
 node_modules/
 scripts/npm*

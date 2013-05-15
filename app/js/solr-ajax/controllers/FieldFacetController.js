@@ -51,18 +51,15 @@ function FieldFacetController($scope, SolrSearchService) {
      * @param Index Index of user selected facet. This facet will be added to the search list.
      */
     $scope.add = function($event,Index) {
-        // create a new facet constraint
-        var facet = SolrSearchService.createFacet($scope.field,$scope.items[Index].value);
+        // create a new facet
+        var query = SolrSearchService.getQuery($scope.target);
+        var facet = query.createFacet($scope.field,$scope.items[Index].value);
         // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) == -1) {
-            // add the facet, update search results
-            var query = SolrSearchService.getQuery($scope.target);
-            if (query) {
-                var id = Math.floor(Math.random()*101);
-                var name = $scope.queryname + id;
-                query.addFacet(name,facet);
-                SolrSearchService.updateQuery($scope.target);
-            }
+            var id = Math.floor(Math.random()*101);
+            var name = $scope.queryname + id;
+            query.addFacet(name,facet);
+            SolrSearchService.updateQuery($scope.target);
         }
         // @see https://github.com/angular/angular.js/issues/1179
         $event.preventDefault();
@@ -145,7 +142,7 @@ function FieldFacetController($scope, SolrSearchService) {
         query.setOption("facet.sort","count");
         query.setOption("rows","0");
         query.setOption("wt","json");
-        SolrSearchService.setQuery(query,$scope.queryname);
+        SolrSearchService.setQuery($scope.queryname,query);
         // handle update events on the facet query
         $scope.$on($scope.queryname, function () {
             $scope.handleUpdate();

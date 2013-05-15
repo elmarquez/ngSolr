@@ -239,7 +239,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             query.setUserQuery(userQuery);
             userQueryParams[$scope.queryname] = "+location_0_coordinate:[* TO *]";
             query.setQueryParameters(userQueryParams);
-            SolrSearchService.setQuery(query,$scope.queryname);
+            SolrSearchService.setQuery($scope.queryname,query);
             SolrSearchService.updateQuery($scope.queryname);
         }
     };
@@ -262,10 +262,10 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             return query;
         };
         var targetQuery = SolrSearchService.createQuery();
-        SolrSearchService.setQuery(targetQuery,$scope.target);
+        SolrSearchService.setQuery($scope.target,targetQuery);
         // create a new map query
         var mapQuery = $scope.createMapQuery();
-        SolrSearchService.setQuery(mapQuery,$scope.queryname);
+        SolrSearchService.setQuery($scope.queryname,mapQuery);
         // handle update events on the target query
         $scope.$on($scope.target, function() {
             $scope.handleTargetUpdate();

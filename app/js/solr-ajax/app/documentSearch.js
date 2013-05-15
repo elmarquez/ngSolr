@@ -64,7 +64,7 @@ app.constant("CONSTANTS", {
     MAP_START_LATITUDE: '-30.3456',
     MAP_START_LONGITUDE: '141.4346',
     MAX_FIELD_LENGTH: 256,
-    QUERY_DELIMITER: '!',
+    QUERY_DELIMITER: '?',
     SIDEBAR_OPEN: true,
     SOLR_BASE: 'http://dev02.internal:8080',
     SOLR_CORE: 'FACP_doc',

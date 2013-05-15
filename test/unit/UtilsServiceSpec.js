@@ -12,4 +12,10 @@
  */
 describe('UtilsService:', function() {
 
-})
+    beforeEach(angular.mock.module('solr-ajax'));
+
+    it('should include Utils service', inject(['Utils',function(Utils) {
+        expect(Utils).toBeDefined();
+    }]));
+
+});

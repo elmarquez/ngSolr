@@ -119,7 +119,7 @@
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
 
-                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()" ng-cloak>
                             <div id="search-box" class="input-append">
                                 <input searchhints
                                        autocomplete="off"
@@ -259,7 +259,7 @@
                         <!-- /date range facet controller -->
 
                         <!-- search history panel -->
-                        <ul class="facet-panel" ng-controller="SearchHistoryController">
+                        <ul class="facet-panel" ng-controller="SearchHistoryController" ng-cloak>
                             <li><b>Search History</b></li>
                             <li>
                                 <ul class="unstyled">
@@ -303,7 +303,7 @@
                             </article>
 
                         </div><!-- /search results -->
-                        <div class="search-results-pager pagination" ng-hide="error">
+                        <div class="search-results-pager pagination" ng-hide="error" ng-cloak>
                             <ul>
                                 <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
                                     <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>

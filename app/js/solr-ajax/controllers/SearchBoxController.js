@@ -106,7 +106,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
         query.setOption("facet.field",$scope.searchHintsField);
-        SolrSearchService.setQuery(query,$scope.searchHintsQuery);
+        SolrSearchService.setQuery($scope.searchHintsQuery,query);
         // handle update events from the search service.
         $scope.$on($scope.searchHintsQuery, function() {
             $scope.handleUpdate();
@@ -130,7 +130,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
             // to the value provided by the user
             var query = SolrSearchService.createQuery();
             query.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery(query,$scope.target);
+            SolrSearchService.setQuery($scope.target,query);
         } else {
             // keep the existing search query but change the current user query
             // value and set the starting document number to 0

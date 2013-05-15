@@ -95,7 +95,7 @@ function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
         };
         var query = SolrSearchService.createQuery();
         query.setOption("rows",$scope.itemsPerPage);
-        SolrSearchService.setQuery(query,$scope.queryname);
+        SolrSearchService.setQuery($scope.queryname,query);
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
             $scope.handleFacetListUpdate();
