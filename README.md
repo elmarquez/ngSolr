@@ -71,25 +71,27 @@ Version History
 
 Backlog:
 
- > Map document search results should update to reflect the zoom level and current view position
- > When a facet constraint is added, it should impact the typeahead filter
  > Fuzzy search support : add a "did you mean" result list on the "no results found" view to DocumentSearchResultsController
  > How to create a "related searches: a, b, c" list of queries
  > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
-
- > Update the location URL when another page is selected
+ > Map document search results should update to reflect the zoom level and current view position
+ > When a facet constraint is added, it should impact the typeahead filter
  > Stuck on updating fragment to reflect the current facet query -- facet query
    clears hash
- > On page load, parse the fragment portion of the location URL to determine
-   if there is a starting search query.  Execute that query.
  > Query term highlighting in search results
  > Service, controller unit tests!
  > Add date field into the title output
+ > Fix page header to remove right/left whitespace when resized for mobile layout
 
 Current:  
 
+0.5.7
+
+ * Histogram of search results by date
+
 0.5.6
 
+ * On page load, parses location to determine if there is a starting search query, then executes query
  * Added isSelected property to FieldFacetController
  * Moved getFacets, getFacetCounts methods from SolrSearchService into SolrQuery
  * Document search results include state and exist dates.
@@ -205,14 +207,8 @@ Current:
 Known Issues
 ------------
 
- * Clicking on a facet constraint causes the hash portion of the URL string to
-   disappear and the browser to throw a maximum recursions error on the $digest()
-   function. Removing the facet constraint causes the URL to be updated and 
-   displayed correctly. A temporary patch as described here has been applied to
-   the affected controllers:
-   @see https://github.com/angular/angular.js/issues/1179
-
- * When the window resizes into a single column, there is a margin left on the
-   right and left sides of the menu bar and content section that needs to be
-   changed.  The margin needs to be adjusted to improve the appearance.
-   Otherwise, the background should be changed so that it hides this problem.
+ * On page load, SolrSearchService parses the window location to determine if
+   there is a starting search query. It parses the query and sets the starting
+   query with the discovered values. It is not currently able to reassociate
+   query parameters and facets with the various controllers. As such, the
+   starting query will not properly set the controller states.

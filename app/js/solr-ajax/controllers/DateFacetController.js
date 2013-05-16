@@ -287,9 +287,10 @@ function DateFacetController($scope, SolrSearchService) {
         // define and configure the x and y scales
         var max = d3.max($scope.histogram, function(d) { return d.count; });
         var x = d3.scale.ordinal()
-            .rangeRoundBands([$scope.startYear, $scope.endYear], .1);
+            .rangeBands([$scope.startYear, $scope.endYear]);
         var y = d3.scale.log()
-            .rangeRound([0,max]);
+            .domain([0,max])
+            .rangeRound([0,height]);
         // define and configure the x and y axes
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -313,6 +314,10 @@ function DateFacetController($scope, SolrSearchService) {
             .attr("width", ((width + margin.left + margin.right) / $scope.histogramMaxBins) - 1)
             .attr("y", function(d) { return height - (height * d.count / max)})
             .attr("height", function(d) { return height * d.count / max; });
+        svg.selectAll(".bar")
+            .data($scope.histogram)
+            .exit()
+            .remove();
     };
 
 }
