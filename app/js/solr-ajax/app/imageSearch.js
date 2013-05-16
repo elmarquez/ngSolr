@@ -55,7 +55,7 @@ app.constant("CONSTANTS", {
     DEFER_FIRST_SEARCH_SERVICE_UPDATE: false,
     FACET_DELIMITER: '&&',
     GOOGLE_ANALYTICS: false,
-    GOOGLE_MAPS_API: 'AIzaSyAKoxr2KxRN2tSE7skC8_bqXQgmstFlmwU',
+    GOOGLE_MAPS_API: '',
     GOOGLE_MAPS_SENSOR: 'false',
     ICONS: null,
     ITEMS_PER_PAGE: 16,

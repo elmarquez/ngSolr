@@ -111,12 +111,22 @@
                 <div class="row-fluid">
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
-                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()">
+
+                        <form class="form-inline" ng-controller="SearchBoxController" ng-init="searchHintsField='title';init()" ng-submit="submit()" ng-cloak>
                             <div id="search-box" class="input-append">
-                                <input type="text" id="query" name="q" ng-model="userquery" placeholder="Enter keywords to search for" ui-items="getHints(userquery)" auto-complete autocomplete="off" style="width:380px" />
+                                <input searchhints
+                                       autocomplete="off"
+                                       name="q"
+                                       ng-model="userquery"
+                                       placeholder='Enter placename or keywords to search for'
+                                       style="width:380px"
+                                       type='text'
+                                       ui-items="getHints(userquery)"
+                                        />
                                 <button class="btn">Search</button>
                             </div>
                         </form>
+
                     </div>
                     <div class="span5">&nbsp;</div>
                 </div>
@@ -176,35 +186,6 @@
                             </li>
                         </ul>
                         <!-- /location facet controller -->
-
-                        <!-- date range facet controller -->
-                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
-                            <li><b>Dates</b></li>
-                            <li>
-                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
-                                    <table>
-                                        <tr>
-                                            <td style="font-size:small">From</td>
-                                            <td style="font-size:small">To</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-right: 10px;">
-                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
-                                            </td>
-                                            <td>
-                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <button>Update</button>
-                                    <!--
-                                    <label for="fromDate">From</label>
-                                    <label for="toDate">To</label>
-                                    -->
-                                </form>
-                            </li>
-                        </ul>
-                        <!-- /date range facet controller -->
 
                     </div>
                     <!-- /search panel -->
