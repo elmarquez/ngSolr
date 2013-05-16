@@ -10,7 +10,8 @@
 
 /**
  * Date facet controller filters a query by year range, displays controls to
- * set the start/end dates, displays a histogram of data values by year.
+ * set the start/end dates, displays a histogram control to both view and
+ * filter date by year range.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  */
@@ -18,22 +19,25 @@ function DateFacetController($scope, SolrSearchService) {
 
     var year = new Date();
 
-    $scope.dataMaxDate = 0;                     // latest date found in the result set
-    $scope.dataMinDate = 0;                     // earliest date found in the result set
-    $scope.endDate = 0;                         // end date
-    $scope.endDateField = 'endDate';            // facet field name
-    $scope.endDateQueryName = 'endDate';        // end date query name
-    $scope.histogram = [];                      // histogram data
-    $scope.histogramMaxBins = 10;               // maximum number of histogram bins
-    $scope.inclusive = true;                    // use inclusive search method if true, or exclusive if false
-    $scope.startDate = 0;                       // start date
-    $scope.startDateField = 'startDate';        // facet field name
-    $scope.startDateQueryName = 'startDate';    // start date query name
-    $scope.target = 'defaultQuery';             // named query to filter
-    $scope.updateFlag = 0;                      // flag used to track update process (-2 started, -1 partially done, 0 complete)
-    $scope.updateHistogram = true;              // update the histogram
-    $scope.updateOnInit = false;                // update the facet list during init
-    $scope.updateOnTargetChange = true;         // update the date range to reflect the target query results
+    $scope.dataMaxDate = 0;                         // latest date found in the result set
+    $scope.dataMinDate = 0;                         // earliest date found in the result set
+    $scope.endDate = 0;                             // end date
+    $scope.endDateField = 'endDate';                // facet field name
+    $scope.endDateQueryName = 'endDate';            // end date query name
+    $scope.histogram = [];                          // histogram data
+    $scope.histogramHeight = 100;
+    $scope.histogramMaxBins = 10;                   // maximum number of histogram bins
+    $scope.histogramQueryName = 'histogramQuery';   // histogram query name
+    $scope.histogramWidth = 240;
+    $scope.inclusive = true;                        // use inclusive search method if true, or exclusive if false
+    $scope.startDate = 0;                           // start date
+    $scope.startDateField = 'startDate';            // facet field name
+    $scope.startDateQueryName = 'startDate';        // start date query name
+    $scope.target = 'defaultQuery';                 // named query to filter
+    $scope.updateFlag = 0;                          // flag used to track update process (-2 started, -1 partially done, 0 complete)
+    $scope.updateHistogram = true;                  // update the histogram
+    $scope.updateOnInit = false;                    // update the facet list during init
+    $scope.updateOnTargetChange = true;             // update the date range to reflect the target query results
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +61,34 @@ function DateFacetController($scope, SolrSearchService) {
     //////////////////////////////////////////////////////////////////////////
 
     /**
+     * Build the Solr date range constraint string.
+     * @param StartDateField
+     * @param StartDate
+     * @param EndDateField
+     * @param EndDate
+     */
+    $scope.getDateRangeConstraint = function(StartDateField, StartDate, EndDateField, EndDate) {
+        var yearStart = "-01-01T00:00:00Z";
+        var yearEnd = "-12-31T00:00:00Z";
+        var dateRange = '';
+        if ($scope.inclusive === true) {
+            // inclusive date constraint: +(startDateField:(startDate TO endDate) OR endDateField:(startDate TO endDate))
+            dateRange += "+(";
+            dateRange += StartDateField + ":[ " + StartDate + yearStart + " TO " + EndDate + yearEnd + " ]";
+            dateRange += " OR ";
+            dateRange += EndDateField + ":[ " + StartDate + yearStart + " TO " + EndDate + yearEnd + " ]";
+            dateRange += ")";
+        } else {
+            // exclusive date constraint: +(startDateField:(startDate TO *) OR endDateField:(* TO endDate))
+            dateRange += "+(";
+            dateRange += StartDateField + ":[ " + StartDate + yearStart + " TO * ] AND ";
+            dateRange += EndDateField + ":[ * TO " + EndDate + yearEnd + " ]";
+            dateRange += ")";
+        }
+        return dateRange;
+    };
+
+    /**
      * Handle update on end date query.
      */
     $scope.handleEndDateQueryUpdate = function() {
@@ -69,6 +101,21 @@ function DateFacetController($scope, SolrSearchService) {
         if ($scope.updateHistogram && $scope.updateFlag == 0) {
             $scope.updateHistogram();
         }
+    };
+
+    /**
+     * Handle update on the histogram query.
+     */
+    $scope.handleHistogramQueryUpdate = function(Event) {
+        // get the bin number
+        var i = Event.name.indexOf('_');
+        var bin = Event.name.substring(i+1,Event.name.length);
+        // set the bin value
+        var query = SolrSearchService.getQuery(Event.name);
+        var count = query.response.numFound;
+        $scope.histogram[bin]['count'] = count;
+        // update the chart
+        $scope.updateHistogramChart();
     };
 
     /**
@@ -178,26 +225,8 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.submit = function() {
         var query = SolrSearchService.getQuery($scope.target);
         if (query) {
-            var yearStart = "-01-01T00:00:00Z";
-            var yearEnd = "-12-31T00:00:00Z";
-            var dateRange = '';
-            if ($scope.inclusive === true) {
-                // inclusive date constraint: +(startDateField:(startDate TO endDate) OR endDateField:(startDate TO endDate))
-                dateRange += "+(";
-                dateRange += $scope.startDateField + ":[ " + $scope.startDate + yearStart + " TO " + $scope.endDate + yearEnd + " ]";
-                dateRange += " OR ";
-                dateRange += $scope.endDateField + ":[ " + $scope.startDate + yearStart + " TO " + $scope.endDate + yearEnd + " ]";
-                dateRange += ")";
-                query.setQueryParameter("dateRange",dateRange);
-            } else {
-                // exclusive date constraint: +(startDateField:(startDate TO *) OR endDateField:(* TO endDate))
-                dateRange += "+(";
-                dateRange += $scope.startDateField + ":[ " + $scope.startDate + yearStart + " TO * ] AND ";
-                dateRange += $scope.endDateField + ":[ * TO " + $scope.endDate + yearEnd + " ]";
-                dateRange += ")";
-                query.setQueryParameter("dateRange",dateRange);
-            }
-            // update the query results
+            var dateRange = $scope.getDateRangeConstraint($scope.startDateField,$scope.startDate,$scope.endDateField,$scope.endDate);
+            query.setQueryParameter("dateRange",dateRange);
             SolrSearchService.updateQuery($scope.target);
         }
     };
@@ -207,87 +236,83 @@ function DateFacetController($scope, SolrSearchService) {
      */
     $scope.updateHistogram = function () {
         // generate the bin query values
-        var range = Math.ceil(EndYear - StartYear);
-        var binRange = Math.ceil(range / $scope.bins);
-        for (var i=0;i<$scope.bins;i++) {
-            var start = StartYear + (binRange * i);
-            var end = start + binRange - 1;
+        $scope.histogram = [];
+        var range = Math.ceil($scope.endDate - $scope.startDate);
+        var binRange = Math.ceil(range / $scope.histogramMaxBins);
+        for (var i=0;i<$scope.histogramMaxBins;i++) {
+            var start = Number($scope.startDate) + (binRange * i);
+            var end = start + binRange;
             var bin = {};
             bin['start'] = start;
-            bin['end'] = end;
-            bin['label'] = start + ' to ' + end;
-            bin['count'] = (10 * i) + 5;
-            $scope.data.push(bin);
-        }
-        if (end > EndYear) {
-            bin['end'] = EndYear;
+            bin['end'] = (end > $scope.endDate) ? $scope.endDate : end;
+            bin['label'] = start + ' to ' + bin['end'];
+            bin['count'] = (10 * i) + 5; // a placeholder for testing -- the actual query count value should go here
+            $scope.histogram.push(bin);
         }
         // generate the histogram queries
-        for (var i in $scope.data) {
-            var bin = $scope.data[i];
-            var query = SolrSearchService.createQuery();
-            // http://dev02.internal:8080/FACP_doc/select?q=*:*+(fromDate:%5B%201782-01-01T00:00:00Z%20TO%201900-12-31T00:00:00Z%20%5D%20OR%20toDate:%5B%201782-01-01T00:00:00Z%20TO%201900-12-31T00:00:00Z%20%5D)&rows=0&wt=json
+        for (var i=0;i<$scope.histogram.length;i++) {
+            var bin = $scope.histogram[i];
+            // create histogram query
             // http://dev02.internal:8080/FACP_doc/select?q=*:*+(fromDate:[ 1782-01-01T00:00:00Z TO 1900-12-31T00:00:00Z ] OR toDate:[ 1782-01-01T00:00:00Z TO 1900-12-31T00:00:00Z ])&rows=0&wt=json
-            var startDateQuery = SolrSearchService.createQuery();
-            startDateQuery.setOption("fl", $scope.startDateField);
-            startDateQuery.setOption("rows","1");
-            startDateQuery.setOption("sort",$scope.startDateField + " asc");
-            startDateQuery.setOption("wt","json");
-            SolrSearchService.setQuery("histogramQuery" + i,query);
+            var histogramQuery = SolrSearchService.createQuery();
+            var histogramQueryName = $scope.histogramQueryName + '_' + i;
+            var dateRange = $scope.getDateRangeConstraint($scope.startDateField,bin['start'],$scope.endDateField,bin['end']);
+            histogramQuery.setOption("rows","0");
+            histogramQuery.setQueryParameter("dateRange",dateRange);
+            SolrSearchService.setQuery(histogramQueryName,histogramQuery);
+            // listen for changes on the query
+            $scope.$on(histogramQueryName, function(histogramQueryName) {
+                $scope.handleHistogramQueryUpdate(histogramQueryName);
+            });
+            // update the query
+            SolrSearchService.updateQuery(histogramQueryName);
         }
-        // update the chart
-        $scope.updateHistogramChart();
     };
 
     /**
      * Update the histogram chart.
      */
     $scope.updateHistogramChart = function() {
-        var margin = {top:0, right:0, bottom:0, left:0};
+        var margin = {top:0, right:10, bottom:0, left:0};
+        var height = $scope.histogramHeight - margin.top - margin.bottom;
+        var width = $scope.histogramWidth - margin.left - margin.right;
         var formatPercent = d3.format(".0%");
-        var height = 60 - margin.top - margin.bottom;
-        var width = 250 - margin.left - margin.right;
-        // create the chart svg element
+        // remove any existing charts then create a new chart
+        d3.select("#date-range-histogram").select("svg").remove();
         var svg = d3.select("#date-range-histogram").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         // define and configure the x and y scales
+        var max = d3.max($scope.histogram, function(d) { return d.count; });
         var x = d3.scale.ordinal()
             .rangeRoundBands([$scope.startYear, $scope.endYear], .1);
-        var y = d3.scale.linear()
-            .range([0,height]);
+        var y = d3.scale.log()
+            .rangeRound([0,max]);
         // define and configure the x and y axes
         var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom");
         var yAxis = d3.svg.axis()
             .scale(y)
-            .orient("left");
+            .orient("left")
+            .tickFormat(formatPercent);
         // the x domain is the start year to the end year
         x.domain([$scope.startYear, $scope.endYear]);
-        // the y domain is the max entity count per bin
-        y.domain([0, d3.max($scope.data, function(d) { return d.count; })]);
+        // the y domain is 0 to the largest count value
+        y.domain([0, max]);
         // draw the bar charts
         svg.selectAll(".bar")
-            .data($scope.data)
+            .data($scope.histogram)
             .enter()
             .append("rect")
-            .attr("class", "bar")
-            .attr("style", "fill:steelblue")
-            .attr("x", function(d, i) { return (i * 20) + 1; })
-            .attr("width", "19")
-            .attr("y", function(d) { return height - d.count })
-            .attr("height", function(d) { return d.count; });
-
-        // line at base of histogram
-        svg.append("line")
-            .attr("y1",height)
-            .attr("y2",height)
-            .attr("x1", 0)
-            .attr("x2", width)
-            .style("stroke", "#ccc");
+            .attr("class","bar")
+            .attr("style","fill:steelblue")
+            .attr("x", function(d, i) { return (i * (width + margin.left + margin.right) / $scope.histogramMaxBins) })
+            .attr("width", ((width + margin.left + margin.right) / $scope.histogramMaxBins) - 1)
+            .attr("y", function(d) { return height - (height * d.count / max)})
+            .attr("height", function(d) { return height * d.count / max; });
     };
 
 }

@@ -33,6 +33,18 @@ function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
 	///////////////////////////////////////////////////////////////////////////
 
     /**
+     * A page in a pagination list
+     * @param Name Page name
+     * @param Num Page number
+     */
+    function Page(Name,Num) {
+        this.name = Name;
+        this.number = Num;
+        this.isActive = false;
+        this.isDisabled = false;
+    }
+
+    /**
      * Update page index for navigation of search results.
      */
     function updatePageIndex() {

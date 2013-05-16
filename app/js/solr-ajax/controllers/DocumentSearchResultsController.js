@@ -2,42 +2,8 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
-
-/*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
-
-/**
- * Document search result item.
- * @param Title
- * @param Uri
- * @param Location
- * @param Abstract
- */
-function Document(Title, Uri, Location, Abstract) {
-    var setIfDefined = function(Val) {
-        if (Val) {
-            return Val;
-        }
-        return '';
-    };
-    this.title = setIfDefined(Title);
-    this.uri = setIfDefined(Uri);
-    this.location = setIfDefined(Location);
-    this.abstract = setIfDefined(Abstract);
-}
-
-/**
- * A page in a pagination list
- * @param Name Page name
- * @param Num Page number
- */
-function Page(Name,Num) {
-    this.name = Name;
-    this.number = Num;
-    this.isActive = false;
-    this.isDisabled = false;
-}
 
 /*---------------------------------------------------------------------------*/
 /* Controllers                                                               */
@@ -64,6 +30,40 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
     $scope.totalResults = 0;            // count of the total number of search results
     $scope.totalSets = 1;               // count of the number of search result sets
     $scope.view = 'list';               // presentation type
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Document search result item.
+     * @param Title
+     * @param Uri
+     * @param Location
+     * @param Abstract
+     */
+    function Document(Title, Uri, Location, Abstract) {
+        var setIfDefined = function(Val) {
+            if (Val) {
+                return Val;
+            }
+            return '';
+        };
+        this.title = setIfDefined(Title);
+        this.uri = setIfDefined(Uri);
+        this.location = setIfDefined(Location);
+        this.abstract = setIfDefined(Abstract);
+    }
+
+    /**
+     * A page in a pagination list
+     * @param Name Page name
+     * @param Num Page number
+     */
+    function Page(Name,Num) {
+        this.name = Name;
+        this.number = Num;
+        this.isActive = false;
+        this.isDisabled = false;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 

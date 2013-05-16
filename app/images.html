@@ -23,9 +23,12 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" media="screen" />
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/d3js/d3.v3.min.js"></script>
         <script>
             // include angular loader, which allows the files to load in any order
             /*
@@ -65,8 +68,7 @@
                 'js/solr-ajax/services/Utils.js',
                 'js/solr-ajax/app/imageSearch.js'
             ], function() {
-                // when all is done, execute bootstrap angular application
-                angular.bootstrap(document, ['solr-ajax']);
+                angular.bootstrap(document,['solr-ajax']);
             });
         </script>
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->

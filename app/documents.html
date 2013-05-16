@@ -24,9 +24,6 @@
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" media="screen" />
-        <!--
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-        -->
         <!-- scripts -->
         <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
@@ -61,7 +58,6 @@
 //                'js/solr-ajax/filters.min.js',
 //                'js/solr-ajax/directives.min.js',
                 'js/solr-ajax/controllers/DateFacetController.js',
-                'js/solr-ajax/controllers/DateRangeHistogramController.js',
                 'js/solr-ajax/controllers/DocumentSearchResultsController.js',
                 'js/solr-ajax/controllers/FacetSelectionController.js',
                 'js/solr-ajax/controllers/FieldFacetController.js',
@@ -231,11 +227,7 @@
                             <li><b>Dates</b></li>
                             <li>
                                 <form class="form-horizontal" ng-submit="submit()" style="margin-bottom:0px;">
-                                    <div id="date-range-histogram"
-                                         ng-controller="DateRangeHistogramController"
-                                         ng-init="init(startDate,endDate)"
-                                         style="padding:0;width:100%;">
-                                    </div>
+                                    <div id="date-range-histogram"></div>
                                     <table class="table-horizontal">
                                         <tr>
                                             <td style="font-size:small">
