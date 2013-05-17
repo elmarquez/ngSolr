@@ -51,3 +51,15 @@
     padding: 0;
     width: 64px;
 }
+
+/*---------------------------------------------------------------------------*/
+/* Histogram                                                                 */
+
+.bar {
+    background: #bbb;
+    fill: #bbb;
+}
+.bar:hover {
+    background: steelblue;
+    fill: steelblue;
+}

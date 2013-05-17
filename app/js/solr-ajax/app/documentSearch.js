@@ -19,12 +19,8 @@ var app = angular.module('solr-ajax',['Directives','Filters','SelectionSetServic
 /*
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
-        when('/documents', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
-        when('/documents/:query', { templateUrl: 'assets/partials/documents.html', controller: DocumentSearchController}).
-        when('/images', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
-        when('/images/:query', { templateUrl: 'assets/partials/images.html', controller: ImageSearchController}).
-        when('/locations', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
-        when('/locations/:query', {templateUrl: 'assets/partials/locations.html', controller: DocumentSearchController}).
+        when('/documents', { controller: DocumentSearchController }).
+        when('/documents/:query', { controller: DocumentSearchController}).
         otherwise({redirectTo: '/documents'});
 }]);
 */

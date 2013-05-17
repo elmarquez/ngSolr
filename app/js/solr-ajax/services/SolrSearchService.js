@@ -433,19 +433,6 @@ angular.module('SolrSearchService',[])
         };
 
         /**
-         * Initialize the controller. If there is a search query specified in the
-         * URL when the controller initializes then use that as the initial query,
-         * otherwise use the default.
-         */
-        svc.init = function(CONSTANTS, $http, $rootScope) {
-            if (svc.windowLocationHasQuery()) {
-                svc.queries[defaultQueryName] = svc.getQueryFromHash(window.location.hash);
-            } else {
-                svc.queries[defaultQueryName] = svc.createQuery();
-            }
-        };
-
-        /**
          * Set the starting document in the named query.
          * @param Start The index of the starting document.
          * @param Query Query name
@@ -534,25 +521,12 @@ angular.module('SolrSearchService',[])
             }
         };
 
-        /**
-         * Determine if the current location URL has a query. We use a simple
-         * text here to see if the hash starts with some standard chars.
-         * @returns {Boolean} True if the location contains a query, false otherwise.
-         */
-        svc.windowLocationHasQuery = function() {
-            var hash = window.location.hash;
-            if (hash.indexOf('#/q=') != -1) {
-                return true;
-            }
-            return false;
-        };
-
         ///////////////////////////////////////////////////////////////////////
 
         // initialize
-        svc.init(CONSTANTS, $http, $rootScope);
+        svc.queries[defaultQueryName] = svc.createQuery();
 
         // return the service instance
         return svc;
 
-    }]).value('version','0.1'); // SolrSearchService
+    }]);

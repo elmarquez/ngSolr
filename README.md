@@ -87,6 +87,7 @@ Current:
 
 0.5.7
 
+ * Close search hints list on submit action
  * Histogram of search results by date
 
 0.5.6
