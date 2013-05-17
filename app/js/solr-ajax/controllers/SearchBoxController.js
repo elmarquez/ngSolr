@@ -119,6 +119,8 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
      * Handle submit event.
      */
     $scope.submit = function() {
+        // close the autocomplete dropdown hints list
+        $("#search-box-input").autocomplete("close");
         // clean up the user query
         var trimmed = Utils.trim($scope.userquery);
         if (trimmed === '') {

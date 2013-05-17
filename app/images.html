@@ -114,7 +114,8 @@
 
                         <form class="form-inline" ng-controller="SearchBoxController" ng-init="searchHintsField='title';init()" ng-submit="submit()" ng-cloak>
                             <div id="search-box" class="input-append">
-                                <input searchhints
+                                <input id="search-box-input"
+                                       searchhints
                                        autocomplete="off"
                                        name="q"
                                        ng-model="userquery"
