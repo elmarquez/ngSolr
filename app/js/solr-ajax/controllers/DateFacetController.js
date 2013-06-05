@@ -29,7 +29,6 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.histogramMaxBins = 10;                   // maximum number of histogram bins
     $scope.histogramQueryName = 'histogramQuery';   // histogram query name
     $scope.histogramWidth = 240;                    // chart width
-    $scope.inclusive = true;                        // use inclusive search method if true, or exclusive if false
     $scope.startDate = 0;                           // start date
     $scope.startDateField = 'startDate';            // facet field name
     $scope.startDateQueryName = 'startDate';        // start date query name
@@ -61,7 +60,9 @@ function DateFacetController($scope, SolrSearchService) {
     //////////////////////////////////////////////////////////////////////////
 
     /**
-     * Build the Solr date range constraint string.
+     * Build the Solr date range constraint string. The date range will be
+     * inclusive such that all entities that existing within the specified
+     * date range will be returned.
      * @param StartDateField
      * @param StartDate
      * @param EndDateField
@@ -69,22 +70,13 @@ function DateFacetController($scope, SolrSearchService) {
      */
     $scope.getDateRangeConstraint = function(StartDateField, StartDate, EndDateField, EndDate) {
         var yearStart = "-01-01T00:00:00Z";
-        var yearEnd = "-12-31T00:00:00Z";
-        var dateRange = '';
-        if ($scope.inclusive === true) {
-            // inclusive date constraint: +(startDateField:(startDate TO endDate) OR endDateField:(startDate TO endDate))
-            dateRange += "+(";
-            dateRange += StartDateField + ":[ " + StartDate + yearStart + " TO " + EndDate + yearEnd + " ]";
-            dateRange += " OR ";
-            dateRange += EndDateField + ":[ " + StartDate + yearStart + " TO " + EndDate + yearEnd + " ]";
-            dateRange += ")";
-        } else {
-            // exclusive date constraint: +(startDateField:(startDate TO *) OR endDateField:(* TO endDate))
-            dateRange += "+(";
-            dateRange += StartDateField + ":[ " + StartDate + yearStart + " TO * ] AND ";
-            dateRange += EndDateField + ":[ * TO " + EndDate + yearEnd + " ]";
-            dateRange += ")";
-        }
+        var yearEnd = "-12-31T23:59:59Z";
+        // ISSUE #26 +(startDateField:[* TO userEndDate] AND endDateField:[userStartDate TO *])
+        var dateRange = "+(";
+        dateRange += StartDateField + ":[ * TO " + EndDate + yearEnd + " ]";
+        dateRange += " AND ";
+        dateRange += EndDateField + ":[ " + StartDate + yearStart + " TO * ]";
+        dateRange += ")";
         return dateRange;
     };
 
@@ -240,7 +232,6 @@ function DateFacetController($scope, SolrSearchService) {
         for (var i=0;i<$scope.histogram.length;i++) {
             var bin = $scope.histogram[i];
             // create histogram query
-            // http://dev02.internal:8080/FACP_doc/select?q=*:*+(fromDate:[ 1782-01-01T00:00:00Z TO 1900-12-31T00:00:00Z ] OR toDate:[ 1782-01-01T00:00:00Z TO 1900-12-31T00:00:00Z ])&rows=0&wt=json
             var histogramQuery = SolrSearchService.createQuery();
             var histogramQueryName = $scope.histogramQueryName + '_' + i;
             var dateRange = $scope.getDateRangeConstraint($scope.startDateField,bin['start'],$scope.endDateField,bin['end']);

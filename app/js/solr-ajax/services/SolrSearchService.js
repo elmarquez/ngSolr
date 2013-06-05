@@ -165,6 +165,7 @@ function SolrQuery(Url, Core) {
         var query = '';
         // append query
         query += "q=" + self.query;
+        // add query parameters
         for (var key in self.queryParameters) {
             query += self.queryParameters[key];
         }
@@ -464,7 +465,7 @@ angular.module('SolrSearchService',[])
          * @param Query
          */
         svc.setWindowLocation = function(Query) {
-            window.location.hash = Query.getHash();
+            // window.location.hash = Query.getHash();
         };
 
         /**
