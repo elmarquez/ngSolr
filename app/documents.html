@@ -165,6 +165,24 @@
                         </ul>
                         <!-- /facet selection controller -->
 
+                        <!-- location facet controller -->
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            ng-init="exclusive=true;init('region')"
+                            ng-hide="selected && exclusive"
+                            ng-cloak>
+                            <li><b>State</b></li>
+                            <li>
+                                <ul class="facets unstyled">
+                                    <li ng-repeat="item in items" ng-show="items">
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-score" ng-show="item.score">({{item.score}})</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!-- /location facet controller -->
+
                         <!-- function facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
@@ -200,24 +218,6 @@
                             </li>
                         </ul>
                         <!-- /type facet controller -->
-
-                        <!-- location facet controller -->
-                        <ul class="facet-panel"
-                            ng-controller="FieldFacetController"
-                            ng-init="exclusive=true;init('region')"
-                            ng-hide="selected && exclusive"
-                            ng-cloak>
-                            <li><b>State</b></li>
-                            <li>
-                                <ul class="facets unstyled">
-                                    <li ng-repeat="item in items" ng-show="items">
-                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                        <span class="facet-score" ng-show="item.score">({{item.score}})</span>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <!-- /location facet controller -->
 
                         <!-- date range facet controller -->
                         <ul id="date-range-panel"
