@@ -3,7 +3,7 @@
 # pull changes from source repo
 mkdir bootstrap
 cd bootstrap
-wget http://twitter.github.com/bootstrap/assets/bootstrap.zip
+wget http://twitter.github.io/bootstrap/assets/bootstrap.zip
 unzip bootstrap.zip
 
 # remove existing library files from application

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <title>Simple Search Interface to Apache Solr/Lucene</title>
+    <meta name="author" content="eScholarship Research Centre, University of Melbourne">
+    <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- stylesheets -->
+    <style>
+        [ng-cloak] {display: none;}
+        body {
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 14px;
+            color: #333;
+            line-height: 20px;
+            padding-top: 20px;
+        }
+        h1 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+        .footer {
+            border-top: 1px solid #ccc;
+            margin-top: 40px;
+            padding-bottom: 40px;
+            padding-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/prism/prism.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+    <!-- scripts -->
+    <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/prism/prefixfree.min.js"></script>
+    <script type="text/javascript" src="js/prism/prism.js"></script>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+<h1>Simple Document Search</h1>
+<p>
+    Simple Document Search is a Javascript search tool that helps
+    you quickly and easily incorporate Apache Solr search into your
+    new or existing web site. The following provides instructions
+    on how to incorporate this functionality.
+</p>
+<br/>
+
+<h2>Add a Search Box to Your Web Pages</h2>
+<p>
+    Users enter keyword searches on your web site through a search box. The
+    box can appear on one or more pages, and can optionally provide search hints as
+    the user types.
+</p>
+<ol>
+    <li>Make sure that your web page is HTML5 compatible. The top of the HTML should look
+        something like this:
+<pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    ...</code></pre></li>
+    <li>Copy the <a href="js/solr-ajax/simplesearch.js">simplesearch.js</a> file into your project folder</li>
+    <li>Link the simplesearch.js file into your HTML page by including the following line in the HEAD of the page:
+<pre class="line-numbers"><code class="language-markup">&lt;!-- simple search --&gt;
+&lt;script type="text/javascript" src="path/to/simplesearch.js"&gt;&lt;/script&gt;</code></pre></li>
+    <li>Add the search box HTML inside of your page.
+<pre class="line-numbers"><code class="language-markup">&lt;!-- Search Box: the search box can be
+    installed on any web page, including --&gt;
+
+&lt;form ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()" ng-cloak&gt;
+    &lt;div id="search-box"&gt;
+        &lt;input id="search-box-input" searchhints autocomplete="off"
+            name="q" ng-model="userquery"
+            placeholder='Enter placename or keywords to search for'
+            type='text' ui-items="getHints(userquery)"
+            /&gt;
+        &lt;button class="btn"&gt;Search&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</code></pre></li>
+    <li>Add the search app to the HTML tag at the top of the page.
+<pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en" ng-app="simplesearch"&gt;
+    ...</code></pre></li>
+
+    </li>
+</ol>
+
+<h2>Create a Search Results Page</h2>
+
+                <p>
+                    Copy the <a href="simplesearch.html">simplesearch.html</a> page called search.html.
+                </p>
+
+<pre class="line-numbers"><code class="language-markup">&lt;!-- search results --&gt;
+    &lt;div id="result-panel" ng-controller="DocumentSearchResultsController" ng-init="init();"&gt;
+
+    &lt;!-- Document Listing: This is the list of documents that match
+    our search query. Each document is listed inside of an 'article'
+    block, and each presented property is displayed inside the {{ x }}
+    braces. You can modify the formatting of the article block as you
+    desire. However, if you want to change the attributes that are
+    displayed, then you need to talk to the network administrator. --&gt;
+    &lt;div id="search-results" ng-cloak&gt;
+    &lt;div id="summary"&gt;Search Results ({{totalResults}} found)&lt;/div&gt;
+    &lt;article ng-repeat="doc in documents" class="document"&gt;
+    &lt;a ng-href="{{doc.presentation_url}}" class="title"&gt;{{doc.title}}&lt;/a&gt;
+    &lt;div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;"&gt;
+    &lt;a ng-href="{{doc.presentation_url}}" class="thumbnail"&gt;
+    &lt;img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" /&gt;
+    &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="text"&gt;{{doc.abstract}}&lt;/div&gt;
+    &lt;div class="meta inline"&gt;
+    &lt;span class="region" ng-show="doc.region"&gt;{{doc.region}}&lt;/span&gt;
+    &lt;span class="country" ng-show="doc.country"&gt;{{doc.country}}&lt;/span&gt;
+    &lt;div class="existdates"&gt;
+    &lt;span&gt;{{doc.fromDate}}&lt;/span&gt;
+    &lt;span ng-show="doc.toDate"&gt;&ndash;&lt;/span&gt;
+    &lt;span&gt;{{doc.toDate}}&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/article&gt;
+    &lt;/div&gt;
+    &lt;!-- /document listing --&gt;
+
+    &lt;!-- Pagination: If there are one or more pages of search results
+    then we show a page listing here. The listing currently assumes that you
+    are using the Twitter Bootstrap CSS template to get the 'pagination' class
+    style here. If you aren't using Twitter Bootstrap then you can create your
+    own style for the pagination links. --&gt;
+    &lt;div class="search-results-pager pagination" ng-hide="error" ng-cloak&gt;
+    &lt;ul&gt;
+    &lt;li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}"&gt;
+    &lt;a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)"&gt;{{page.name}}&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;!-- /pagination --&gt;
+
+    &lt;/div&gt;
+    &lt;!-- /search results --&gt;</code></pre>
+
+
+                <h2>Configure the Search Application</h2>
+                <p>
+
+                </p>
+
+                <p>You should now have a functioning search setup on your web site.</p>
+
+
+                <h2>Test Your Search Setup</h2>
+                <p>
+                    The last step is
+                </p>
+
+
+
+            </div>
+        </div>
+        <div class="row footer">
+            <div class="span3"></div>
+            <div class="span9">
+                Copyright &copy; 2013 eScholarship Research Centre, University of Melbourne
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
