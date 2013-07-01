@@ -5,6 +5,9 @@
 
 'use strict';
 
+/*---------------------------------------------------------------------------*/
+/* FacetSelectionController                                                  */
+
 /**
  * Displays and manages the set of facet constraints on a named query.
  *

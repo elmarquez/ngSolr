@@ -144,6 +144,9 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         SolrSearchService.updateQuery($scope.target);
     };
 
+    // initialize the controller
+    $scope.init();
+
 }
 
 // inject controller dependencies

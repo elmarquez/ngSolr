@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Service                                                                   */
+/* SelectionSetService                                                       */
 
 /**
  * Maintains a selection set and notifies listeners when changes occur to the

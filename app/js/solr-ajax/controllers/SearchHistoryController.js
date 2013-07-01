@@ -2,10 +2,11 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controllers                                                               */
+/* SearchHistoryController                                                   */
 
 /**
  * Search history controller. Lists the last N user search queries. Takes the

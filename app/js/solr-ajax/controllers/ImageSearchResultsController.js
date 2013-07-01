@@ -6,7 +6,7 @@
  'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controller                                                                */
+/* ImageSearchResultsController                                              */
 
 /**
  * Image based search controller.

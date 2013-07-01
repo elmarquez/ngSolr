@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controller                                                                */
+/* MapController                                                             */
 
 /**
  * Display a map of search results for documents with location attributes.

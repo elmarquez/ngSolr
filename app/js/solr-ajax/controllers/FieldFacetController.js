@@ -2,10 +2,11 @@
  * This file is subject to the terms and conditions defined in the
  * 'LICENSE.txt' file, which is part of this source code package.
  */
+
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controller                                                                */
+/* FacetSelectionController                                                  */
 
 /**
  * Facet field query controller. Fetches a list of facet values from the search
@@ -18,7 +19,7 @@
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  */
-function FieldFacetController($scope, SolrSearchService) {
+function FacetSelectionController($scope, SolrSearchService) {
 
     // parameters
     $scope.exclusive = true;            // facet selections are mutually exclusive

@@ -1,4 +1,14 @@
 /**
+ * This file is subject to the terms and conditions defined in the
+ * 'LICENSE.txt' file, which is part of this source code package.
+ */
+
+'use strict';
+
+/*---------------------------------------------------------------------------*/
+/* AutoComplete                                                              */
+
+/**
  * Directive to add JQuery UI AutoComplete to element
  * @see http://jqueryui.com/autocomplete/
  */

@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
+/* SolrSearchService support classes                                         */
 
 /**
  * Solr search facet.
@@ -314,7 +314,7 @@ function SolrQuery(Url, Core) {
 
 
 /*---------------------------------------------------------------------------*/
-/* Service                                                                   */
+/* SolrSearchService                                                         */
 
 /**
  * Used for managing and executing queries against an Apache Solr/Lucene

@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controller                                                                */
+/* DocumentSearchController                                                  */
 
 /**
  * Responsible for handling initialization activities, to ensure that the

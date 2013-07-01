@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Classes                                                                   */
+/* DateFacetController                                                       */
 
 /**
  * Date facet controller filters a query by year range, displays controls to

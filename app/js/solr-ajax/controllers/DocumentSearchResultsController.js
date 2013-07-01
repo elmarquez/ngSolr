@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* Controllers                                                               */
+/* DocumentSearchResultsController                                           */
 
 /**
  * Displays text based search results and pager.

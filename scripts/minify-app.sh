@@ -9,4 +9,3 @@ minifyjs ../app/js/solr-ajax/controllers.js
 minifyjs ../app/js/solr-ajax/directives.js
 minifyjs ../app/js/solr-ajax/filters.js
 minifyjs ../app/js/solr-ajax/services.js
-
