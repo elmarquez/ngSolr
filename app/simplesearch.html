@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="css/prism/prism.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
     <!-- scripts -->
-    <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/prism/prefixfree.min.js"></script>
     <script type="text/javascript" src="js/prism/prism.js"></script>
@@ -47,12 +47,11 @@
         <div class="row">
             <div class="span12">
 
-<h1>Simple Document Search</h1>
+<h1>Simple Search</h1>
 <p>
-    Simple Document Search is a Javascript tool that you can add to
-    your new or existing web site, to quickly and easily incorporate
-    Apache Solr search. The following provides instructions
-    on how to incorporate this functionality.
+    Simple Search is a Javascript tool that provides Apache Solr powered keyword search for
+    your new or existing web site. The following provides instructions on how to incorporate
+    this functionality.
 </p>
 <br/>
 
@@ -63,18 +62,23 @@
     the user types.
 </p>
 <ol>
-    <li>Make sure that your web page is HTML5 compatible. The top of the HTML should look
-        something like this:
+    <li>Edit the top of each HTML page that includes a search box so that it looks like this:
 <pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
+&lt;html lang="en" ng-app="simplesearch"&gt;
     ...</code></pre></li>
-    <li>Copy the <a href="js/solr-ajax/simplesearch.js">simplesearch.js</a>,
-        <a href="js/jquery/jquery-1.19.1.min.js">JQuery</a>, and <a href="js/jquery-ui/jquery-ui.js">JQueryUI</a> files into your project folder.
-        Link these files into your HTML page by including the following in the HEAD:
-<pre class="line-numbers"><code class="language-markup">&lt;!-- simple search --&gt;
-&lt;script type="text/javascript" src="path/to/jquery.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="path/to/jquery-ui.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="path/to/simplesearch.js"&gt;&lt;/script&gt;</code></pre>
+
+    <li><!-- ,
+        <a href="lib/angular/angular.js">AngularJS</a>,
+        <a href="js/jquery/jquery-1.19.1.min.js">JQuery</a>, and
+        <a href="js/jquery-ui/jquery-ui.js">JQueryUI</a>
+        -->
+        Link the SimpleSearch CSS and Javascript files into your HTML page by including the following in the HEAD:
+        <!--&lt;script type="text/javascript" src="path/to/jquery.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="path/to/jquery-ui.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="path/to/angular.js"&gt;&lt;/script&gt;-->
+
+<pre class="line-numbers"><code class="language-markup">&lt;link rel="stylesheet" type="text/css" href="http://www.esrc.unimelb.edu.au/simplesearch.css" media="screen" /&gt;
+&lt;script type="text/javascript" src="http://www.esrc.unimelb.edu.au/simplesearch.js"&gt;&lt;/script&gt;</code></pre>
     </li>
     <li>Add the search box HTML to your page.
 <pre class="line-numbers"><code class="language-markup">&lt;!-- simplesearch --&gt;
@@ -91,45 +95,53 @@
     &lt;button class="btn"&gt;Search&lt;/button&gt;
 &lt;/form&gt;
 &lt;!-- /simplesearch --&gt;</code></pre></li>
-    <li>Add the search app to the HTML tag at the top of the page.
-<pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
-&lt;html lang="en" ng-app="simplesearch"&gt;
-    ...</code></pre></li>
-
-    </li>
 </ol>
 
+<br/>
 <h2>Create a Search Results Page</h2>
 <p>
-    The search results page is a web page that will be used to present the search results to the user.
+    The search results page is a web page that will be used to present the results to the user.
 </p>
-
-<ol>
+<ol>                                                                            <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
     <li>Copy the <a href="search.html">search.html</a> page into your project folder.</li>
-    <li>You may optionally modify the presentation of search results by editing the HTML block surrounded
+    <li>Modify the page style and layout to match your web site presentation.</li>
+    <li>You may optionally modify the presentation of search results as well by editing the HTML block surrounded
     by the <code>&lt;!-- search results --&gt;</code> comment tags.</li>
 </ol>
 
-                <h2>Configure the Search Application</h2>
-                <p>
+<br/>
+<h2>Configure the Application</h2>
+<p>
+    The last step is to configure the application so that it knows where to find the Apache Solr search index for your
+    project.
+</p>
+<ol>
+    <li>Open the <code>simplesearch.js</code> file in a text editor. Navigate to approximately line <code>46</code> in
+        the file. You should see two variables listed: <code>SOLR_BASE</code> and <code>SOLR_CORE</code>.</li>
+    <li>Replace the existing values with those provided to you by the network administrator.</li>
+</ol>
 
-                </p>
-
-                <p>You should now have a functioning search setup on your web site.</p>
-
-
-                <h2>Test Your Search Setup</h2>
-                <p>
-                    The last step is
-                </p>
-
-
+<br/>
+<h2>Test Your Search Setup</h2>
+<p>
+    The last step is to test your setup.
+</p>
+<ol>
+    <li>Enter a search term in the search box of any page. You should get a drop down box with a list of search
+        hints. Click enter to submit the search query.</li>
+    <li>You should have been directed to the search results page, and zero or more search results should be
+    displayed.</li>
+    <li>If there is more than one page of results available (more than 10 items by default), then you should see
+    a page list at the bottom of the search results listing.</li>
+</ol>
+<p>
+    If the steps above succeeded, you now have a functioning search setup.
+</p>
 
             </div>
         </div>
         <div class="row footer">
-            <div class="span3"></div>
-            <div class="span9">
+            <div class="span12">
                 Copyright &copy; 2013 eScholarship Research Centre, University of Melbourne
             </div>
         </div>

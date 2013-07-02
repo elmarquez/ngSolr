@@ -19,7 +19,7 @@
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  */
-function FacetSelectionController($scope, SolrSearchService) {
+function FieldFacetController($scope, SolrSearchService) {
 
     // parameters
     $scope.exclusive = true;            // facet selections are mutually exclusive

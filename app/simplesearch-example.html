@@ -1,135 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="simplesearch">
 <head>
-    <!-- meta -->
     <meta charset="utf-8">
     <title>Simple Search Interface to Apache Solr/Lucene</title>
     <meta name="author" content="eScholarship Research Centre, University of Melbourne">
     <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- stylesheets -->
-    <style>
-        [ng-cloak] {display: none;}
-        body {
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
-            font-size: 14px;
-            color: #333;
-            line-height: 20px;
-            padding-top: 20px;
-        }
-        h1 {
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 20px;
-        }
-        .footer {
-            border-top: 1px solid #ccc;
-            margin-top: 40px;
-            padding-bottom: 40px;
-            padding-top: 20px;
-        }
-    </style>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
-    <!-- scripts -->
-    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
     <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
 </head>
-<body>
+<body style="font-family:Helvetica,sans-serif;">
 
-    <div class="container">
+    <div class="container" style="width:920px;margin: 20px auto 20px auto;">
         <div class="row">
             <div class="span12">
 
-<h1>Simple Document Search</h1>
-<p>
-    Simple Document Search is a Javascript tool that you can add to
-    your new or existing web site, to quickly and easily incorporate
-    Apache Solr search. The following provides instructions
-    on how to incorporate this functionality.
-</p>
-<br/>
-
-<h2>Add a Search Box to Your Web Pages</h2>
-<p>
-    Users enter keyword searches on your web site through a search box. The
-    box can appear on one or more pages, and can optionally provide search hints as
-    the user types.
-</p>
-<ol>
-    <li>Make sure that your web page is HTML5 compatible. The top of the HTML should look
-        something like this:
-<pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-    ...</code></pre></li>
-    <li>Copy the <a href="js/solr-ajax/simplesearch.js">simplesearch.js</a>,
-        <a href="js/jquery/jquery-1.19.1.min.js">JQuery</a>, and <a href="js/jquery-ui/jquery-ui.js">JQueryUI</a> files into your project folder.
-        Link these files into your HTML page by including the following in the HEAD:
-<pre class="line-numbers"><code class="language-markup">&lt;!-- simple search --&gt;
-&lt;script type="text/javascript" src="path/to/jquery.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="path/to/jquery-ui.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="path/to/simplesearch.js"&gt;&lt;/script&gt;</code></pre>
-    </li>
-    <li>Add the search box HTML to your page.
-<pre class="line-numbers"><code class="language-markup">&lt;!-- simplesearch --&gt;
-&lt;form id="simplesearch-form" ng-controller="SimpleSearchBoxController" ng-submit="submit()"&gt;
-    &lt;input id="simplesearch-input"
-           searchhints
-           autocomplete="off"
-           name="q"
-           ng-model="userquery"
-           placeholder='Enter placename or keywords to search for'
-           type='text'
-           ui-items="getHints(userquery)"
-        /&gt;
-    &lt;button class="btn"&gt;Search&lt;/button&gt;
-&lt;/form&gt;
-&lt;!-- /simplesearch --&gt;</code></pre></li>
-    <li>Add the search app to the HTML tag at the top of the page.
-<pre class="line-numbers"><code class="language-markup">&lt;!DOCTYPE html&gt;
-&lt;html lang="en" ng-app="simplesearch"&gt;
-    ...</code></pre></li>
-
-    </li>
-</ol>
-
-<h2>Create a Search Results Page</h2>
-<p>
-    The search results page is a web page that will be used to present the search results to the user.
-</p>
-
-<ol>
-    <li>Copy the <a href="search.html">search.html</a> page into your project folder.</li>
-    <li>You may optionally modify the presentation of search results by editing the HTML block surrounded
-    by the <code>&lt;!-- search results --&gt;</code> comment tags.</li>
-</ol>
-
-                <h2>Configure the Search Application</h2>
+                <h1>Web Page</h1>
                 <p>
-
+                    This is an example of how to implement the SimpleSearch search form.  You can put this form
+                    on any of your web pages. The search input box below will start to display search hints to the
+                    user once 3 characters have been entered.
                 </p>
 
-                <p>You should now have a functioning search setup on your web site.</p>
+                <!-- simplesearch query box -->
+                <form id="simplesearch-form" ng-controller="SimpleSearchBoxController" ng-init="resultsPage='search.html';init()" ng-submit="submit()">
+                    <input id="simplesearch-input"
+                           searchhints
+                           name="q"
+                           ng-model="userquery"
+                           placeholder='Enter placename or keywords to search for'
+                           type='text'
+                           ui-items="getHints()"
+                            />
+                    <button class="btn">Search</button>
+                </form>
+                <!-- /simplesearch query box -->
 
-
-                <h2>Test Your Search Setup</h2>
-                <p>
-                    The last step is
-                </p>
-
-
-
-            </div>
-        </div>
-        <div class="row footer">
-            <div class="span3"></div>
-            <div class="span9">
-                Copyright &copy; 2013 eScholarship Research Centre, University of Melbourne
             </div>
         </div>
     </div>

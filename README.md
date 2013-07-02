@@ -71,14 +71,10 @@ Version History
 
 Backlog:
 
- > Fuzzy search support : add a "did you mean" result list on the "no results found" view to DocumentSearchResultsController
- > How to create a "related searches: a, b, c" list of queries
  > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
  > Map document search results should update to reflect the zoom level and current view position
  > When a facet constraint is added, it should impact the typeahead filter
- > Stuck on updating fragment to reflect the current facet query -- facet query
-   clears hash
- > Query term highlighting in search results
+ > Stuck on updating fragment to reflect the current facet query -- facet query clears hash
  > Service, controller unit tests!
  > Add date field into the title output
  > Fix page header to remove right/left whitespace when resized for mobile layout

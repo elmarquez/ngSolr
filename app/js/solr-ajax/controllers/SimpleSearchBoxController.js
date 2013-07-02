@@ -9,15 +9,16 @@
 /* SearchBoxController                                                       */
 
 /**
- * Provides auto-complete and extended search support aids.
+ * Provides auto-complete and extended search support aids. When the user
+ * submits the query, it redirects them to the specified page.
  * @param $scope Controller scope
  * @param SolrSearchService Apache Solr search service interface
  * @param Utils Utility functions
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, SolrSearchService, Utils) {
+function SimpleSearchBoxController($scope, SolrSearchService, Utils) {
 
-    // the list of search hints
+    // the list of all search hints
     $scope.hints = [];
 
     // the subset of hints displayed to the user
@@ -26,33 +27,23 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     // the maximum number of hints to display at any moment
     $scope.maxHints = 10;
 
-    // If true, when a user enters a new query string, the target query will be
-    // replaced with a new query and the user query property will be set, If
-    // false, only the user query and start properties will be changed and the
-    // query results will be reloaded.
-    $scope.resetOnChange = false;
+    // the URL to the search results page
+    $scope.resultsPage = 'results.html';
 
     // the field name where search hints are taken from
-    $scope.searchHintsField = 'title_city';
+    $scope.searchHintsField = 'title_city'; // @todo change to hints by default for all sites
 
     // the name of the query that returns the list of search hints
     $scope.searchHintsQuery = "searchHintsQuery";
-
-    // the name of the main query
-    $scope.target = "defaultQuery";
 
     // the query string provided by the user
     $scope.userquery = "";
 
     // the minimum number characters that the user should enter before the list
     // of search hints is displayed
-    var minSearchLength = 1;
+    $scope.minSearchLength = 1;
 
     ///////////////////////////////////////////////////////////////////////////
-
-    $scope.getHintList = function() {
-        $scope.hintlist = $scope.hints.splice(0,10);
-    };
 
     /**
      * Update the list of search hints.
@@ -60,7 +51,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
      */
     $scope.getHints = function() {
         var hintlist = [];
-        if ($scope.userquery.length >= minSearchLength) {
+        if ($scope.userquery.length >= $scope.minSearchLength) {
             for (var i=0;i<$scope.hints.length, hintlist.length<$scope.maxHints;i++) {
                 var token = $scope.hints[i];
                 try {
@@ -107,7 +98,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
         query.setOption("facet.limit","-1");
         query.setOption("facet.field",$scope.searchHintsField);
         SolrSearchService.setQuery($scope.searchHintsQuery,query);
-        // handle update events from the search service.
+        // handle update events from the search service
         $scope.$on($scope.searchHintsQuery, function() {
             $scope.handleUpdate();
         });
@@ -120,34 +111,23 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
      */
     $scope.submit = function() {
         // close the autocomplete dropdown hints list
-        $("#search-box-input").autocomplete("close");
+        $("#simplesearch-input").autocomplete("close");
         // clean up the user query
         var trimmed = Utils.trim($scope.userquery);
         if (trimmed === '') {
             $scope.userquery = "*:*";
         }
-        // if we need to reset the query parameters
-        if ($scope.resetOnChange) {
-            // create a new query and set the user query property
-            // to the value provided by the user
-            var query = SolrSearchService.createQuery();
-            query.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.target,query);
-        } else {
-            // keep the existing search query but change the current user query
-            // value and set the starting document number to 0
-            var query = SolrSearchService.getQuery($scope.target);
-            query.setUserQuery($scope.userquery);
-            query.setOption("start","0");
-        }
-        // update the search results
-        SolrSearchService.updateQuery($scope.target);
+        // build the redirect URL
+        var url = window.location.href;
+        var i = url.lastIndexOf('/');
+        url = url.substring(0,i+1);
+        url += $scope.resultsPage + "#/" + $scope.userquery;
+        // change the browser location
+        window.location.href = url;
     };
-
-    // initialize the controller
-    $scope.init();
 
 }
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','SolrSearchService', 'Utils'];
+SimpleSearchBoxController.$inject = ['$scope','SolrSearchService', 'Utils'];
+

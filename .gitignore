@@ -5,7 +5,10 @@
 app/assets/img/icon
 app/assets/img/maki
 app/assets/img/mapiconscollection
+app/css/solr-ajax/simplesearch.css
 app/js/solr-ajax/**/*.min.js
+app/js/solr-ajax/simplesearch.*
+lib/*
 logs/*
 node_modules/
 scripts/npm*

@@ -10,311 +10,111 @@
     <!-- stylesheets -->
     <style>
         [ng-cloak] {display: none;}
+        body {
+            font-family: Helvetica, sans-serif;
+        }
+        .container {
+            margin: 10px auto 10px auto;
+            width: 920px;
+        }
+        .row {
+            display: block;
+        }
     </style>
-    <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
-    <!-- scripts -->
-    <script type="text/javascript" src="js/jquery/jquery-1.9.1.min.js"></script>
-    <script>
-        // include angular loader, which allows the files to load in any order
-        /*
-         AngularJS v1.0.0rc1
-         (c) 2010-2012 AngularJS http://angularjs.org
-         License: MIT
-         */
-        'use strict';(function(i){function d(c,a,e){return c[a]||(c[a]=e())}return d(d(i,"angular",Object),"module",function(){var c={};return function(a,e,f){e&&c.hasOwnProperty(a)&&(c[a]=null);return d(c,a,function(){function b(a,b,d){return function(){c[d||"push"]([a,b,arguments]);return g}}if(!e)throw Error("No module: "+a);var c=[],d=[],h=b("$injector","invoke"),g={_invokeQueue:c,_runBlocks:d,requires:e,name:a,provider:b("$provide","provider"),factory:b("$provide","factory"),service:b("$provide","service"),
-            value:b("$provide","value"),constant:b("$provide","constant","unshift"),filter:b("$filterProvider","register"),directive:b("$compileProvider","directive"),config:h,run:function(a){d.push(a);return this}};f&&h(f);return g})}})})(window);
-
-        // include a third-party async loader library
-        /*!
-         * $script.js v1.3
-         * https://github.com/ded/script.js
-         * Copyright: @ded & @fat - Dustin Diaz, Jacob Thornton 2011
-         * Follow our software http://twitter.com/dedfat
-         * License: MIT
-         */
-        !function(a,b,c){function t(a,c){var e=b.createElement("script"),f=j;e.onload=e.onerror=e[o]=function(){e[m]&&!/^c|loade/.test(e[m])||f||(e.onload=e[o]=null,f=1,c())},e.async=1,e.src=a,d.insertBefore(e,d.firstChild)}function q(a,b){p(a,function(a){return!b(a)})}var d=b.getElementsByTagName("head")[0],e={},f={},g={},h={},i="string",j=!1,k="push",l="DOMContentLoaded",m="readyState",n="addEventListener",o="onreadystatechange",p=function(a,b){for(var c=0,d=a.length;c<d;++c)if(!b(a[c]))return j;return 1};!b[m]&&b[n]&&(b[n](l,function r(){b.removeEventListener(l,r,j),b[m]="complete"},j),b[m]="loading");var s=function(a,b,d){function o(){if(!--m){e[l]=1,j&&j();for(var a in g)p(a.split("|"),n)&&!q(g[a],n)&&(g[a]=[])}}function n(a){return a.call?a():e[a]}a=a[k]?a:[a];var i=b&&b.call,j=i?b:d,l=i?a.join(""):b,m=a.length;c(function(){q(a,function(a){h[a]?(l&&(f[l]=1),o()):(h[a]=1,l&&(f[l]=1),t(s.path?s.path+a+".js":a,o))})},0);return s};s.get=t,s.ready=function(a,b,c){a=a[k]?a:[a];var d=[];!q(a,function(a){e[a]||d[k](a)})&&p(a,function(a){return e[a]})?b():!function(a){g[a]=g[a]||[],g[a][k](b),c&&c(d)}(a.join("|"));return s};var u=a.$script;s.noConflict=function(){a.$script=u;return this},typeof module!="undefined"&&module.exports?module.exports=s:a.$script=s}(this,document,setTimeout)
-
-        // load all of the dependencies asynchronously.
-        $script([
-            'lib/angular/angular.min.js',
-//                'js/solr-ajax/app.min.js',
-//                'js/solr-ajax/services.min.js',
-//                'js/solr-ajax/controllers.min.js',
-//                'js/solr-ajax/filters.min.js',
-//                'js/solr-ajax/directives.min.js',
-            'js/solr-ajax/controllers/DocumentSearchResultsController.js',
-            'js/solr-ajax/controllers/SearchBoxController.js',
-            'js/solr-ajax/directives/AutoComplete.js',
-            'js/solr-ajax/filters/TextFilters.js',
-            'js/solr-ajax/services/SolrSearchService.js',
-            'js/solr-ajax/services/Utils.js',
-            'js/solr-ajax/app/documentSearch.js'
-        ], function() {
-            // when all is done, execute bootstrap angular application
-            angular.bootstrap(document, ['solr-ajax']);
-        });
-    </script>
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
+    <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
 </head>
 <body>
 
-<!-- page-header -->
-<header id="page-header">
-    <div class="navbar navbar-inverse">
-        <div class="navbar-inner" style="padding:0;">
-            <div class="container-fluid">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                <a class="brand-title" href="#">Solr-Ajax</a>
-                <div class="nav-collapse collapse">
-                    <p class="navbar-text pull-right">
-                        Logged in as <a href="#" class="navbar-link">Username</a>
-                    </p>
-                    <ul class="nav">
-                        <li class="active"><a href="#">Documents</a></li>
-                        <li><a href="images.html">Images</a></li>
-                        <li><a href="locations.html">Locations</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<!-- header -->
+<div class="container">
+    <div class="row">
+        <h1>Simple Search - Results Page Example</h1>
     </div>
-</header>
-<!-- /page-header -->
+</div>
+<!-- /header -->
 
 <!-- search bar -->
-<section id="search-bar">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span2 column-240">&nbsp;</div>
-            <div class="span5">
+<div class="container">
+    <div class="row">
+        <div class="span12">
 
-                <form class="form-inline" ng-controller="SearchBoxController" ng-init="init()" ng-submit="submit()" ng-cloak>
-                    <div id="search-box" class="input-append">
-                        <input id="search-box-input"
-                               searchhints
-                               autocomplete="off"
-                               name="q"
-                               ng-model="userquery"
-                               placeholder='Enter placename or keywords to search for'
-                               style="width:380px"
-                               type='text'
-                               ui-items="getHints(userquery)"
-                                />
-                        <button class="btn">Search</button>
-                    </div>
-                </form>
+            <!-- simplesearch query box -->
+            <form id="simplesearch-form" ng-controller="SimpleSearchBoxController" ng-init="resultsPage='search.html';init()" ng-submit="submit()">
+                <input id="simplesearch-input"
+                       searchhints
+                       name="q"
+                       ng-model="userquery"
+                       placeholder='Enter placename or keywords to search for'
+                       type='text'
+                       ui-items="getHints()"
+                        />
+                <button class="btn">Search</button>
+            </form>
+            <!-- /simplesearch query box -->
 
-            </div>
-            <div class="span5">&nbsp;</div>
         </div>
     </div>
-</section>
+</div>
 <!-- /search-bar -->
 
-<!-- content -->
-<section id="content">
-    <div class="container-fluid">
-        <div class="row-fluid">
+<!-- search results -->
+<div class="container">
+    <div class="row">
 
-            <!-- search panel -->
-            <div id="search-panel" class="span2 column-240 bs-docs-sidebar">
+        <div id="search-results" class="span12" ng-controller="SimpleSearchResultsController" ng-init="init();" ng-cloak>
 
-                <!-- facet selection controller -->
-                <ul class="facet-panel"
-                    ng-controller="FacetSelectionController"
-                    ng-show="facets.length>0"
-                    ng-cloak>
-                    <li><b>Filtering By</b></li>
-                    <li>
-                        <ul class="items unstyled">
-                            <li class="facet" ng-repeat="facet in facets">
-                                <i class="icon-tag"></i>
-                                <a ng-click="remove($index)">
-                                    <span class="value">{{facet.value}}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- /facet selection controller -->
+            <div>Test Query: {{ testquery }}</div>
+            <div>Test Page: {{ testpage }}</div>
 
-                <!-- location facet controller -->
-                <ul class="facet-panel"
-                    ng-controller="FieldFacetController"
-                    ng-init="exclusive=true;init('region')"
-                    ng-hide="selected && exclusive"
-                    ng-cloak>
-                    <li><b>State</b></li>
-                    <li>
-                        <ul class="facets unstyled">
-                            <li ng-repeat="item in items" ng-show="items">
-                                <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                <span class="facet-score" ng-show="item.score">({{item.score}})</span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- /location facet controller -->
+            <div class="alert alert-error" ng-show="error">{{error}}</div>
+            <div class="alert alert-info" ng-show="message">{{message}}</div>
+            <div id="summary">Search Results ({{totalResults}} found)</div>
 
-                <!-- function facet controller -->
-                <ul class="facet-panel"
-                    ng-controller="FieldFacetController"
-                    ng-init="exclusive=false;init('function')"
-                    ng-hide="selected && exclusive"
-                    ng-cloak>
-                    <li><b>Function</b></li>
-                    <li>
-                        <ul class="facets unstyled">
-                            <li ng-repeat="item in items" ng-show="items">
-                                <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                <span class="facet-score" ng-show="item.score">({{item.score}})</span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- function facet controller -->
-
-                <!-- type facet controller -->
-                <ul class="facet-panel"
-                    ng-controller="FieldFacetController"
-                    ng-init="exclusive=false;init('localtype')"
-                    ng-hide="selected && exclusive"
-                    ng-cloak>
-                    <li><b>Type</b></li>
-                    <li>
-                        <ul class="facets unstyled">
-                            <li ng-repeat="item in items" ng-show="items">
-                                <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
-                                <span class="facet-score" ng-show="item.score">({{item.score}})</span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- /type facet controller -->
-
-                <!-- date range facet controller -->
-                <ul id="date-range-panel"
-                    class="facet-panel"
-                    ng-controller="DateFacetController"
-                    ng-init="startDateField='fromDate';endDateField='toDate';init()"
-                    ng-cloak>
-                    <li><b>Dates</b></li>
-                    <li>
-                        <form class="form-horizontal" ng-submit="submit()" style="margin-bottom:0px;">
-                            <div id="date-range-histogram"></div>
-                            <table class="table-horizontal">
-                                <tr>
-                                    <td style="font-size:small">
-                                        <div class="input-prepend">
-                                            <span class="add-on">From</span>
-                                            <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
-                                        </div>
-                                    </td>
-                                    <td class="pull-right" style="font-size:small;align:right">
-                                        <div class="input-prepend pull-right">
-                                            <span class="add-on">To</span>
-                                            <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                            <button style="position: absolute; left: -9999px; width: 1px; height: 1px;">Update</button>
-                        </form>
-                    </li>
-                </ul>
-                <!-- /date range facet controller -->
-
-                <!-- search history panel -->
-                <ul class="facet-panel" ng-controller="SearchHistoryController" ng-cloak>
-                    <li><b>Search History</b></li>
-                    <li>
-                        <ul class="unstyled">
-                            <li ng-repeat="query in queries">
-                                <a ng-href="{{query.getUrl()}}">{{query.getUserQuery()}}</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- /search history panel -->
-
-            </div>
-            <!-- /search panel -->
-
-            <!-- result panel -->
-            <div id="result-panel" class="span5" ng-controller="DocumentSearchResultsController" ng-init="init();">
-                <div id="search-results" class="column-512" ng-cloak>
-
-                    <div class="alert alert-error" ng-show="error">{{error}}</div>
-                    <div class="alert alert-info" ng-show="message">{{message}}</div>
-                    <div id="summary">Search Results ({{totalResults}} found)</div>
-
-                    <article ng-repeat="doc in documents" class="document">
-                        <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
-                        <!-- <div class="source">{{doc.presentation_url}}</div> -->
-                        <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
-                            <a ng-href="{{doc.presentation_url}}" class="thumbnail">
-                                <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
-                            </a>
-                        </div>
-                        <div class="text">{{doc.abstract}}</div>
-                        <div class="meta inline">
-                            <span class="region" ng-show="doc.region">{{doc.region}}</span>
-                            <span class="country" ng-show="doc.country">{{doc.country}}</span>
-                            <div class="existdates">
-                                <span>{{doc.fromDate}}</span>
-                                <span ng-show="doc.toDate">&ndash;</span>
-                                <span>{{doc.toDate}}</span>
-                            </div>
-                        </div>
-                    </article>
-
-                </div><!-- /search results -->
-                <div class="search-results-pager pagination" ng-hide="error" ng-cloak>
-                    <ul>
-                        <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
-                            <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
-                        </li>
-                    </ul>
-                </div><!-- /pagination -->
-
-                <!-- display results on map -->
-                <div style="display:block;font-size:small;margin:0 0 10px 0;padding:0px;" class="span4">
-                    <a href="locations.html"><img src="img/map-results-32.png" class="thumbnail" style="display:inline;"></a>
-                            <span style="display:inline;padding-left:10px;">
-                                <a href="locations.html" style="font-size:x-small;font-weight:normal">Show search results on map</a>
-                            </span>
+            <article ng-repeat="doc in documents" class="document">
+                <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
+                <!-- <div class="source">{{doc.presentation_url}}</div> -->
+                <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
+                    <a ng-href="{{doc.presentation_url}}" class="thumbnail">
+                        <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
+                    </a>
                 </div>
-                <!-- /display results on map -->
-
-            </div>
-            <!-- /result panel -->
+                <div class="text">{{doc.abstract}}</div>
+                <div class="meta inline">
+                    <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                    <span class="country" ng-show="doc.country">{{doc.country}}</span>
+                    <div class="existdates">
+                        <span>{{doc.fromDate}}</span>
+                        <span ng-show="doc.toDate">&ndash;</span>
+                        <span>{{doc.toDate}}</span>
+                    </div>
+                </div>
+            </article>
 
         </div>
-        <!-- /row -->
+        <!-- /search results -->
+
+        <!-- results pagination -->
+        <div class="search-results-pager pagination" ng-hide="error" ng-cloak>
+            <ul>
+                <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
+                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /results pagination -->
+
     </div>
-    <!-- /container -->
-</section>
-<!-- /content -->
+</div>
+<!-- /search results -->
 
 <!-- footer -->
-<footer id="footer">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div>
-                EAC-CPF simple search interface to Apache Solr.
-                A project of the
-                <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
-            </div>
-        </div>
+<div class="container">
+    <div class="row">
+        EAC-CPF simple search interface to Apache Solr. A project of the
+        <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
     </div>
-</footer>
+</div>
 <!-- /footer -->
 
 </body>

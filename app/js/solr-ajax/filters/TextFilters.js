@@ -8,12 +8,6 @@
 /*---------------------------------------------------------------------------*/
 /* TextFilters                                                               */
 
-angular.module('Filters',[]).filter('interpolate', ['version', function(version) {
-    return function(text) {
-        return String(text).replace(/\%VERSION\%/mg, version);
-    };
-}]);
-
 angular.module('Filters',[]).filter('trim', function() {
     /**
      * Trim starting and ending spaces from the string.
