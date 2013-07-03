@@ -52,20 +52,15 @@
             // load all of the dependencies asynchronously.
             $script([
                 'lib/angular/angular.min.js',
-//                'js/solr-ajax/app.min.js',
-//                'js/solr-ajax/services.min.js',
-//                'js/solr-ajax/controllers.min.js',
-//                'js/solr-ajax/filters.min.js',
-//                'js/solr-ajax/directives.min.js',
                 'js/solr-ajax/controllers/DateFacetController.js',
                 'js/solr-ajax/controllers/FacetSelectionController.js',
                 'js/solr-ajax/controllers/FieldFacetController.js',
                 'js/solr-ajax/controllers/ImageSearchResultsController.js',
                 'js/solr-ajax/controllers/SearchBoxController.js',
-                'js/solr-ajax/directives/AutoComplete.js',
-                'js/solr-ajax/filters/TextFilters.js',
-                'js/solr-ajax/services/SolrSearchService.js',
-                'js/solr-ajax/services/Utils.js',
+                'js/solr-ajax/directives/autocomplete.js',
+                'js/solr-ajax/filters/textfilters.js',
+                'js/solr-ajax/services/solrsearchservice.js',
+                'js/solr-ajax/services/utils.js',
                 'js/solr-ajax/app/imageSearch.js'
             ], function() {
                 angular.bootstrap(document,['solr-ajax']);

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html ng-app="simplesearch">
+<head>
+    <meta charset="utf-8">
+    <title>Simple Search Interface to Apache Solr/Lucene</title>
+    <meta name="author" content="eScholarship Research Centre, University of Melbourne">
+    <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        [ng-cloak] {display: none;}
+        body {
+            color: #333;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 20px;
+        }
+        .container {
+            margin: 10px auto 10px auto;
+            width: 512px;
+        }
+        .row {
+            display: block;
+        }
+        #footer {
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+            padding: 20px 0 20px 0;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
+    <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
+</head>
+<body>
+
+<!-- header -->
+<div class="container">
+    <div class="row">
+        <h1>Results Page Example</h1>
+        <hr/ noshade size='1'>
+    </div>
+</div>
+<!-- /header -->
+
+<!-- search bar -->
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            <!-- simplesearch input box -->
+            <searchform data-field="title_city"
+                        data-presenter="results.html"
+                        data-source="http://dev02.internal:8080/FACP_docs">
+                <input name="q" type="text" placeholder="Keyword or place name" searchbox/>
+                <input name="submit" type="submit" value="search" searchbutton/>
+            </searchform>
+            <!-- /simplesearch input box -->
+        </div>
+    </div>
+</div>
+<!-- /search-bar -->
+
+<!-- search results -->
+<div class="container">
+    <div class="row">
+
+        <searchresults source="http://dev02.internal:8080/FACP_docs">
+            <div class="summary">
+                You searched for '{{query}}'. The query returned {{totalResults}} documents.
+                Showing page {{page + 1}} of {{totalPages + 1}} pages.
+            </div>
+            <div class="document" ng-repeat="doc in documents">
+                <div class="title"><a ng-href="doc.presentation_url">{{doc.title}}</a></div>
+                <div class="url"><a ng-href="doc.presentation_url">{{doc.presentation_url}}</a></div>
+                <div class="abstract">{{doc.abstract | truncate:250 }}</div>
+                <div class="meta inline">
+                    <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                    <span class="country" ng-show="doc.country">{{doc.country}}</span>
+                    <div class="existdates">
+                        <span>{{doc.fromDate}}</span>
+                        <span ng-show="doc.toDate">&ndash;</span>
+                        <span>{{doc.toDate}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pager pagination" ng-hide="error" ng-cloak>
+                <ul>
+                    <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
+                        <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)" ng-href="#">{{page.name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </searchresults>
+
+    </div>
+</div>
+<!-- /search results -->
+
+<!-- footer -->
+<div id="footer" class="container">
+    <div class="row">
+        EAC-CPF simple search interface to Apache Solr. A project of the
+        <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
+    </div>
+</div>
+<!-- /footer -->
+
+</body>
+</html>

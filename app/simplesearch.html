@@ -49,7 +49,7 @@
 
 <h1>Simple Search</h1>
 <p>
-    Simple Search is a Javascript tool that provides Apache Solr powered keyword search for
+    Simple Search is a Javascript tool that provides Apache Solr powered <em>document</em> search for
     your new or existing web site. The following provides instructions on how to incorporate
     this functionality.
 </p>
@@ -82,60 +82,50 @@
     </li>
     <li>Add the search box HTML to your page.
 <pre class="line-numbers"><code class="language-markup">&lt;!-- simplesearch --&gt;
-&lt;form id="simplesearch-form" ng-controller="SimpleSearchBoxController" ng-submit="submit()"&gt;
-    &lt;input id="simplesearch-input"
-           searchhints
-           autocomplete="off"
-           name="q"
-           ng-model="userquery"
-           placeholder='Enter placename or keywords to search for'
-           type='text'
-           ui-items="getHints(userquery)"
-        /&gt;
-    &lt;button class="btn"&gt;Search&lt;/button&gt;
-&lt;/form&gt;
+&lt;searchform data-field="hints"
+            data-presenter="search.html"
+            data-source="http://www.mysite.esrc.unimelb.edu.au/solr"&gt;
+    &lt;input name="q" type="text" placeholder="Keyword or placename" searchbox /&gt;
+    &lt;input name="submit" type="submit" value="search" searchbutton /&gt;
+&lt;/searchform&gt;
 &lt;!-- /simplesearch --&gt;</code></pre></li>
+    <li>The Network Administrator will provide you with the <code>data-source</code> and <code>data-field</code> values
+        for your web site. These values tell the application which server and index field to fetch the data from. Enter
+        these values into the respective <code>&lt;searchform&gt;</code> attribute fields. </li>
 </ol>
 
 <br/>
 <h2>Create a Search Results Page</h2>
 <p>
-    The search results page is a web page that will be used to present the results to the user.
-</p>
-<ol>                                                                            <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
-    <li>Copy the <a href="search.html">search.html</a> page into your project folder.</li>
-    <li>Modify the page style and layout to match your web site presentation.</li>
-    <li>You may optionally modify the presentation of search results as well by editing the HTML block surrounded
-    by the <code>&lt;!-- search results --&gt;</code> comment tags.</li>
-</ol>
-
-<br/>
-<h2>Configure the Application</h2>
-<p>
-    The last step is to configure the application so that it knows where to find the Apache Solr search index for your
-    project.
+    The search results page executes the search query, then renders the results for the user.
 </p>
 <ol>
-    <li>Open the <code>simplesearch.js</code> file in a text editor. Navigate to approximately line <code>46</code> in
-        the file. You should see two variables listed: <code>SOLR_BASE</code> and <code>SOLR_CORE</code>.</li>
-    <li>Replace the existing values with those provided to you by the network administrator.</li>
+    <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+    <li>Copy the sample <a href="results.html">results.html</a> file into your project folder. This file provides you
+        with a minimum layout that you can customize to suit your needs.</li>
+    <li>The Network Administrator will provide you with the <code>data-source</code> value for your web site. Enter this
+        value into the respective attribute field on the <code>&lt;searchresults&gt;</code> block.</li>
+    <li>Modify the page style and layout to match your web site presentation. You may optionally modify the
+        presentation of the search results themselves, by editing the contents of the
+        <code>&lt;searchresults&gt;</code> block.</li>
 </ol>
 
 <br/>
 <h2>Test Your Search Setup</h2>
 <p>
-    The last step is to test your setup.
+    Ensure that your search boxes and your search results page are now working.
 </p>
 <ol>
-    <li>Enter a search term in the search box of any page. You should get a drop down box with a list of search
-        hints. Click enter to submit the search query.</li>
+    <li>Enter a search term in the search box of any page. After you have typed a minimum of 3 characters, a box should
+        appear below the search term input, with a list of hints. Select a hint and click enter to submit the query.</li>
     <li>You should have been directed to the search results page, and zero or more search results should be
     displayed.</li>
     <li>If there is more than one page of results available (more than 10 items by default), then you should see
-    a page list at the bottom of the search results listing.</li>
+    a page list at the bottom of the search results listing. Click each page of the list to confirm that the
+    results update.</li>
 </ol>
 <p>
-    If the steps above succeeded, you now have a functioning search setup.
+    If the steps above succeeded, you now have a functioning search service for your web site.
 </p>
 
             </div>

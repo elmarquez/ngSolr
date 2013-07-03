@@ -1,121 +1,39 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html lang="en" ng-app="simplesearch">
 <head>
-    <!-- meta -->
     <meta charset="utf-8">
     <title>Simple Search Interface to Apache Solr/Lucene</title>
     <meta name="author" content="eScholarship Research Centre, University of Melbourne">
     <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- stylesheets -->
-    <style>
-        [ng-cloak] {display: none;}
-        body {
-            font-family: Helvetica, sans-serif;
-        }
-        .container {
-            margin: 10px auto 10px auto;
-            width: 920px;
-        }
-        .row {
-            display: block;
-        }
-    </style>
     <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
     <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
 </head>
-<body>
+<body style="font-family:Helvetica,sans-serif;">
 
-<!-- header -->
-<div class="container">
-    <div class="row">
-        <h1>Simple Search - Results Page Example</h1>
-    </div>
-</div>
-<!-- /header -->
-
-<!-- search bar -->
-<div class="container">
+<div class="container" style="width:920px;margin: 20px auto 20px auto;">
     <div class="row">
         <div class="span12">
 
-            <!-- simplesearch query box -->
-            <form id="simplesearch-form" ng-controller="SimpleSearchBoxController" ng-init="resultsPage='search.html';init()" ng-submit="submit()">
-                <input id="simplesearch-input"
-                       searchhints
-                       name="q"
-                       ng-model="userquery"
-                       placeholder='Enter placename or keywords to search for'
-                       type='text'
-                       ui-items="getHints()"
-                        />
-                <button class="btn">Search</button>
-            </form>
-            <!-- /simplesearch query box -->
+            <h1>Web Page</h1>
 
+            <p>
+                This is an example of how to implement the SimpleSearch search form. You can put this form
+                on any of your web pages. The search input box below will start to display search hints to the
+                user once 3 characters have been entered.
+            </p>
+
+            <!-- simplesearch input box -->
+            <searchform data-field="title_city"
+                        data-presenter="results.html"
+                        data-source="http://dev02.internal:8080/FACP_docs">
+                <input name="q" type="text" placeholder="Keyword or place name" searchbox/>
+                <input name="submit" type="submit" value="search" searchbutton/>
+            </searchform>
+            <!-- /simplesearch input box -->
         </div>
     </div>
 </div>
-<!-- /search-bar -->
-
-<!-- search results -->
-<div class="container">
-    <div class="row">
-
-        <div id="search-results" class="span12" ng-controller="SimpleSearchResultsController" ng-init="init();" ng-cloak>
-
-            <div>Test Query: {{ testquery }}</div>
-            <div>Test Page: {{ testpage }}</div>
-
-            <div class="alert alert-error" ng-show="error">{{error}}</div>
-            <div class="alert alert-info" ng-show="message">{{message}}</div>
-            <div id="summary">Search Results ({{totalResults}} found)</div>
-
-            <article ng-repeat="doc in documents" class="document">
-                <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
-                <!-- <div class="source">{{doc.presentation_url}}</div> -->
-                <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
-                    <a ng-href="{{doc.presentation_url}}" class="thumbnail">
-                        <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
-                    </a>
-                </div>
-                <div class="text">{{doc.abstract}}</div>
-                <div class="meta inline">
-                    <span class="region" ng-show="doc.region">{{doc.region}}</span>
-                    <span class="country" ng-show="doc.country">{{doc.country}}</span>
-                    <div class="existdates">
-                        <span>{{doc.fromDate}}</span>
-                        <span ng-show="doc.toDate">&ndash;</span>
-                        <span>{{doc.toDate}}</span>
-                    </div>
-                </div>
-            </article>
-
-        </div>
-        <!-- /search results -->
-
-        <!-- results pagination -->
-        <div class="search-results-pager pagination" ng-hide="error" ng-cloak>
-            <ul>
-                <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
-                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
-                </li>
-            </ul>
-        </div>
-        <!-- /results pagination -->
-
-    </div>
-</div>
-<!-- /search results -->
-
-<!-- footer -->
-<div class="container">
-    <div class="row">
-        EAC-CPF simple search interface to Apache Solr. A project of the
-        <a href="http://www.esrc.unimelb.edu.au/">eScholarship Research Centre</a>, University of Melbourne.
-    </div>
-</div>
-<!-- /footer -->
 
 </body>
 </html>

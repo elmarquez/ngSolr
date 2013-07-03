@@ -83,6 +83,7 @@ Current:
 
 0.5.7
 
+ * Removed TypeAhead directive
  * Close search hints list on submit action
  * Histogram of search results by date
 

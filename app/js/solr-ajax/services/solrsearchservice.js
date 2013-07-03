@@ -439,7 +439,7 @@ angular.module('SolrSearchService',[])
          * @param Query Query name
          * @todo get rid of this function
          */
-        svc.setPage = function(Start,Query) {
+        svc.setPage = function(Start, Query) {
             if (Query) {
                 svc.queries[Query].setOption("start",Start);
             } else {
@@ -452,11 +452,8 @@ angular.module('SolrSearchService',[])
          * @param Query Query object
          * @param Name Query name
          */
-        svc.setQuery = function(Name,Query) {
+        svc.setQuery = function(Name, Query) {
             svc.queries[Name] = Query;
-            if (Name === defaultQueryName) {
-                // update the location
-            }
         };
 
         /**

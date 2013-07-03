@@ -1,1 +1,7 @@
 /* Print Output Stylesheet */
+
+body {
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+}
