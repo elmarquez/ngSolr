@@ -67,31 +67,16 @@
 &lt;html lang="en" ng-app="simplesearch"&gt;
     ...</code></pre></li>
 
-    <li><!-- ,
-        <a href="lib/angular/angular.js">AngularJS</a>,
-        <a href="js/jquery/jquery-1.19.1.min.js">JQuery</a>, and
-        <a href="js/jquery-ui/jquery-ui.js">JQueryUI</a>
-        -->
-        Link the SimpleSearch CSS and Javascript files into your HTML page by including the following in the HEAD:
-        <!--&lt;script type="text/javascript" src="path/to/jquery.js"&gt;&lt;/script&gt;
-        &lt;script type="text/javascript" src="path/to/jquery-ui.js"&gt;&lt;/script&gt;
-        &lt;script type="text/javascript" src="path/to/angular.js"&gt;&lt;/script&gt;-->
-
-<pre class="line-numbers"><code class="language-markup">&lt;link rel="stylesheet" type="text/css" href="http://www.esrc.unimelb.edu.au/simplesearch.css" media="screen" /&gt;
-&lt;script type="text/javascript" src="http://www.esrc.unimelb.edu.au/simplesearch.js"&gt;&lt;/script&gt;</code></pre>
-    </li>
+    <li>Link the SimpleSearch CSS and Javascript files into your HTML page by including the following in the HEAD:
+        <pre class="line-numbers"><code class="language-markup">&lt;link rel="stylesheet" type="text/css" href="http://www.esrc.unimelb.edu.au/simplesearch.css" media="screen" /&gt;
+&lt;script type="text/javascript" src="http://www.esrc.unimelb.edu.au/simplesearch.js"&gt;&lt;/script&gt;</code></pre></li>
     <li>Add the search box HTML to your page.
 <pre class="line-numbers"><code class="language-markup">&lt;!-- simplesearch --&gt;
-&lt;searchform data-field="hints"
-            data-presenter="search.html"
-            data-source="http://www.mysite.esrc.unimelb.edu.au/solr"&gt;
+&lt;searchform&gt;
     &lt;input name="q" type="text" placeholder="Keyword or placename" searchbox /&gt;
     &lt;input name="submit" type="submit" value="search" searchbutton /&gt;
 &lt;/searchform&gt;
 &lt;!-- /simplesearch --&gt;</code></pre></li>
-    <li>The Network Administrator will provide you with the <code>data-source</code> and <code>data-field</code> values
-        for your web site. These values tell the application which server and index field to fetch the data from. Enter
-        these values into the respective <code>&lt;searchform&gt;</code> attribute fields. </li>
 </ol>
 
 <br/>
@@ -127,6 +112,24 @@
 <p>
     If the steps above succeeded, you now have a functioning search service for your web site.
 </p>
+
+<br/>
+<h2>Advanced Configuation</h2>
+
+<p>
+    If your site requires customized configuration, the Network Administrator will provide you with configuration
+    values. These values tell the application which server and index field to fetch the data from, and which HTML
+    page will render the results. Enter these values into the respective <code>&lt;searchform&gt;</code> or
+    <code>&lt;searchresults&gt;</code> attribute fields as illustrated below.
+</p>
+<pre class="line-numbers"><code class="language-markup">&lt;!-- simplesearch --&gt;
+&lt;searchform data-field="hints"
+            data-presenter="search.html"
+            data-source="http://www.mysite.esrc.unimelb.edu.au/solr"&gt;
+    &lt;input name="q" type="text" placeholder="Keyword or placename" searchbox /&gt;
+    &lt;input name="submit" type="submit" value="search" searchbutton /&gt;
+&lt;/searchform&gt;
+&lt;!-- /simplesearch --&gt;</code></pre>
 
             </div>
         </div>
