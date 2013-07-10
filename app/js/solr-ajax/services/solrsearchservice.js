@@ -104,19 +104,19 @@ function SolrFacet(Field, Value) {
  * @param Url URL to Solr host
  * @param Core Name of Solr core
  */
-function SolrQuery(Url, Core) {
+function SolrQuery(Url) {
 
     var self = this;
 
-    self.facets = {};               // query facets
-    self.facet_counts = {};         // facet counts
-    self.highlighting = {};         // query response highlighting
-    self.options = {};              // query options
-    self.response = {};             // query response
-    self.responseHeader = {};       // response header
-    self.query = "*:*";             // the user query
-    self.queryParameters = {};      // query parameters
-    self.url = Url + "/" + Core + "/select?";   // URL for the Solr core
+    self.facets = {};            // query facets
+    self.facet_counts = {};      // facet counts
+    self.highlighting = {};      // query response highlighting
+    self.options = {};           // query options
+    self.response = {};          // query response
+    self.responseHeader = {};    // response header
+    self.query = "*:*";          // the user query
+    self.queryParameters = {};   // query parameters
+    self.url = Url + "/select?"; // URL for the Solr core
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -135,8 +135,8 @@ function SolrQuery(Url, Core) {
      * @param Value
      * @return {Facet}
      */
-    self.createFacet = function(Name,Value) {
-        return new SolrFacet(Name,Value);
+    self.createFacet = function(Name, Value) {
+        return new SolrFacet(Name, Value);
     };
 
     /**
@@ -328,22 +328,26 @@ function SolrQuery(Url, Core) {
  */
 angular.module('SolrSearchService',[])
     .factory('SolrSearchService',['$rootScope','$http','$location','CONSTANTS',
-        function($rootScope,$http,$location,CONSTANTS) {
+        function($rootScope, $http, $location, CONSTANTS) {
 
-        // parameters
-        var defaultQueryName = "defaultQuery";  // the name of the default query
-        var svc = {};                           // the service instance
-        svc.error = undefined;                  // error message
-        svc.message = undefined;                // info or warning message to user
-        svc.queries = {};                       // named search queries
+        var defaultQueryName = "defaultQuery";  // name of the default query
+        var svc = {};                           // service instance
+        svc.error = undefined;                  // user error message
+        svc.message = undefined;                // user info or warning message
+        svc.queries = {};                       // search queries
 
         ///////////////////////////////////////////////////////////////////////////
 
         /**
          * Build a default query object.
+         * @param Solr Solr core URL, without the action selector or query
          */
-        svc.createQuery = function () {
-            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
+        svc.createQuery = function (Solr) {
+            if (Solr != undefined) {
+                var query = new SolrQuery(Solr);
+            } else {
+                var query = new SolrQuery(CONSTANTS.SOLR_BASE);
+            }
             query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
             query.setOption("wt", "json");
@@ -358,7 +362,11 @@ angular.module('SolrSearchService',[])
          * @return {Object} The query object or undefined if not found.
          */
         svc.getQuery = function(Name) {
-            return svc.queries[Name];
+            if (Name) {
+                return svc.queries[Name];
+            } else {
+                return svc.queries[defaultQueryName];
+            }
         };
 
         /**
@@ -366,6 +374,7 @@ angular.module('SolrSearchService',[])
          * query and facet parameters. Valid view values are list, map, graph.
          * @param Hash Window location hash
          * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
+         * @todo Remove this function
          */
         svc.getQueryFromHash = function (Hash) {
             var hash = Hash;
@@ -437,7 +446,7 @@ angular.module('SolrSearchService',[])
          * Set the starting document in the named query.
          * @param Start The index of the starting document.
          * @param Query Query name
-         * @todo get rid of this function
+         * @todo get rid of this function and move the functionality to the query
          */
         svc.setPage = function(Start, Query) {
             if (Query) {
@@ -454,15 +463,6 @@ angular.module('SolrSearchService',[])
          */
         svc.setQuery = function(Name, Query) {
             svc.queries[Name] = Query;
-        };
-
-        /**
-         * Set the fragment portion of the window location to reflect the
-         * default query.
-         * @param Query
-         */
-        svc.setWindowLocation = function(Query) {
-            // window.location.hash = Query.getHash();
         };
 
         /**
@@ -499,11 +499,6 @@ angular.module('SolrSearchService',[])
                         query.setResponse(data.response);
                         query.setResponseHeader(data.responseHeader);
                         $rootScope.$broadcast(Name);
-                        // update the window location if we changed the default
-                        // query
-                        if (Name === defaultQueryName) {
-                            svc.setWindowLocation(query);
-                        }
                     }).error(function (data, status, headers, config) {
                         svc.error = "Could not get search results from server. Server responded with status code " + status + ".";
                         var response = {};

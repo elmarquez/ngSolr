@@ -6,8 +6,8 @@
     <meta name="author" content="eScholarship Research Centre, University of Melbourne">
     <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
-    <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/simplesearch/simplesearch.min.css" media="screen" />
+    <script type="text/javascript" src="js/simplesearch/simplesearch.min.js"></script>
 </head>
 <body style="font-family:Helvetica,sans-serif;">
 
@@ -26,8 +26,8 @@
             <!-- simplesearch input box -->
             <searchform data-field="title_city"
                         data-presenter="results.html"
-                        data-source="http://dev02.internal:8080/FACP_docs">
-                <input name="q" type="text" placeholder="Keyword or place name" searchbox/>
+                        data-source="http://dev02.internal:8080/FACP_doc">
+                <input name="q" type="text" placeholder="Keyword or place name" searchbox />
                 <input name="submit" type="submit" value="search" searchbutton/>
             </searchform>
             <!-- /simplesearch input box -->

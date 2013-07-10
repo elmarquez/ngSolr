@@ -8,7 +8,7 @@
 /*---------------------------------------------------------------------------*/
 /* SimpleSearch Application                                                  */
 
-var app = angular.module('simplesearch',['Directives','Filters','SolrSearchService','Utils']);
+var app = angular.module('simplesearch',['Filters','SolrSearchService','Utils']);
 
 /**
  * Define application routes. We follow the approach outlined here to map
@@ -17,9 +17,9 @@ var app = angular.module('simplesearch',['Directives','Filters','SolrSearchServi
  */
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
-        when('/:query', { event: "query" }).
-        when('/:query/:page', { event: "query-and-page" }).
-        otherwise({ redirectTo: "/" });
+        when('/:userquery', { event: "/userquery" }).
+        when('/:userquery/:page', { event: "/userquery/page" }).
+        otherwise({ event: "#/" });
 }]);
 
 app.constant("CONSTANTS", {

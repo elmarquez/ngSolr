@@ -27,8 +27,8 @@
             padding: 20px 0 20px 0;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="css/solr-ajax/simplesearch.css" media="screen" />
-    <script type="text/javascript" src="js/solr-ajax/simplesearch.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/simplesearch/simplesearch.min.css" media="screen" />
+    <script type="text/javascript" src="js/simplesearch/simplesearch.min.js"></script>
 </head>
 <body>
 
@@ -36,7 +36,7 @@
 <div class="container">
     <div class="row">
         <h1>Results Page Example</h1>
-        <hr/ noshade size='1'>
+        <hr noshade size='1' />
     </div>
 </div>
 <!-- /header -->
@@ -48,8 +48,8 @@
             <!-- simplesearch input box -->
             <searchform data-field="title_city"
                         data-presenter="results.html"
-                        data-source="http://dev02.internal:8080/FACP_docs">
-                <input name="q" type="text" placeholder="Keyword or place name" searchbox/>
+                        data-source="http://dev02.internal:8080/FACP_doc">
+                <input name="q" type="text" placeholder="Keyword or place name" searchbox />
                 <input name="submit" type="submit" value="search" searchbutton/>
             </searchform>
             <!-- /simplesearch input box -->
@@ -61,35 +61,37 @@
 <!-- search results -->
 <div class="container">
     <div class="row">
+        <div class="span12">
 
-        <searchresults source="http://dev02.internal:8080/FACP_docs">
-            <div class="summary">
-                You searched for '{{query}}'. The query returned {{totalResults}} documents.
-                Showing page {{page + 1}} of {{totalPages + 1}} pages.
-            </div>
-            <div class="document" ng-repeat="doc in documents">
-                <div class="title"><a ng-href="doc.presentation_url">{{doc.title}}</a></div>
-                <div class="url"><a ng-href="doc.presentation_url">{{doc.presentation_url}}</a></div>
-                <div class="abstract">{{doc.abstract | truncate:250 }}</div>
-                <div class="meta inline">
-                    <span class="region" ng-show="doc.region">{{doc.region}}</span>
-                    <span class="country" ng-show="doc.country">{{doc.country}}</span>
-                    <div class="existdates">
-                        <span>{{doc.fromDate}}</span>
-                        <span ng-show="doc.toDate">&ndash;</span>
-                        <span>{{doc.toDate}}</span>
+            <searchresults data-source="http://dev02.internal:8080/FACP_doc">
+                <div class="summary">
+                    You searched for '{{userquery}}'. The query returned {{totalResults}} documents.
+                    Showing page {{page}} of {{totalPages + 1}} pages.
+                </div>
+                <div class="document" ng-repeat="doc in documents">
+                    <div class="title"><a ng-href="doc.presentation_url">{{doc.title}}</a></div>
+                    <div class="url"><a ng-href="doc.presentation_url">{{doc.presentation_url}}</a></div>
+                    <div class="abstract">{{doc.abstract | truncate:250 }}</div>
+                    <div class="meta inline">
+                        <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                        <span class="country" ng-show="doc.country">{{doc.country}}</span>
+                        <div class="existdates">
+                            <span>{{doc.fromDate}}</span>
+                            <span ng-show="doc.toDate">&ndash;</span>
+                            <span>{{doc.toDate}}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="pager pagination" ng-hide="error" ng-cloak>
-                <ul>
-                    <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
-                        <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)" ng-href="#">{{page.name}}</a>
-                    </li>
-                </ul>
-            </div>
-        </searchresults>
+                <div class="pager pagination" ng-hide="error" ng-cloak>
+                    <ul>
+                        <li ng-repeat="page in pages" ng-class="{active:page.isActive,disabled:page.isDisabled}">
+                            <a id="page-{{page.number}}" ng-href="#{{ userquery }}/{{ page.number }}">{{page.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </searchresults>
 
+        </div>
     </div>
 </div>
 <!-- /search results -->

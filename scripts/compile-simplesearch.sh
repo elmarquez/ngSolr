@@ -6,11 +6,11 @@
 # -----------------------------------------------------------------------------
 # compile simplesearch.css
 
-OUTPUT='../app/js/solr-ajax/simplesearch.css'
+OUTPUT='../app/css/simplesearch/simplesearch.min.css'
 
 cat /dev/null > $OUTPUT
 echo "/* WARNING: THIS FILE IS GENERATED AUTOMATICALLY. CHANGES MADE TO THIS FILE WILL NOT PERSIST. */" >> $OUTPUT
-cat ../app/css/solr-ajax/simplesearch.css >> $OUTPUT
+cat ../app/css/simplesearch/simplesearch.css >> $OUTPUT
 cat ../app/css/jquery-ui/jquery-ui.min.css >> $OUTPUT
 
 SIZE=$(stat -c%s "$OUTPUT")
@@ -19,8 +19,8 @@ echo "Wrote simplesearch.css ($SIZE bytes)"
 # -----------------------------------------------------------------------------
 # compile simplesearch.js
 
-OUTPUT='../app/js/solr-ajax/simplesearch.js'
-TEMP='../app/js/solr-ajax/simplesearch.js.tmp'
+OUTPUT='../app/js/simplesearch/simplesearch.min.js'
+TEMP='../app/js/simplesearch/simplesearch.min.js.tmp'
 
 cat /dev/null > $OUTPUT
 cat /dev/null > $TEMP
@@ -37,9 +37,9 @@ cat ../app/js/jquery-ui/jquery-ui.min.js >> $OUTPUT
 cat ../app/lib/angular/angular.min.js >> $OUTPUT
 
 # simplesearch
-tail -n +7 ../app/js/solr-ajax/app/simplesearch.js >> $TEMP
-tail -n +7 ../app/js/solr-ajax/directives/autocomplete.js >> $TEMP
-tail -n +7 ../app/js/solr-ajax/directives/simplesearch.js >> $TEMP
+tail -n +7 ../app/js/simplesearch/app.js >> $TEMP
+tail -n +7 ../app/js/simplesearch/controllers.js >> $TEMP
+tail -n +7 ../app/js/simplesearch/directives.js >> $TEMP
 tail -n +7 ../app/js/solr-ajax/filters/textfilters.js >> $TEMP
 tail -n +7 ../app/js/solr-ajax/services/solrsearchservice.js >> $TEMP
 tail -n +7 ../app/js/solr-ajax/services/utils.js >> $TEMP
