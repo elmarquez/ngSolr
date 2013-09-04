@@ -9,28 +9,50 @@
 /* ImageSearchResultsController                                              */
 
 /**
- * Image based search controller.
+ * Image based search controller. Present search results for a named query.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service.
  * @param CONSTANTS Application constants
  */
-function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
+function ImageSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, CONSTANTS) {
 
-	// parameters
-    $scope.itemsPerPage = 16;           // the number of items per page
-    $scope.itemsPerRow = 4;             // the number of items per row
-    $scope.page = 0;                    // the current search result page
-    $scope.pages = [];                  // list of pages in the current navigation set
-    $scope.pagesPerSet = 10;            // the number of pages in a navigation set
-    $scope.rows = [];                   // document search results
-    $scope.queryname = "defaultQuery";  // the query name
-    $scope.startPage = 0;               // zero based start page index
-    $scope.totalPages = 1;              // count of the total number of result pages
-    $scope.totalResults = 0;            // count of the total number of search results
-    $scope.totalSets = 1;               // count of the number of search result sets
-	$scope.query = '';
+    // the number of items per page
+    $scope.documentsPerPage = 16;
 
-	///////////////////////////////////////////////////////////////////////////
+    // the number of items per row
+    $scope.documentsPerRow = 4;
+
+    // the current search results page
+    $scope.page = 0;
+
+    // list of pages in the current navigation set
+    $scope.pages = [];
+
+    // the number of pages in a navigation set
+    $scope.pagesPerSet = 10;
+
+    // document search results
+    $scope.rows = [];
+
+    // the query name
+    $scope.queryname = SolrSearchService.defaultQueryName;
+
+    // url to solr core
+    $scope.source = undefined;
+
+    // zero based start page index
+    $scope.startPage = 0;
+
+    // count of the total number of result pages
+    $scope.totalPages = 1;
+
+    // count of the total number of result pages
+    $scope.totalResults = 0;
+
+    // count of the number of search result sets
+    $scope.totalSets = 1;
+
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * A page in a pagination list
@@ -40,112 +62,41 @@ function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
     function Page(Name,Num) {
         this.name = Name;
         this.number = Num;
-        this.isActive = false;
-        this.isDisabled = false;
+        this.isCurrent = false;
     }
 
     /**
-     * Update page index for navigation of search results.
+     * Set the results page number.
+     * @param Start
      */
-    function updatePageIndex() {
-        // the default page navigation set
-        $scope.pages = [];
-        // get query results
-        var results = SolrSearchService.getResponse($scope.queryname);
-        if (results && results.docs && results.docs.length > 0) {
-            // calculate the total number of pages and sets
-            $scope.totalPages = Math.ceil(results.numFound / $scope.itemsPerPage);
-            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
-            // determine the current page, current page set
-            var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
-            var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
-            // determine the first and last page in the set
-            var firstPageInSet = currentSet * $scope.pagesPerSet;
-            var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
-            if (lastPageInSet>=$scope.totalPages) {
-                lastPageInSet = lastPageInSet - (lastPageInSet - $scope.totalPages) - 1;
-            }
-            // link to previous set
-            if ($scope.totalSets>1 && currentSet!=0) {
-                var previousSet = (currentSet - 1) * $scope.itemsPerPage;
-                var prevPage = new Page("«",previousSet);
-                $scope.pages.push(prevPage);
-            }
-            // page links
-            for (var i=firstPageInSet;i<=lastPageInSet;i++) {
-                var page = new Page(i+1,i*$scope.itemsPerPage);
-                if (page.number==$scope.page) {
-                    page.isActive = true;
-                }
-                $scope.pages.push(page);
-            }
-            // link to next set
-            if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
-                var nextSet = (lastPageInSet*$scope.itemsPerPage) + $scope.itemsPerPage;
-                var nextPage = new Page("»",nextSet);
-                $scope.pages.push(nextPage);
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Initialize the controller.
-     */
-	$scope.init = function() {
-        // redefine the default search query to ensure that only records with
-        // digital objects show up in the results
-        SolrSearchService.createQuery = function() {
-            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
-            query.setOption("rows", CONSTANTS.ITEMS_PER_PAGE);
-            query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
-            query.setOption("wt", "json");
-            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
-            query.setQueryParameter("imageQuery","+dobj_type:*");
-            return query;
-        };
-        var query = SolrSearchService.createQuery();
-        query.setOption("rows",$scope.itemsPerPage);
-        SolrSearchService.setQuery($scope.queryname,query);
-        // handle update events from the search service
-        $scope.$on($scope.queryname, function () {
-            $scope.handleFacetListUpdate();
-        });
-        // update the search results
-        SolrSearchService.updateQuery($scope.queryname);
-	};
-
-    /**
-     * Set the current page.
-     * @param PageNumber
-     */
-    $scope.setPage = function(PageNumber) {
-        $scope.page = PageNumber;
-        SolrSearchService.setPage(PageNumber,$scope.queryname);
-        SolrSearchService.updateQuery($scope.queryname);
+    $scope.handleSetPage = function(Start) {
+        var query = SolrSearchService.getQuery($scope.queryname);
+        query.setOption('start', Start * $scope.documentsPerPage);
+        var hash = query.getHash();
+        $location.path(hash);
+        $window.scrollTo(0, 0);
     };
 
     /**
      * Update the controller state.
      */
-	$scope.handleFacetListUpdate = function() {
+    $scope.handleUpdate = function() {
         // clear current results
         $scope.rows = [];
         // get new results
         var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
             $scope.totalResults = results.numFound;
-            $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
+            $scope.totalPages = Math.ceil($scope.totalResults / $scope.documentsPerPage);
             $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
             // add new results
             var count = 0;
             var row = [];
-            for (var i=0;i<results.docs.length && i<$scope.itemsPerPage;i++) {
+            for (var i=0;i<results.docs.length && i<$scope.documentsPerPage;i++) {
                 row.push(results.docs[i]);
                 count++;
                 // create a new row
-                if (count >= $scope.itemsPerRow) {
+                if (count >= $scope.documentsPerRow || i==results.docs.length - 1) {
                     count = 0;
                     $scope.rows.push(row);
                     row = [];
@@ -158,10 +109,99 @@ function ImageSearchResultsController($scope, SolrSearchService, CONSTANTS) {
             $scope.totalSets = 1;
         }
         // update the page index
-        updatePageIndex();
-	};
+        $scope.updatePageIndex();
+    };
+
+    /**
+     * Initialize the controller.
+     */
+    $scope.init = function() {
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
+            }
+        }
+        // redefine the default search query to ensure that only records with
+        // digital objects show up in the results. this is required when we
+        // may have multiple controllers modifying the same query
+        SolrSearchService.createQuery = function() {
+            var query = new SolrQuery(CONSTANTS.SOLR_BASE);
+            query.setOption("rows", $scope.documentsPerPage);
+            query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
+            query.setOption("json.wrf", "JSON_CALLBACK");
+            query.setOption("wt", "json");
+            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
+            query.setQueryParameter("imageQuery","+dobj_type:*");
+            return query;
+        };
+        // handle location change event, update query results
+        $scope.$on("$routeChangeSuccess", function() {
+                $scope.query = ($routeParams.query || "");
+                if ($scope.query) {
+                    var query = SolrSearchService.getQueryFromHash($scope.query);
+                    SolrSearchService.setQuery($scope.queryname,query);
+                    if ($scope.source) {
+                        query.solr = $scope.source;
+                    }
+                    // set the display values to match those in the query
+                    $scope.documentsPerPage = (query.getOption('rows') || 10);
+                    $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
+                    $scope.userquery = query.getUserQuery();
+                    // update results
+                    SolrSearchService.setQuery($scope.queryname, query);
+                    SolrSearchService.updateQuery($scope.queryname);
+                }
+            }
+        );
+        // handle update events from the search service
+        $scope.$on($scope.queryname, function () {
+            $scope.handleUpdate();
+        });
+    };
+
+    /**
+     * Update page index for navigation of search results. Pages are presented
+     * to the user and are one-based, rather than zero-based as the start
+     * value is.
+     */
+    $scope.updatePageIndex = function() {
+        // the default page navigation set
+        $scope.pages = [];
+        // determine the current zero based page set
+        var currentSet = Math.floor($scope.page / $scope.pagesPerSet);
+        // determine the first and last page in the set
+        var firstPageInSet = (currentSet * $scope.pagesPerSet) + 1;
+        var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
+        if (lastPageInSet > $scope.totalPages) {
+            lastPageInSet = $scope.totalPages;
+        }
+        // link to previous set
+        if ($scope.totalSets > 1 && currentSet != 0) {
+            var previousSet = firstPageInSet - $scope.pagesPerSet - 1;
+            var prevPage = new Page("«", previousSet);
+            $scope.pages.push(prevPage);
+        }
+        // page links
+        for (var i=firstPageInSet;i<=lastPageInSet;i++) {
+            var page = new Page(i,i-1);
+            if (page.number==$scope.page) {
+                page.isCurrent = true;
+            }
+            $scope.pages.push(page);
+        }
+        // link to next set
+        if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
+            var nextSet = lastPageInSet;
+            var nextPage = new Page("»", nextSet);
+            $scope.pages.push(nextPage);
+        }
+    };
+
+    // initialize the controller
+    $scope.init();
 
 }
 
 // inject dependencies
-ImageSearchResultsController.$inject = ['$scope','SolrSearchService','CONSTANTS'];
+ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','CONSTANTS'];

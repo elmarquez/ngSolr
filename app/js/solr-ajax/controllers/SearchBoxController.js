@@ -15,7 +15,7 @@
  * @param Utils Utility functions
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, SolrSearchService, Utils) {
+function SearchBoxController($scope, $location, SolrSearchService, Utils) {
 
     // the list of search hints
     $scope.hints = [];
@@ -33,7 +33,7 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     $scope.resetOnChange = false;
 
     // the field name where search hints are taken from
-    $scope.searchHintsField = 'title_city';
+    $scope.searchHintsField = 'hints';
 
     // the name of the query that returns the list of search hints
     $scope.searchHintsQuery = "searchHintsQuery";
@@ -76,6 +76,40 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
     };
 
     /**
+     * Handle submit click event. Construct a valid Solr query URL from the
+     * user input data, then execute a GET call with that URL.
+     * https://web/ECOMt/solr/FACP/select?q=BONDI+(fromDate:[* TO 1980-12-31T23:59:59Z] AND toDate:[1970-01-01T00:00:00Z TO *])&fq=region:(NSW)&wt=json
+     */
+    $scope.handleSubmit = function() {
+        // close the autocomplete dropdown hints list
+        $("#search-box-input").autocomplete("close");
+        // clean up the user query
+        var trimmed = Utils.trim($scope.userquery);
+        if (trimmed === '') {
+            $scope.userquery = "*:*";
+        }
+        // build the query string
+        var query = SolrSearchService.getQuery($scope.searchHintsQuery);
+        if (query) {
+            query.setOption("rows", 10);
+            query.setOption("start", 0);
+        } else {
+            query = SolrSearchService.createQuery();
+        }
+        query.setUserQuery($scope.userquery);
+        // log the query
+        if (window.console) {
+            console.log("QUERY " + query);
+        }
+        // update the window location
+        var hash = query.getHash();
+        $location.path(hash);
+        // $scope.$apply();
+        // prevent the default form submit behavior
+        return false;
+    };
+
+    /**
      * Update the controller state.
      */
     $scope.handleUpdate = function() {
@@ -99,52 +133,22 @@ function SearchBoxController($scope, SolrSearchService, Utils) {
      * Initialize the controller.
      */
     $scope.init = function() {
-        // create a query to get a list of search hints
+        // create a query
         var query = SolrSearchService.createQuery();
         query.setOption("rows","0");
-        query.setOption("wt","json");
         query.setOption("facet","true");
         query.setOption("facet.limit","-1");
         query.setOption("facet.field",$scope.searchHintsField);
         SolrSearchService.setQuery($scope.searchHintsQuery,query);
-        // handle update events from the search service.
+        // handle update events on the query
         $scope.$on($scope.searchHintsQuery, function() {
             $scope.handleUpdate();
         });
-        // update the result set and the display
+        // update query results
         SolrSearchService.updateQuery($scope.searchHintsQuery);
-    };
-
-    /**
-     * Handle submit event.
-     */
-    $scope.submit = function() {
-        // close the autocomplete dropdown hints list
-        $("#search-box-input").autocomplete("close");
-        // clean up the user query
-        var trimmed = Utils.trim($scope.userquery);
-        if (trimmed === '') {
-            $scope.userquery = "*:*";
-        }
-        // if we need to reset the query parameters
-        if ($scope.resetOnChange) {
-            // create a new query and set the user query property
-            // to the value provided by the user
-            var query = SolrSearchService.createQuery();
-            query.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.target,query);
-        } else {
-            // keep the existing search query but change the current user query
-            // value and set the starting document number to 0
-            var query = SolrSearchService.getQuery($scope.target);
-            query.setUserQuery($scope.userquery);
-            query.setOption("start","0");
-        }
-        // update the search results
-        SolrSearchService.updateQuery($scope.target);
     };
 
 }
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','SolrSearchService', 'Utils'];
+SearchBoxController.$inject = ['$scope', '$location', 'SolrSearchService', 'Utils'];

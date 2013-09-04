@@ -15,7 +15,7 @@
  * @param SolrSearchService Solr search service
  * @param CONSTANTS Application constants
  */
-function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
+function SearchHistoryController($scope, $attrs, SolrSearchService, CONSTANTS) {
 
     // parameters
     $scope.maxItems = 5;                // the maximum number of items to display
@@ -25,30 +25,32 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Load the specified query into the view.
-     * @param QueryIndex The index of the query object in the queries list.
-     * @todo complete this function
+     * Initialize the controller.
      */
-    $scope.load = function(QueryIndex) {
-        if (QueryIndex >= 0 && QueryIndex <= $scope.queries.length) {
-            var query = $scope.queries[QueryIndex];
-            if (query) {
-                // set the query in the search service, then force it to update
+    $scope.init = function() {
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
             }
         }
+        // Handle update events from the search service.
+        $scope.$on($scope.queryName, function() {
+            $scope.handleUpdate();
+        });
     };
 
     /**
      * Update the controller state.
      */
-    $scope.handleFacetListUpdate = function() {
+    $scope.handleUpdate = function() {
         // get the new query
         var newquery = SolrSearchService.getQuery($scope.queryName);
         // if there are existing queries
         if ($scope.queries.length > 0) {
-            // if the new query is the same as the last query, ignore it
-            if (newquery != $scope.queries[0]) {
-                // add new query to the top of the queue
+            // if the new user query is different from the last one, add it to
+            // the top of the queue
+            if (newquery.getUserQuery() != $scope.queries[0].getUserQuery()) {
                 $scope.queries.unshift(newquery);
                 // if there are more than maxItems in the list, remove the first item
                 if ($scope.queries.length > $scope.maxItems) {
@@ -62,13 +64,23 @@ function SearchHistoryController($scope,SolrSearchService,CONSTANTS) {
     };
 
     /**
-     * Handle update events from the search service.
+     * Load the specified query into the view.
+     * @param QueryIndex The index of the query object in the queries list.
+     * @todo complete this function
      */
-    $scope.$on($scope.queryName, function() {
-        $scope.handleFacetListUpdate();
-    });
+    $scope.setQuery = function(QueryIndex) {
+        if (QueryIndex >= 0 && QueryIndex <= $scope.queries.length) {
+            var query = $scope.queries[QueryIndex];
+            if (query) {
+                // set the query in the search service, then force it to update
+            }
+        }
+    };
 
-};
+    // initialize the controller
+    $scope.init();
+
+}
 
 // inject controller dependencies
-SearchHistoryController.$inject = ['$scope','SolrSearchService','CONSTANTS'];
+SearchHistoryController.$inject = ['$scope', '$attrs', 'SolrSearchService', 'CONSTANTS'];

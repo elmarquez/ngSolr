@@ -8,7 +8,24 @@
 /*---------------------------------------------------------------------------*/
 /* TextFilters                                                               */
 
-angular.module('Filters',[]).filter('trim', function() {
+var filters = angular.module('Filters',[]);
+
+filters.filter('strip', function() {
+    /**
+     * Strip the leading month value from a date.
+     * @param text
+     * @return {String} Year value
+     */
+    return function(text) {
+        var i = text.indexOf(', ');
+        if (i != -1) {
+            return text.substring(i + 2);
+        }
+        return text;
+    }
+});
+
+filters.filter('trim', function() {
     /**
      * Trim starting and ending spaces from the string.
      * @param text
@@ -18,7 +35,7 @@ angular.module('Filters',[]).filter('trim', function() {
     }
 });
 
-angular.module('Filters',[]).filter('truncate', function() {
+filters.filter('truncate', function() {
     /**
      * Truncate the text to the maximum specified length.
      * @param text Text

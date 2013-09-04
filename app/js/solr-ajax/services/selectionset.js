@@ -15,7 +15,8 @@
  * @param $rootScope Root scope
  * @todo consider having a default and named selection sets
  */
-angular.module('SelectionSetService',[]).factory('SelectionSetService', ['$rootScope', function ($rootScope) {
+angular.module('SelectionSetService',[]).
+    factory('SelectionSetService', ['$rootScope', function ($rootScope) {
 
     // parameters
     var svc = {};

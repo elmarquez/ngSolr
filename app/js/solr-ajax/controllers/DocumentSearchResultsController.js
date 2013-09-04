@@ -9,49 +9,33 @@
 /* DocumentSearchResultsController                                           */
 
 /**
- * Displays text based search results and pager.
- * @param $scope Controller scope
- * @param SolrSearchService Solr search service.
- * @param Utils Utility functions
- * @param SelectionSetService Selection set service
+ * Search results controller. Presents search results for a named query.
+ * @param $scope
+ * @param $attrs
+ * @param $location
+ * @param $route
+ * @param $routeParams
+ * @param $window
+ * @param SelectionSetService
+ * @param SolrSearchService
+ * @param Utils
  */
-function DocumentSearchResultsController($scope, SolrSearchService, Utils, SelectionSetService) {
+function DocumentSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SelectionSetService, SolrSearchService, Utils) {
 
-    // parameters
-    $scope.documents = [];              // document search results
-    $scope.itemsPerPage = 10;           // the number of search results per page
-    $scope.maxFieldLength = 256;        // maximum length of string for presentation
-    $scope.page = 0;                    // the current search result page
-    $scope.pages = [];                  // list of pages in the current navigation set
-    $scope.pagesPerSet = 10;            // the number of pages in a navigation set
-    $scope.queryname = "defaultQuery";  // the query name
-    $scope.startPage = 0;               // zero based start page index
-    $scope.totalPages = 1;              // count of the total number of result pages
-    $scope.totalResults = 0;            // count of the total number of search results
-    $scope.totalSets = 1;               // count of the number of search result sets
-    $scope.view = 'list';               // presentation type
+    $scope.documents = [];                                  // document search results
+    $scope.documentsPerPage = 10;                           // the number of search results per page
+    $scope.page = 0;                                        // the current search result page
+    $scope.pages = [];                                      // list of pages in the current navigation set
+    $scope.pagesPerSet = 10;                                // the number of pages in a navigation set
+    $scope.queryname = SolrSearchService.defaultQueryName;  // default query name
+    $scope.source = undefined;                              // url to solr core
+    $scope.start = 0;                                       // zero based document index for first record
+    $scope.totalPages = 1;                                  // count of the total number of result pages
+    $scope.totalResults = 0;                                // count of the total number of search results
+    $scope.totalSets = 1;                                   // count of the number of search result sets
+    $scope.userquery = '';                                  // user query
 
     ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Document search result item.
-     * @param Title
-     * @param Uri
-     * @param Location
-     * @param Abstract
-     */
-    function Document(Title, Uri, Location, Abstract) {
-        var setIfDefined = function(Val) {
-            if (Val) {
-                return Val;
-            }
-            return '';
-        };
-        this.title = setIfDefined(Title);
-        this.uri = setIfDefined(Uri);
-        this.location = setIfDefined(Location);
-        this.abstract = setIfDefined(Abstract);
-    }
 
     /**
      * A page in a pagination list
@@ -61,80 +45,100 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
     function Page(Name,Num) {
         this.name = Name;
         this.number = Num;
-        this.isActive = false;
-        this.isDisabled = false;
+        this.isCurrent = false;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Update page index for navigation of search results.
-     */
-    function updatePageIndex() {
-        // the default page navigation set
-        $scope.pages = [];
-        // get query results
-        var results = SolrSearchService.getResponse($scope.queryname);
-        if (results && results.docs && results.docs.length > 0) {
-            // calculate the total number of pages and sets
-            $scope.totalPages = Math.ceil(results.numFound / $scope.itemsPerPage);
-            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
-            // determine the current page, current page set
-            var currentPage = Math.floor($scope.page/$scope.itemsPerPage);
-            var currentSet = Math.floor(currentPage/$scope.pagesPerSet);
-            // determine the first and last page in the set
-            var firstPageInSet = currentSet * $scope.pagesPerSet;
-            var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
-            if (lastPageInSet>=$scope.totalPages) {
-                lastPageInSet = lastPageInSet - (lastPageInSet - $scope.totalPages) - 1;
-            }
-            // link to previous set
-            if ($scope.totalSets>1 && currentSet!=0) {
-                var previousSet = (currentSet - 1) * $scope.itemsPerPage;
-                var prevPage = new Page("«",previousSet);
-                $scope.pages.push(prevPage);
-            }
-            // page links
-            for (var i=firstPageInSet;i<=lastPageInSet;i++) {
-                var page = new Page(i+1,i*$scope.itemsPerPage);
-                if (page.number==$scope.page) {
-                    page.isActive = true;
-                }
-                $scope.pages.push(page);
-            }
-            // link to next set
-            if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
-                var nextSet = (lastPageInSet*$scope.itemsPerPage) + $scope.itemsPerPage;
-                var nextPage = new Page("»",nextSet);
-                $scope.pages.push(nextPage);
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Clear the selection set. If an Id is provided, remove the specific
      * document by Id. Otherwise, clear all values.
      */
     $scope.clearSelection = function(Id) {
-        if (Id) {
+        try {
             SelectionSetService.remove(Id);
-        } else {
             SelectionSetService.clear();
+        } catch (err) {
+            if (window.console) {
+                console.log(err.message);
+            }
         }
+    };
+
+    /**
+     * Set the results page number.
+     * @param Start
+     */
+    $scope.handleSetPage = function(Start) {
+        var query = SolrSearchService.getQuery($scope.queryname);
+        query.setOption('start', Start * $scope.documentsPerPage);
+        var hash = query.getHash();
+        $location.path(hash);
+        $window.scrollTo(0, 0);
+    };
+
+    /**
+     * Update the controller state.
+     */
+    $scope.handleUpdate = function() {
+        // clear current results
+        $scope.documents = [];
+        // get new results
+        var results = SolrSearchService.getResponse($scope.queryname);
+        if (results && results.docs) {
+            $scope.totalResults = results.numFound;
+            // calculate the total number of pages and sets
+            $scope.totalPages = Math.ceil($scope.totalResults / $scope.documentsPerPage);
+            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
+            // add new results
+            for (var i=0;i<results.docs.length && i<$scope.documentsPerPage;i++) {
+                // clean up document fields
+                results.docs[i].fromDate = Utils.formatDate(results.docs[i].fromDate);
+                results.docs[i].toDate = Utils.formatDate(results.docs[i].toDate);
+                // add to result list
+                $scope.documents.push(results.docs[i]);
+            }
+        } else {
+            $scope.documents = [];
+            $scope.totalResults = 0;
+            $scope.totalPages = 1;
+            $scope.totalSets = 1;
+        }
+        // update the page index
+        $scope.updatePageIndex();
     };
 
     /**
      * Initialize the controller.
      */
     $scope.init = function() {
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
+            }
+        }
+        // handle location change event, update query results
+        $scope.$on("$routeChangeSuccess", function() {
+                $scope.query = ($routeParams.query || "");
+                if ($scope.query) {
+                    var query = SolrSearchService.getQueryFromHash($scope.query);
+                    if ($scope.source) {
+                        query.solr = $scope.source;
+                    }
+                    // set the display values to match those in the query
+                    $scope.documentsPerPage = (query.getOption('rows') || 10);
+                    $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
+                    $scope.userquery = query.getUserQuery();
+                    // update results
+                    SolrSearchService.setQuery($scope.queryname, query);
+                    SolrSearchService.updateQuery($scope.queryname);
+                }
+            }
+        );
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
-            $scope.handleFacetListUpdate();
+            $scope.handleUpdate();
         });
-        // update the search results
-        SolrSearchService.updateQuery($scope.queryname);
     };
 
     /**
@@ -146,47 +150,47 @@ function DocumentSearchResultsController($scope, SolrSearchService, Utils, Selec
     };
 
     /**
-     * Set the current page.
-     * @param PageNumber
+     * Update page index for navigation of search results. Pages are presented
+     * to the user and are one-based, rather than zero-based as the start
+     * value is.
      */
-    $scope.setPage = function(PageNumber) {
-        $scope.page = PageNumber;
-        SolrSearchService.setPage(PageNumber,$scope.queryname);
-        SolrSearchService.updateQuery($scope.queryname);
+    $scope.updatePageIndex = function() {
+        // the default page navigation set
+        $scope.pages = [];
+        // determine the current zero based page set
+        var currentSet = Math.floor($scope.page / $scope.pagesPerSet);
+        // determine the first and last page in the set
+        var firstPageInSet = (currentSet * $scope.pagesPerSet) + 1;
+        var lastPageInSet = firstPageInSet + $scope.pagesPerSet - 1;
+        if (lastPageInSet > $scope.totalPages) {
+            lastPageInSet = $scope.totalPages;
+        }
+        // link to previous set
+        if ($scope.totalSets > 1 && currentSet != 0) {
+            var previousSet = firstPageInSet - $scope.pagesPerSet - 1;
+            var prevPage = new Page("«", previousSet);
+            $scope.pages.push(prevPage);
+        }
+        // page links
+        for (var i=firstPageInSet;i<=lastPageInSet;i++) {
+            var page = new Page(i,i-1);
+            if (page.number==$scope.page) {
+                page.isCurrent = true;
+            }
+            $scope.pages.push(page);
+        }
+        // link to next set
+        if ($scope.totalSets>1 && currentSet<$scope.totalSets-1) {
+            var nextSet = lastPageInSet;
+            var nextPage = new Page("»", nextSet);
+            $scope.pages.push(nextPage);
+        }
     };
 
-    /**
-     * Update the controller state.
-     */
-    $scope.handleFacetListUpdate = function() {
-        // clear current results
-        $scope.documents = [];
-        // get new results
-        var results = SolrSearchService.getResponse($scope.queryname);
-        if (results && results.docs) {
-            $scope.totalResults = results.numFound;
-            $scope.totalPages = Math.ceil($scope.totalResults / $scope.itemsPerPage);
-            $scope.totalSets = Math.ceil($scope.totalPages / $scope.pagesPerSet);
-            // add new results
-            for (var i=0;i<results.docs.length && i<$scope.itemsPerPage;i++) {
-                // clean up document fields
-                results.docs[i].fromDate = Utils.formatDate(results.docs[i].fromDate);
-                results.docs[i].toDate = Utils.formatDate(results.docs[i].toDate);
-                Utils.truncateField(results.docs[i],'abstract',$scope.maxFieldLength);
-                // add to result list
-                $scope.documents.push(results.docs[i]);
-            }
-        } else {
-            $scope.documents = [];
-            $scope.totalResults = 0;
-            $scope.totalPages = 1;
-            $scope.totalSets = 1;
-        }
-        // update the page index
-        updatePageIndex();
-    };
+    // initialize the controller
+    $scope.init();
 
 }
 
 // inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','SolrSearchService','Utils','SelectionSetService'];
+DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SelectionSetService','SolrSearchService','Utils'];

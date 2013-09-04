@@ -10,9 +10,9 @@
 
 /**
  * Displays and manages the set of facet constraints on a named query.
- *
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
+ * @todo need to update this to read the facet list from the current query
  */
 function FacetSelectionController($scope, SolrSearchService) {
 
@@ -36,7 +36,7 @@ function FacetSelectionController($scope, SolrSearchService) {
     /**
      * Update the controller state.
      */
-    $scope.handleFacetListUpdate = function() {
+    $scope.handleUpdate = function() {
         $scope.facetkeys = [];
         $scope.facets = [];
         var query = SolrSearchService.getQuery($scope.target);
@@ -48,11 +48,17 @@ function FacetSelectionController($scope, SolrSearchService) {
     };
 
     /**
-     * Handle update events from the search service.
+     * Initialize the controller
      */
-    $scope.$on($scope.target, function() {
-        $scope.handleFacetListUpdate();
-    });
+    $scope.init = function() {
+        // Handle update events from the search service.
+        $scope.$on($scope.target, function() {
+            $scope.handleUpdate();
+        });
+    };
+
+    // initialize the controller
+    $scope.init();
 
 }
 

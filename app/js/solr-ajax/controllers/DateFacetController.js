@@ -19,43 +19,57 @@ function DateFacetController($scope, SolrSearchService) {
 
     var year = new Date();
 
+    // for tracking dates during histogram update
     $scope._endDate = 0;
     $scope._startDate = 0;
-    $scope.endDate = 0;                             // end date
-    $scope.endDateField = 'endDate';                // facet field name
-    $scope.endDateQueryName = 'endDate';            // end date query name
-    $scope.histogram = [];                          // histogram data
-    $scope.histogramHeight = 100;                   // chart height
-    $scope.histogramMaxBins = 10;                   // maximum number of histogram bins
-    $scope.histogramQueryName = 'histogramQuery';   // histogram query name
-    $scope.histogramWidth = 240;                    // chart width
-    $scope.startDate = 0;                           // start date
-    $scope.startDateField = 'startDate';            // facet field name
-    $scope.startDateQueryName = 'startDate';        // start date query name
-    $scope.target = 'defaultQuery';                 // named query to filter
-    $scope.updateFlag = 0;                          // flag used to track update process (-2 started, -1 partially done, 0 complete)
-    $scope.updateHistogram = true;                  // update the histogram
-    $scope.updateOnInit = false;                    // update the facet list during init
-    $scope.updateOnTargetChange = true;             // update the date range to reflect the target query results
 
-    //////////////////////////////////////////////////////////////////////////
+    // end date
+    $scope.endDate = 0;
 
-    /**
-     * Get the first date in the item list.
-     * @param Items List of items
-     * @param FieldName Date field
-     */
-    function getFirstDateRecord(Items, FieldName) {
-        if (Items && Items.docs && Items.docs.length > 0) {
-            var item = Items.docs[0];
-            var date = item[FieldName];
-            if (date != undefined) {
-                var i = date.indexOf('-');
-                return date.substring(0,i);
-            }
-        }
-        return 0;
-    }
+    // facet field name
+    $scope.endDateField = 'toDate';
+
+    // end date query name
+    $scope.endDateQueryName = 'endDateQuery';
+
+    // histogram data
+    $scope.histogram = [];
+
+    // chart height
+    $scope.histogramHeight = 100;
+
+    // maximum number of histogram bins
+    $scope.histogramMaxBins = 10;
+
+    // histogram query name
+    $scope.histogramQueryName = 'histogramQuery';
+
+    // chart width
+    $scope.histogramWidth = 240;
+
+    // start date
+    $scope.startDate = 0;
+
+    // facet field name
+    $scope.startDateField = 'fromDate';
+
+    // start date query name
+    $scope.startDateQueryName = 'startDateQuery';
+
+    // named query to filter
+    $scope.target = SolrSearchService.defaultQueryName;
+
+    // flag used to track update process (-2 started, -1 partially done, 0 complete)
+    $scope.updateFlag = 0;
+
+    // update the histogram
+    $scope.updateHistogram = true;
+
+    // update the facet list during init
+    $scope.updateOnInit = false;
+
+    // update the date range to reflect the target query results
+    $scope.updateOnTargetChange = true;
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -81,13 +95,30 @@ function DateFacetController($scope, SolrSearchService) {
     };
 
     /**
+     * Get the first date in the item list.
+     * @param Items List of items
+     * @param FieldName Date field
+     */
+    $scope.getFirstDateRecord = function(Items, FieldName) {
+        if (Items && Items.docs && Items.docs.length > 0) {
+            var item = Items.docs[0];
+            var date = item[FieldName];
+            if (date != undefined) {
+                var i = date.indexOf('-');
+                return date.substring(0,i);
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Handle update on end date query.
      */
     $scope.handleEndDateQueryUpdate = function() {
         var endDateResults = SolrSearchService.getResponse($scope.endDateQueryName);
         if (endDateResults) {
-            $scope._endDate = getFirstDateRecord(endDateResults,$scope.endDateField);
-            $scope.endDate = getFirstDateRecord(endDateResults,$scope.endDateField);
+            $scope._endDate = $scope.getFirstDateRecord(endDateResults,$scope.endDateField);
+            $scope.endDate = $scope.getFirstDateRecord(endDateResults,$scope.endDateField);
         }
         // update the histogram after start/end dates have been updated
         $scope.updateFlag++;
@@ -117,8 +148,8 @@ function DateFacetController($scope, SolrSearchService) {
     $scope.handleStartDateQueryUpdate = function() {
         var startDateResults = SolrSearchService.getResponse($scope.startDateQueryName);
         if (startDateResults) {
-            $scope._startDate = getFirstDateRecord(startDateResults,$scope.startDateField);
-            $scope.startDate = getFirstDateRecord(startDateResults,$scope.startDateField);
+            $scope._startDate = $scope.getFirstDateRecord(startDateResults,$scope.startDateField);
+            $scope.startDate = $scope.getFirstDateRecord(startDateResults,$scope.startDateField);
         }
         // update the histogram after start/end dates have been updated
         $scope.updateFlag++;
@@ -152,22 +183,17 @@ function DateFacetController($scope, SolrSearchService) {
      * build a histogram of documents by date range.
      */
     $scope.init = function() {
-        // create query names for start/end queries
-        $scope.startDateQueryName = $scope.startDateField + "Query";
-        $scope.endDateQueryName = $scope.endDateField + "Query";
         // build a query that will fetch the earliest date in the list
         var startDateQuery = SolrSearchService.createQuery();
         startDateQuery.setOption("fl", $scope.startDateField);
         startDateQuery.setOption("rows","1");
         startDateQuery.setOption("sort",$scope.startDateField + " asc");
-        startDateQuery.setOption("wt","json");
         SolrSearchService.setQuery($scope.startDateQueryName,startDateQuery);
         // build a query that will fetch the latest date in the list
         var endDateQuery = SolrSearchService.createQuery();
         endDateQuery.setOption("fl", $scope.endDateField);
         endDateQuery.setOption("rows","1");
         endDateQuery.setOption("sort",$scope.endDateField + " desc");
-        endDateQuery.setOption("wt","json");
         SolrSearchService.setQuery($scope.endDateQueryName,endDateQuery);
         // listen for updates on queries
         $scope.$on($scope.startDateQueryName, function () {

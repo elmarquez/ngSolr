@@ -1,5 +1,5 @@
-AJAX Faceted Search Interface to Apache Solr/Lucene Search Index
-================================================================
+AJAX Faceted Search Interface to Apache Solr/Lucene
+===================================================
 
 SOLR-AJAX is a single page, Javascript web application for searching and
 presenting document, image and location data from an Apache Solr/Lucene search
@@ -23,11 +23,10 @@ search index.
    a number of subdirectories. Copy the contents of the app subdirectory to your
    web server.
 2. Each of the sample HTML search pages (documents.html, images.html,
-   location.html) runs a Javascript application, located in the js/solr-ajax/app
-   folder. Edit the respective application file and replace the SOLR_BASE and
-   SOLR_CORE values with the URL to your Solr search engine and the name of
-   your Solr core respectively. You may also configure any other variables in
-   those files.
+   location.html) runs a Javascript application that is located in the
+   js/solr-ajax/app folder. Edit the respective application file and replace the
+   SOLR_CORE value with the URL to your Solr search engine core. You may also
+   configure any other variables in those files.
 3. Load the HTML search page and attempt to execute searches against your
    index. If you experience any problems, open your browser console. You
    should see log entries for each search query that is executed, and
@@ -59,6 +58,7 @@ Thanks:
  * Google Maps - https://developers.google.com/maps
  * JQuery - http://www.jquery.com
  * JQuery UI - http://www.jqueryui.com
+ * qTip - http://qtip2.com/
 
 
 License
@@ -76,16 +76,29 @@ Backlog:
  > When a facet constraint is added, it should impact the typeahead filter
  > Stuck on updating fragment to reflect the current facet query -- facet query clears hash
  > Service, controller unit tests!
- > Add date field into the title output
- > Fix page header to remove right/left whitespace when resized for mobile layout
+ > Fix page header to remove right/left whitespace when resized for mobile layout (restore default Bootstrap layout)
+ > Remove $target from MapController and refactor functionality out to separate controller
+ > Handle configuration attributes for controllers from markup
 
-Current:  
+Current:
+
+0.6.0
+
+ * Forked SimpleSearch into separate application, repository
+ * Added IE 7/8/9 polyfill to support JSON, moved HTML5 shim to top of HEAD
+ * IE 7 does not provide console.log service. Wrapped logging calls in a check
+   for window.console object
+ * Removed unnecessary application configuration values, extraneous functions
+ * Updated SolrSearchService to use streamlined configuration
+ * Added routing to application, to enable RESTful representation of the query
+ * Updated controllers to determine their state from the current location
 
 0.5.7
 
  * Removed TypeAhead directive
  * Close search hints list on submit action
  * Histogram of search results by date
+ * Added SimpleSearch application, associated controllers and directives
 
 0.5.6
 

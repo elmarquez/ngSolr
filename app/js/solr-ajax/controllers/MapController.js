@@ -162,8 +162,17 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
                 if (item.location) {
                     // create a marker
                     var content = $scope.getMarkerContent(item);
-                    var lat = item.location_0_coordinate;
-                    var lng = item.location_1_coordinate;
+                    // ISSUE: Solr index is returning an array rather than a string for coordinate values
+                    if (typeof item.location_0_coordinate === 'string') {
+                        var lat = item.location_0_coordinate;
+                    } else {
+                        var lat = item.location_0_coordinate[0];
+                    }
+                    if (typeof item.location_1_coordinate === 'string') {
+                        var lng = item.location_1_coordinate;
+                    } else {
+                        var lng = item.location_1_coordinate[0];
+                    }
                     var marker = $scope.getMarker($scope.map, item.title, content, item.type, lat, lng);
                     // add marker to bounds
                     bounds.extend(marker.position);
@@ -213,8 +222,8 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
                 if (marker) {
                     var bounds = new google.maps.LatLngBounds();
                     bounds.extend(marker.position);
-                    $scope.map.setCenter(bounds.getCenter());
-                    $scope.map.fitBounds(bounds);
+                    // $scope.map.setCenter(bounds.getCenter());
+                    // $scope.map.fitBounds(bounds);
                     google.maps.event.trigger(marker,'click');
                 }
             }
@@ -253,10 +262,11 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         // @todo consider implementing this through the application instead
         SolrSearchService.createQuery = function() {
             var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
-            query.setOption("rows",CONSTANTS.ITEMS_PER_PAGE);
             query.setOption("fl",CONSTANTS.DEFAULT_FIELDS);
-            query.setOption("wt","json");
+            query.setOption("json.wrf", "JSON_CALLBACK");
+            query.setOption("rows",10);
             query.setOption("sort","title+asc");
+            query.setOption("wt","json");
             query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
             query.setQueryParameter($scope.queryname,"+location_0_coordinate:[* TO *]");
             return query;
