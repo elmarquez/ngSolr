@@ -42,10 +42,10 @@
         <script type="text/javascript" src="js/solr-ajax/controllers/SearchHistoryController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
         <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/selectionset.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app/documentSearch.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app/document.js"></script>
     </head>
     <body>
 
@@ -131,8 +131,10 @@
                         <!-- location facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="exclusive=true;init('region')"
                             ng-hide="selected && exclusive"
+                            data-exclusive="true"
+                            data-field="region"
+                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>State</b></li>
                             <li>
@@ -149,8 +151,10 @@
                         <!-- function facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="exclusive=false;init('function')"
                             ng-hide="selected && exclusive"
+                            data-exclusive="false"
+                            data-field="function"
+                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Function</b></li>
                             <li>
@@ -167,8 +171,10 @@
                         <!-- type facet controller -->
                         <ul class="facet-panel"
                             ng-controller="FieldFacetController"
-                            ng-init="exclusive=false;init('localtype')"
                             ng-hide="selected && exclusive"
+                            data-exclusive="false"
+                            data-field="localtype"
+                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Type</b></li>
                             <li>
@@ -186,7 +192,9 @@
                         <ul id="date-range-panel"
                             class="facet-panel"
                             ng-controller="DateFacetController"
-                            ng-init="startDateField='fromDate';endDateField='toDate';init()"
+                            data-start-date-field="fromDate"
+                            data-end-date-field="toDate"
+                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
@@ -231,10 +239,13 @@
                     <!-- /search panel -->
 
                     <!-- search results -->
-                    <div id="search-results" class="span5"
+                    <div id="search-results"
+                         class="span5"
                          ng-controller="DocumentSearchResultsController"
-                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP">
-                        <div class="column-512" ng-cloak>
+                         data-fields="*"
+                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                         ng-cloak>
+                        <div class="column-512">
 
                             <div class="summary">Search Results ({{totalResults}} found)
                                 <div class="alert alert-error" ng-show="error">{{error}}</div>

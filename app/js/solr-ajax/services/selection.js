@@ -15,7 +15,7 @@
  * @param $rootScope Root scope
  * @todo consider having a default and named selection sets
  */
-angular.module('SelectionSetService',[]).
+angular.module('Selection',[]).
     factory('SelectionSetService', ['$rootScope', function ($rootScope) {
 
     // parameters
@@ -35,11 +35,11 @@ angular.module('SelectionSetService',[]).
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Add document to the selection list.
+     * Add document to the selection list and notify observers of the change.
      * @param Key Document identifier
      * @param Doc Optional document
      */
-    svc.add = function(Key,Doc) {
+    svc.add = function(Key, Doc) {
         if (!svc.multipleSelection) {
             svc.documents = {};
         }
@@ -48,11 +48,18 @@ angular.module('SelectionSetService',[]).
     };
 
     /**
-     * Clear the selection list.
+     * Clear the selection list and notify observers of the change.
      */
     svc.clear = function() {
         svc.documents = {};
         $rootScope.$broadcast("selectionSetUpdate");
+    };
+
+    /**
+     * Clear the selection list but do not notify observers.
+     */
+    svc.clearSilent = function() {
+        svc.documents = {};
     };
 
     /**
@@ -73,7 +80,8 @@ angular.module('SelectionSetService',[]).
     };
 
     /**
-     * Remove the document from the selection list.
+     * Remove the document from the selection list and notify observers of the
+     * change.
      * @param Key Document identifier
      */
     svc.remove = function(Key) {

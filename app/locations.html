@@ -42,16 +42,16 @@
         <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/controllers/MapController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/SelectionController.js"></script>
         <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
         <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/selectionset.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
         <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app/locationSearch.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app/location.js"></script>
     </head>
     <body>
 
-        <!-- page-header -->
         <header id="page-header">
             <div class="navbar navbar-inverse">
                 <div class="navbar-inner" style="padding:0;">
@@ -76,9 +76,7 @@
                 </div>
             </div>
         </header>
-        <!-- /page-header -->
 
-        <!-- search bar -->
         <section id="search-bar">
             <div class="container-fluid">
                 <div id="location-search-form">
@@ -102,10 +100,8 @@
                 </div>
             </div>
         </section>
-        <!-- /search-bar -->
 
-        <!-- content -->
-        <section id="content" ng-controller="MapController">
+        <section id="content" ng-controller="SelectionController">
 
             <!-- search panel -->
             <div id="search-panel" class="column-320 bs-docs-sidebar">
@@ -116,13 +112,15 @@
                         <a href="#">feedback</a> to help improve their accuracy.
                     </div>
 
-                    <div class="document-search-results" ng-controller="DocumentSearchResultsController"
-                         ng-init="pagesPerSet=5;maxFieldLength=128;init();" ng-cloak>
+                    <div class="search-results"
+                         ng-controller="DocumentSearchResultsController"
+                         data-fields="*"
+                         data-pages-per-set="5"
+                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                         ng-cloak>
                         <h6>Search Results ({{totalResults}} found)</h6>
-
                         <div class="document" ng-repeat="doc in documents">
-                            <a ng-href="{{doc.url}}" ng-click="clearSelection();select(doc.id)" class="title">{{doc.title}}</a>
-                            <!-- <div class="summary">{{doc.abstract}}</div> -->
+                            <a ng-href="{{doc.url}}" ng-click="$parent.clearSelection();$parent.select(doc.id)" class="title">{{doc.title}}</a>
                             <div class="meta">
                                 <span class="region" ng-show="doc.region">{{doc.region}}</span>
                                 <div class="existdates">
@@ -131,51 +129,30 @@
                                     <span>{{doc.toDate}}</span>
                                 </div>
                             </div>
-                        </div><!-- /search results -->
-
-                        <div class="search-results-pager pagination" ng-hide="error">
+                        </div>
+                        <div class="pagination" ng-hide="error">
                             <ul>
-                                <li ng-repeat="page in pages" ng-class="{active : page.isActive, disabled: page.isDisabled}">
-                                    <a id="page-{{page.number}}" ng-click="$parent.setPage(page.number)">{{page.name}}</a>
+                                <li ng-repeat="page in pages" ng-cloak>
+                                    <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
                                 </li>
                             </ul>
-                        </div><!-- /pagination -->
-
-                        <!-- date range facet controller -->
-                        <ul class="facet-panel" ng-controller="DateFacetController" ng-init="init('fromDate','toDate')" ng-cloak>
-                            <li><b>Dates</b></li>
-                            <li>
-                                <form class="unstyled" ng-submit="submit()" style="margin-bottom:0px;">
-                                    <table>
-                                        <tr>
-                                            <td style="font-size:small">From</td>
-                                            <td style="font-size:small">To</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-right: 10px;">
-                                                <input id="fromDate" name="startDate" class="year-input" type="text" ng-model="startDate" size="4" />
-                                            </td>
-                                            <td>
-                                                <input id="toDate" name="endDate" class="year-input" type="text" ng-model="endDate" size="4" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <button>Update</button>
-                                </form>
-                            </li>
-                        </ul>
-                        <!-- /date range facet controller -->
-
+                        </div>
                     </div>
+
                 </div>
             </div>
             <!-- /search panel -->
 
-            <!-- result panel -->
+            <!-- map panel -->
             <div id="result-panel">
-                <div id="map"></div>
+                <div id="map"
+                     ng-controller="MapController"
+                     data-fields="*"
+                     data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                     data-start-latitude='-29.3456'
+                     data-start-longitude='141.4346'></div>
             </div>
-            <!-- result panel -->
+            <!-- /map panel -->
 
         </section>
 

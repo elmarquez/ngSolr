@@ -11,22 +11,24 @@
 /**
  * Display a map of search results for documents with location attributes.
  * Unlike other controllers, the map controller tries to display all search
- * results at once.
- * The map controller listens for updates on a specified target query. When an
- * update occurs, the map query duplicates the query but sets the number of
- * rows to $scope.count (a very large number) so that it can show as many
- * documents as possible.
+ * results at once. The map controller listens for updates on a specified
+ * target query. When an update occurs, the map query duplicates the query
+ * but sets the number of rows to $scope.count (a very large number) so that
+ * it can show as many documents as possible.
  *
- * @param $scope Controller scope
+ * @param $scope
+ * @oaram $attrs
+ * @param $location
+ * @param $route
+ * @param $routeParams
  * @param SolrSearchService Search service
  * @param SelectionSetService Selection set service
  * @param Utils Utility functions
- * @param CONSTANTS Application constants
  */
-function MapController($scope, SolrSearchService, SelectionSetService, Utils, CONSTANTS) {
+function MapController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
 
-    // parameters
-    $scope.clusterManager = null;   // clustering marker manager
+    $scope.centerOnStart = true;        // center the map on the start location
+    $scope.clusterManager = null;       // clustering marker manager
     $scope.clusterOptions = {
         styles: [
             { height: 24, url: "img/map/cluster1.png", width: 24 },
@@ -35,17 +37,22 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             { height: 64, url: "img/map/cluster4.png", width: 64 },
             { height: 82, url: "img/map/cluster5.png", width: 82 }
         ]};
-    $scope.clusterResults = true;   // use cluster manager
-    $scope.count = 5000;            // the total number of records
-    $scope.firstUpdate = true;      // flag to
-    $scope.idToMarkerMap = {};      // id to marker map
-    $scope.map = undefined;         // google map
-    $scope.markers = [];            // list of markers
-    $scope.queryname = "mapQuery";  // name of the query
-    $scope.showMessages = true;     // show info messages window
-    $scope.showErrors = true;       // show error messages window
-    $scope.target = "defaultQuery"; // query to monitor
-    $scope.updateOnInit = true;     // update the result set during init
+    $scope.clusterResults = true;       // use cluster manager
+    $scope.count = 5000;                // the total number of records
+    $scope.fields = '*';                // field to fetch from solr
+    $scope.firstUpdate = true;          // flag to
+    $scope.idToMarkerMap = {};          // id to marker map
+    $scope.map = undefined;             // google map
+    $scope.markers = [];                // list of markers
+    $scope.maxFieldLength = 120;        // maximum length of text fields in infowindow
+    $scope.queryname = "mapQuery";      // name of the query
+    $scope.showMessages = true;         // show info messages window
+    $scope.showErrors = true;           // show error messages window
+    $scope.source = undefined;          // url to solr core
+    $scope.startLatitude = undefined;   // on start, center the map on latitude
+    $scope.startLongitude = undefined;  // on start, center the map on longitude
+    $scope.target = "defaultQuery";     // query to monitor
+    $scope.updateOnInit = true;         // update the result set during init
 
     var categoryToIconMap = {
         default:"img/icon/house.png",
@@ -87,9 +94,9 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
      */
     $scope.createMapQuery = function() {
         var query = SolrSearchService.createQuery();
-        query.setOption('fl','abstract,country,dobj_proxy_small,fromDate,id,localtype,location,location_0_coordinate,location_1_coordinate,presentation_url,region,title,toDate');
-        query.setOption("rows",$scope.count);
-        query.setQueryParameter($scope.queryname,"+location_0_coordinate:[* TO *]");
+        query.setOption('fl', $scope.fields);
+        query.setOption("rows", $scope.count);
+        query.setQueryParameter($scope.queryname, "+location_0_coordinate:[* TO *]");
         return query;
     };
 
@@ -134,7 +141,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         content += "<div class='title'><a href='" + Item.presentation_url + "'>" + Item.title + "</a></div>";
         content += "<div class='existdates'>" + Utils.formatDate(Item.fromDate) + " - " + Utils.formatDate(Item.toDate) + "</div>";
         // content +=  "<div class='type'>" + item.type + "</div>";
-        content += "<div class='summary'>" + Utils.truncate(Item.abstract,CONSTANTS.MAX_FIELD_LENGTH) + " ";
+        content += "<div class='summary'>" + Utils.truncate(Item.abstract,$scope.maxFieldLength) + " ";
         content += "<a href='" + Item.presentation_url + "' class='more'>more</a>" + "</div>";
         content += "</div>" ;
         return content;
@@ -162,7 +169,7 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
                 if (item.location) {
                     // create a marker
                     var content = $scope.getMarkerContent(item);
-                    // ISSUE: Solr index is returning an array rather than a string for coordinate values
+                    // ISSUE: Solr4 returns an array rather than a string for coordinate values
                     if (typeof item.location_0_coordinate === 'string') {
                         var lat = item.location_0_coordinate;
                     } else {
@@ -187,12 +194,9 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
             $scope.clusterManager.addMarkers($scope.markers);
         }
         // center the view on the markers
-        if ($scope.firstUpdate &&
-            CONSTANTS.hasOwnProperty('MAP_FORCE_START_LOCATION') &&
-            CONSTANTS.MAP_FORCE_START_LOCATION === true) {
-            var lat = CONSTANTS.MAP_START_LATITUDE;
-            var lng = CONSTANTS.MAP_START_LONGITUDE;
-            var point = new google.maps.LatLng(lat,lng);
+        if ($scope.firstUpdate && $scope.centerOnStart &&
+            $scope.startLatitude && $scope.startLongitude) {
+            var point = new google.maps.LatLng($scope.startLatitude, $scope.startLongitude);
             $scope.map.setCenter(point, 8);
             $scope.firstUpdate = false;
         } else {
@@ -257,18 +261,32 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
      * Initialize the controller.
      */
     $scope.init = function () {
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
+            }
+        }
+        // handle close click event on info window
+        google.maps.event.addListener(infoWindow, 'close', function () {
+            infoWindow.close();
+        });
+        // create map
+        $scope.map = new google.maps.Map(document.getElementById("map"), settings);
+        // create marker cluster manager
+        $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
         // redefine the default search query to ensure that only records with
         // location properties show up in the results
         // @todo consider implementing this through the application instead
         SolrSearchService.createQuery = function() {
-            var query = new SolrQuery(CONSTANTS.SOLR_BASE, CONSTANTS.SOLR_CORE);
-            query.setOption("fl",CONSTANTS.DEFAULT_FIELDS);
+            var query = new SolrQuery($scope.source);
+            query.setOption("fl", $scope.fields);
             query.setOption("json.wrf", "JSON_CALLBACK");
-            query.setOption("rows",10);
-            query.setOption("sort","title+asc");
-            query.setOption("wt","json");
-            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
-            query.setQueryParameter($scope.queryname,"+location_0_coordinate:[* TO *]");
+            query.setOption("rows", "10");
+            query.setOption("sort", "title+asc");
+            query.setOption("wt", "json");
+            query.setQueryParameter($scope.queryname, "+location_0_coordinate:[* TO *]");
+            query.setUserQuery('*:*');
             return query;
         };
         var targetQuery = SolrSearchService.createQuery();
@@ -308,20 +326,10 @@ function MapController($scope, SolrSearchService, SelectionSetService, Utils, CO
         });
     };
 
-    ///////////////////////////////////////////////////////////////////////////
-
-    // handle close click event on info window
-    google.maps.event.addListener(infoWindow, 'close', function () {
-        infoWindow.close();
-    });
-
-    // create map
-    $scope.map = new google.maps.Map(document.getElementById("map"), settings);
-
-    // create marker cluster manager
-    $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
+    // initialize the controller
+    $scope.init();
 
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope','SolrSearchService','SelectionSetService','Utils','CONSTANTS'];
+MapController.$inject = ['$scope', '$attrs', '$location', '$route', '$routeParams', 'SolrSearchService', 'SelectionSetService', 'Utils'];

@@ -13,9 +13,8 @@
  * form of a queue.
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
- * @param CONSTANTS Application constants
  */
-function SearchHistoryController($scope, $attrs, SolrSearchService, CONSTANTS) {
+function SearchHistoryController($scope, $attrs, SolrSearchService) {
 
     // parameters
     $scope.maxItems = 5;                // the maximum number of items to display
@@ -83,4 +82,4 @@ function SearchHistoryController($scope, $attrs, SolrSearchService, CONSTANTS) {
 }
 
 // inject controller dependencies
-SearchHistoryController.$inject = ['$scope', '$attrs', 'SolrSearchService', 'CONSTANTS'];
+SearchHistoryController.$inject = ['$scope', '$attrs', 'SolrSearchService'];

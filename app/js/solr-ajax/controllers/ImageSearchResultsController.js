@@ -10,17 +10,25 @@
 
 /**
  * Image based search controller. Present search results for a named query.
+ *
  * @param $scope Controller scope
+ * @param $attrs
+ * @param $location
+ * @param $route
+ * @param $routeParams
+ * @param $window
  * @param SolrSearchService Solr search service.
- * @param CONSTANTS Application constants
  */
-function ImageSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, CONSTANTS) {
+function ImageSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
 
     // the number of items per page
     $scope.documentsPerPage = 16;
 
     // the number of items per row
     $scope.documentsPerRow = 4;
+
+    // fields to retrieve from solr
+    $scope.fields = '*';
 
     // the current search results page
     $scope.page = 0;
@@ -119,20 +127,24 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
         // apply configured attributes
         for (var key in $attrs) {
             if ($scope.hasOwnProperty(key)) {
-                $scope[key] = $attrs[key];
+                if (key == 'documentsPerPage' || key == 'documentsPerRow' || key == 'pagesPerSet') {
+                    $scope[key] = parseInt($attrs[key]);
+                } else {
+                    $scope[key] = $attrs[key];
+                }
             }
         }
         // redefine the default search query to ensure that only records with
         // digital objects show up in the results. this is required when we
         // may have multiple controllers modifying the same query
         SolrSearchService.createQuery = function() {
-            var query = new SolrQuery(CONSTANTS.SOLR_BASE);
-            query.setOption("rows", $scope.documentsPerPage);
-            query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
+            var query = new SolrQuery($scope.source);
+            query.setOption("fl", $scope.fields);
             query.setOption("json.wrf", "JSON_CALLBACK");
+            query.setOption("rows", $scope.documentsPerPage);
             query.setOption("wt", "json");
-            query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
-            query.setQueryParameter("imageQuery","+dobj_type:*");
+            query.setQueryParameter("imageQuery", "+dobj_type:*"); // @todo what is "imageQuery" doing here?
+            query.setUserQuery('*:*');
             return query;
         };
         // handle location change event, update query results
@@ -204,4 +216,4 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
 }
 
 // inject dependencies
-ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','CONSTANTS'];
+ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];

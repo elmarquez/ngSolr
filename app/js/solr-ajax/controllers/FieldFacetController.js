@@ -17,41 +17,59 @@
  * back to false.
  *
  * @param $scope Controller scope
+ * @param $attrs
+ * @param $location
+ * @param $route
+ * @param $routeParams
  * @param SolrSearchService Solr search service
  */
-function FieldFacetController($scope, SolrSearchService) {
+function FieldFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService) {
 
-    // parameters
-    $scope.exclusive = true;            // facet selections are mutually exclusive
-    $scope.facets = [];                 // list of current query facets
-    $scope.field = '';                  // facet field name and name of query
-    $scope.items = [];                  // list of facet values for the specified field
-    $scope.maxItems = 7;                // max number of results to display
-    $scope.queryname = 'facetQuery';    // query name
-    $scope.selected = false;            // a facet value has been selected
-    $scope.target = 'defaultQuery';     // the target search query
-    $scope.updateOnInit = false;        // update the facet list during init
-    $scope.updateOnTargetChange = true; // update facet list to reflect target results
+    // facet selections are mutually exclusive
+    $scope.exclusive = true;
+
+    // the list of facets
+    $scope.facets = [];
+
+    // the name of the field to facet
+    $scope.field = '';
+
+    // the list of facet values
+    $scope.items = [];
+
+    // the max number of items to display in the facet list
+    $scope.maxItems = 7;
+
+    // the name of the query used to retrieve the list of facet values
+    $scope.queryname = 'facetQuery';
+
+    // facet value has been selected
+    $scope.selected = false;
+
+    // the url to the solr core
+    $scope.source = undefined;
+
+    // the name of the search query that we are faceting. we watch this query
+    // to determine what to present in the facet list
+    $scope.target = SolrSearchService.defaultQueryName;
 
     ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Facet result
-     * @param Name Facet field name
-     * @param Score Facet score
+     * @param Value
+     * @param Score
      */
-    function FacetResult(Value,Score) {
+    function FacetResult(Value, Score) {
         this.value = Value;
         this.score = Score;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Add the selected facet to the facet constraint list.
      * @param Index Index of user selected facet. This facet will be added to the search list.
      */
-    $scope.add = function($event,Index) {
+    $scope.add = function($event, Index) {
         // create a new facet
         var query = SolrSearchService.getQuery($scope.target);
         var facet = query.createFacet($scope.field,$scope.items[Index].value);
@@ -85,16 +103,18 @@ function FieldFacetController($scope, SolrSearchService) {
     $scope.handleUpdate = function() {
         // clear current results
         $scope.items = [];
-        // determine if we've added a facet constraint from this field to the
-        // target query
-        var targetquery = SolrSearchService.getQuery($scope.target);
-        var facets = targetquery.getFacets();
         $scope.selected = false;
         var selected_values = [];
-        for (var key in facets) {
-            if (key.indexOf($scope.queryname)==0) {
-                $scope.selected = true;
-                selected_values.push(facets[key].value);
+        // if there is an existing query, determine if a facet query that
+        // corresponds with this controller has been added to the query
+        var target = SolrSearchService.getQuery($scope.target);
+        if (target) {
+            var facets = target.getFacets();
+            for (var key in facets) {
+                if (key.indexOf($scope.queryname)==0) {
+                    $scope.selected = true;
+                    selected_values.push(facets[key].value);
+                }
             }
         }
         // get the list of facets for the query
@@ -125,43 +145,52 @@ function FieldFacetController($scope, SolrSearchService) {
 
     /**
      * Initialize the controller.
-     * @param FieldName Facet field name
-     * @param Target Name of target search query to constrain
      */
-    $scope.init = function(FieldName,Target) {
-        $scope.field = FieldName;
-        if (Target) {
-            $scope.target = Target;
+    $scope.init = function() {
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
+            }
         }
-        // create a query to get the list of facets
         $scope.queryname = $scope.field + "Query";
-        var query = SolrSearchService.createQuery();
-        query.setOption("facet","true");
-        query.setOption("facet.field",$scope.field);
-        query.setOption("facet.limit",$scope.maxItems);
-        query.setOption("facet.mincount","1");
-        query.setOption("facet.sort","count");
-        query.setOption("rows","0");
-        query.setOption("wt","json");
-        SolrSearchService.setQuery($scope.queryname,query);
-        // handle update events on the facet query
+        // handle facet list updates
         $scope.$on($scope.queryname, function () {
             $scope.handleUpdate();
         });
-        // handle update events on the target query
-        if ($scope.updateOnTargetChange) {
-            $scope.$on($scope.target, function () {
-                $scope.handleTargetQueryUpdate();
-            });
-        }
-        // update the controller
-        if ($scope.updateOnInit) {
+        // handle route change event
+        $scope.$on("$routeChangeSuccess", function() {
+            // if there is an existing query, find out if there is a facet
+            // for this controller's specified field. if there is a match,
+            // then set that value as selected in our list
+            var hash = ($routeParams.query || "");
+            if (hash) {
+                // get the current query
+                var query = SolrSearchService.getQueryFromHash(hash);
+                var facets = query.getFacets();
+                var found = false;
+                for (var i=0; i<facets.length; i++) {
+                    //
+                }
+            }
+            // create a query to get the list of facets
+            var query = SolrSearchService.createQuery($scope.source);
+            query.setOption("facet", "true");
+            query.setOption("facet.field", $scope.field);
+            query.setOption("facet.limit", $scope.maxItems);
+            query.setOption("facet.mincount", "1");
+            query.setOption("facet.sort", "count");
+            query.setOption("rows", "0");
+            query.setOption("wt", "json");
+            SolrSearchService.setQuery($scope.queryname, query);
             SolrSearchService.updateQuery($scope.queryname);
-            $scope.handleFacetListUpdate();
-        }
+        });
     };
+
+    // initialize the controller
+    $scope.init();
 
 }
 
 // inject dependencies
-FieldFacetController.$inject = ['$scope','SolrSearchService'];
+FieldFacetController.$inject = ['$scope', '$attrs', '$location', '$route', '$routeParams', 'SolrSearchService'];

@@ -9,31 +9,53 @@
 /* DocumentSearchResultsController                                           */
 
 /**
- * Search results controller. Presents search results for a named query.
+ * Presents search results for a named query.
  * @param $scope
  * @param $attrs
  * @param $location
  * @param $route
  * @param $routeParams
  * @param $window
- * @param SelectionSetService
  * @param SolrSearchService
  * @param Utils
  */
-function DocumentSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SelectionSetService, SolrSearchService, Utils) {
+function DocumentSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
 
-    $scope.documents = [];                                  // document search results
-    $scope.documentsPerPage = 10;                           // the number of search results per page
-    $scope.page = 0;                                        // the current search result page
-    $scope.pages = [];                                      // list of pages in the current navigation set
-    $scope.pagesPerSet = 10;                                // the number of pages in a navigation set
-    $scope.queryname = SolrSearchService.defaultQueryName;  // default query name
-    $scope.source = undefined;                              // url to solr core
-    $scope.start = 0;                                       // zero based document index for first record
-    $scope.totalPages = 1;                                  // count of the total number of result pages
-    $scope.totalResults = 0;                                // count of the total number of search results
-    $scope.totalSets = 1;                                   // count of the number of search result sets
-    $scope.userquery = '';                                  // user query
+    // document search results
+    $scope.documents = [];
+
+    // the number of search results to display per page
+    $scope.documentsPerPage = 10;
+
+    // the current search result page
+    $scope.page = 0;
+
+    // list of pages in the current navigation set
+    $scope.pages = [];
+
+    // the number of pages in a navigation set
+    $scope.pagesPerSet = 10;
+
+    // the query name
+    $scope.queryname = SolrSearchService.defaultQueryName;
+
+    // url to solr core
+    $scope.source = undefined;
+
+    // zero based document index for first record in the page
+    $scope.start = 0;
+
+    // count of the total number of result pages
+    $scope.totalPages = 1;
+
+    // count of the total number of search results
+    $scope.totalResults = 0;
+
+    // count of the number of search result sets
+    $scope.totalSets = 1;
+
+    // user query
+    $scope.userquery = '';
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -47,22 +69,6 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
         this.number = Num;
         this.isCurrent = false;
     }
-
-
-    /**
-     * Clear the selection set. If an Id is provided, remove the specific
-     * document by Id. Otherwise, clear all values.
-     */
-    $scope.clearSelection = function(Id) {
-        try {
-            SelectionSetService.remove(Id);
-            SelectionSetService.clear();
-        } catch (err) {
-            if (window.console) {
-                console.log(err.message);
-            }
-        }
-    };
 
     /**
      * Set the results page number.
@@ -114,7 +120,11 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
         // apply configured attributes
         for (var key in $attrs) {
             if ($scope.hasOwnProperty(key)) {
-                $scope[key] = $attrs[key];
+                if (key == 'documentsPerPage' || key == 'pagesPerSet') {
+                    $scope[key] = parseInt($attrs[key]);
+                } else {
+                    $scope[key] = $attrs[key];
+                }
             }
         }
         // handle location change event, update query results
@@ -126,7 +136,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
                         query.solr = $scope.source;
                     }
                     // set the display values to match those in the query
-                    $scope.documentsPerPage = (query.getOption('rows') || 10);
+                    $scope.documentsPerPage = (query.getOption('rows') || $scope.documentsPerPage);
                     $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
                     $scope.userquery = query.getUserQuery();
                     // update results
@@ -139,14 +149,6 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
         $scope.$on($scope.queryname, function () {
             $scope.handleUpdate();
         });
-    };
-
-    /**
-     * Add the selected document to the selection set.
-     * @param Id Document identifier
-     */
-    $scope.select = function(Id) {
-        SelectionSetService.add(Id,null);
     };
 
     /**
@@ -193,4 +195,4 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
 }
 
 // inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SelectionSetService','SolrSearchService','Utils'];
+DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils'];
