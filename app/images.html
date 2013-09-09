@@ -123,7 +123,11 @@
                             </li>
                         </ul>
                         <!-- type facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('localtype')" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            data-field='localtype'
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            ng-cloak>
                             <li><b>Type</b></li>
                             <li>
                                 <ul class="facets unstyled">
@@ -135,7 +139,11 @@
                             </li>
                         </ul>
                         <!-- location facet controller -->
-                        <ul class="facet-panel" ng-controller="FieldFacetController" ng-init="init('region')" ng-cloak>
+                        <ul class="facet-panel"
+                            ng-controller="FieldFacetController"
+                            data-field='region'
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            ng-cloak>
                             <li><b>State</b></li>
                             <li>
                                 <ul class="facets unstyled">

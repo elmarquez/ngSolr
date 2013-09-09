@@ -174,9 +174,9 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
             $scope.pages.push(prevPage);
         }
         // page links
-        for (var i=firstPageInSet;i<=lastPageInSet;i++) {
-            var page = new Page(i,i-1);
-            if (page.number==$scope.page) {
+        for (var i=firstPageInSet; i<=lastPageInSet; i++) {
+            var page = new Page(i, i-1);
+            if (page.number == $scope.page) {
                 page.isCurrent = true;
             }
             $scope.pages.push(page);
