@@ -11,6 +11,7 @@
 /**
  * Provides auto-complete and extended search support aids.
  * @param $scope Controller scope
+ * @param $location
  * @param SolrSearchService Apache Solr search service interface
  * @param Utils Utility functions
  * @see http://jsfiddle.net/DNjSM/17/

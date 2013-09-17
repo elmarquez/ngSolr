@@ -3,7 +3,7 @@
  * 'LICENSE.txt' file, which is part of this source code package.
  */
 
- 'use strict';
+'use strict';
 
 /*---------------------------------------------------------------------------*/
 /* ImageSearchResultsController                                              */
@@ -134,19 +134,6 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
                 }
             }
         }
-        // redefine the default search query to ensure that only records with
-        // digital objects show up in the results. this is required when we
-        // may have multiple controllers modifying the same query
-        SolrSearchService.createQuery = function() {
-            var query = new SolrQuery($scope.source);
-            query.setOption("fl", $scope.fields);
-            query.setOption("json.wrf", "JSON_CALLBACK");
-            query.setOption("rows", $scope.documentsPerPage);
-            query.setOption("wt", "json");
-            query.setQueryParameter("imageQuery", "+dobj_type:*"); // @todo what is "imageQuery" doing here?
-            query.setUserQuery('*:*');
-            return query;
-        };
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
                 $scope.query = ($routeParams.query || "");

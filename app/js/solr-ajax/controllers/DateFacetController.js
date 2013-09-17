@@ -200,7 +200,7 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
             var query = SolrSearchService.getQuery($scope.target);
             if (query) {
                 var dateRange = $scope.getDateRangeConstraint($scope.startDateField, $scope.startDate, $scope.endDateField, $scope.endDate);
-                query.setQueryParameter("dateRange", dateRange);
+                query.addQueryParameter(dateRange);
                 SolrSearchService.updateQuery($scope.target);
             }
         } else {

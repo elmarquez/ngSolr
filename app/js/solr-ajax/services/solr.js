@@ -11,12 +11,12 @@
 /**
  * Solr search facet.
  * @param Field Field name
- * @param Value Field value
+ * @param Value Field value. The value includes delimiting () or [] characters.
  * @see http://wiki.apache.org/solr/SimpleFacetParameters#rangefaceting
  */
 function SolrFacet(Field, Value) {
 
-    var self = this;        // @todo do we need this?
+    var self = this;
 
     self.field = Field;     // field name
     self.value = Value;     // field value
@@ -38,9 +38,9 @@ function SolrFacet(Field, Value) {
      */
     self.getUrlFragment = function() {
         // this is used to delimit the start of the facet query in the URL and aid parsing
-        var query = '';
-        var val = self.value.replace(' ','?');
-        query += '&fq=' + self.field + ':(' + val + ')';
+        var query = ''; // delimiter should come from the CONSTANTS field
+        // var val = self.value.replace(' ','?');
+        query += '&fq=' + self.field + ':' + self.value;
         for (var option in self.options) {
             if (self.options.hasOwnProperty(option)) {
                 query += "&" + option + "=" + self.options[option];
@@ -63,23 +63,41 @@ function SolrFacet(Field, Value) {
 /**
  * A Solr search query. The query is composed of four parts: user query, query
  * parameters, options, and facets. Each part of the query can be managed
- * individually.
+ * individually as described below.
  * @param Url URL to Solr host
- * @param Core Name of Solr core
  */
 function SolrQuery(Url) {
 
     var self = this;
 
-    self.facets = {};            // query facets
-    self.facet_counts = {};      // facet counts
-    self.highlighting = {};      // query response highlighting
-    self.options = {};           // query options
-    self.response = {};          // query response
-    self.responseHeader = {};    // response header
-    self.query = "*:*";          // the user query
-    self.queryParameters = {};   // query parameters
-    self.solr = Url;             // URL for the Solr core
+    // query facets
+    self.facets = {};
+
+    // facet counts
+    self.facet_counts = {};
+
+    // query response highlighting
+    self.highlighting = {};
+
+    // query options dictionary, where the key is the option name and the
+    // value is the option value
+    self.options = {};
+
+    // the user provided query string
+    self.query = "*:*";
+
+    // A list of fully specified query parameters. ex: -fieldname:false,
+    // +fieldname:"value", +(fieldA:"Value" AND fieldB:"Value")
+    self.queryParameters = [];
+
+    // query response
+    self.response = {};
+
+    // response header from the solr query
+    self.responseHeader = {};
+
+    // URL to the Solr core ex. http://example.com/solr/CORE
+    self.solr = Url;
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -90,6 +108,14 @@ function SolrQuery(Url) {
      */
     self.addFacet = function(Name, Facet) {
         self.facets[Name] = Facet;
+    };
+
+    /**
+     * Add a query parameter.
+     * @param Parameter
+     */
+    self.addQueryParameter = function(Parameter) {
+        self.queryParameters.push(Parameter);
     };
 
     /**
@@ -146,18 +172,22 @@ function SolrQuery(Url) {
         // query
         var query = "q=" + self.query;
         // query parameters
-        for (var key in self.queryParameters) {
-            query += self.queryParameters[key];
+        for (var i=0; i<self.queryParameters.length; i++) {
+            query += ' ' + self.queryParameters[i];
         }
         // options
-        for (var key in self.options) {
-            var val = self.options[key];
-            query += "&" + key + "=" + val;
+        for (var key2 in self.options) {
+            if (self.options.hasOwnProperty(key2)) {
+                var val = self.options[key2];
+                query += "&" + key2 + "=" + val;
+            }
         }
         // facets
-        for (var key in self.facets) {
-            var facet = self.facets[key];
-            query += facet.getUrlFragment();
+        for (var key3 in self.facets) {
+            if (self.facets.hasOwnProperty(key3)) {
+                var facet = self.facets[key3];
+                query += facet.getUrlFragment();
+            }
         }
         return query;
     };
@@ -237,17 +267,8 @@ function SolrQuery(Url) {
     };
 
     /**
-     * Set a query parameter.
-     * @param Name
-     * @param Val
-     */
-    self.setQueryParameter = function(Name, Val) {
-        self.queryParameters[Name] = Val;
-    };
-
-    /**
      * Set the user query parameters.
-     * @param Parameters Dictionary of parameters.
+     * @param Parameters Array of parameters.
      */
     self.setQueryParameters = function(Parameters) {
         self.queryParameters = Parameters;
@@ -291,10 +312,11 @@ function SolrQuery(Url) {
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
+ * @param CONSTANTS Application constants
  */
 angular.module('Solr',[])
-    .factory('SolrSearchService',['$rootScope','$http','$location',
-        function($rootScope, $http, $location) {
+    .factory('SolrSearchService',['$rootScope','$http','$location','CONSTANTS',
+        function($rootScope, $http, $location, CONSTANTS) {
 
             var svc = {};                           // service instance
             svc.defaultQueryName = "defaultQuery";  // name of the default query
@@ -310,12 +332,16 @@ angular.module('Solr',[])
              * @return {Object} A default query object.
              */
             svc.createQuery = function(Solr) {
-                var query = new SolrQuery(Solr);
+                if (Solr != undefined) {
+                    var query = new SolrQuery(Solr);
+                } else {
+                    var query = new SolrQuery(CONSTANTS.SOLR_BASE);
+                }
                 query.setOption("rows", 10);
-                query.setOption("fl", '*');
+                query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
                 query.setOption("json.wrf", "JSON_CALLBACK");
                 query.setOption("wt", "json");
-                query.setUserQuery('*:*');
+                query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
                 return query;
             };
 
@@ -335,6 +361,36 @@ angular.module('Solr',[])
             };
 
             /**
+             * Split the query string up into its constituent parts. Return a
+             * list of parts. The first part is the user query. The remaining
+             * parts are the query parameters. The protocol is that query
+             * parameters are to be preceeded by a space, followed by a + or
+             * - character.
+             * @param Query
+             * ex. *:* +localtype:"Organisation" +function:"Home" -type:"Digital Object" +(fromDate:[ * TO 1973-01-01T00:00:00Z] AND toDate:[1973-12-31T23:59:59Z TO *]) -(something:[range])
+             */
+            svc.getQueryComponents = function(Query) {
+                var parts = [];
+                while (Query.length > 0) {
+                    // trim any starting whitespace
+                    Query = Query.replace(/^\s\s*/, '');
+                    var x = Query.indexOf(' +');
+                    var y = Query.indexOf(' -');
+                    if (x == -1 && y == -1) {
+                        parts.push(Query); // there are no subsequent parameters
+                        return parts;
+                    } else if (x > -1 && (y == -1 || x < y)) {
+                        parts.push(Query.substring(0, x));
+                        Query = Query.substring(x);
+                    } else if (y > -1) {
+                        parts.push(Query.substring(0, y));
+                        Query = Query.substring(y);
+                    }
+                }
+                return parts;
+            };
+
+            /**
              * Parse the URL hash and return a query object.
              * @param Hash Window location hash. We assume that the # separator has been removed from the string.
              * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
@@ -344,41 +400,29 @@ angular.module('Solr',[])
                 var query = svc.createQuery();
                 // break the query up into elements and then set each element
                 // value on the query
-                var elements = Hash.split("&");
-                for (var i=0; i<elements.length; i++) {
-                    var element = elements[i];
+                var hash_elements = decodeURI(Hash).split("&");
+                for (var i=0; i<hash_elements.length; i++) {
+                    var element = hash_elements[i];
                     var eparts = element.split('=');
-                    // handle query and query options
+                    // user query and query parameters
                     if (svc.startsWith(element, 'q')) {
-                        // split the query from the trailing search parameters
-                        var parts = element.split("+");
-                        // set the user query
-                        var q = parts.shift();
-                        var qparts = q.split('=');
-                        (qparts.length==2) ? query.setUserQuery(decodeURI(qparts[1])) : query.setUserQuery('*:*');
-                        // set query parameters
-                        for (var option in parts) {
-                            // @todo complete this section for setting query parameters
+                        var params = svc.getQueryComponents(element.substring(2));
+                        query.setUserQuery(params.shift());
+                        for (var j=0; j<params.length; j++) {
+                            query.addQueryParameter(params[j]);
                         }
                     }
-                    // handle facets
+                    // facets
                     else if (svc.startsWith(element, 'fq')) {
-                        var p = eparts[1].split(':');
-                        var n = p[0];
-                        var v = p[1];
-                        if (v.substring(0,1) == '(') {
-                            v = v.substring(1, v.length);
-                        }
-                        if (v.substring(v.length-1) == ')') {
-                            v = v.substring(0, v.length-1);
-                        }
+                        var p = eparts[1].indexOf(':');
+                        var n = eparts[1].substring(0, p);
+                        var v = eparts[1].substring(p + 1);
                         query.facets[n] = new SolrFacet(n, v);
-                        // @todo need to handle facet parameters
                     }
-                    // handle query options
+                    // query options
                     else {
-                        var name = eparts[0].replace('&','');
-                        (eparts.length==2) ? query.setOption(name,decodeURI(eparts[1])) : query.setOption(name,'');
+                        var name = eparts[0].replace('&', '');
+                        (eparts.length==2) ? query.setOption(name, eparts[1]) : query.setOption(name, '');
                     }
                 }
                 // return the query
@@ -397,7 +441,6 @@ angular.module('Solr',[])
                     if (window.console) {
                         console.log("Query " + Name + " not found");
                     }
-                    return {};
                 }
             };
 
@@ -429,9 +472,7 @@ angular.module('Solr',[])
                 svc.error = null;
                 svc.message = null;
                 for (var key in svc.queries) {
-                    if (svc.query.hasOwnProperty(key)) {
-                        svc.updateQuery(key);
-                    }
+                    svc.updateQuery(key);
                 }
             };
 

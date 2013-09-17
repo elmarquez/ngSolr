@@ -96,7 +96,7 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
         var query = SolrSearchService.createQuery();
         query.setOption('fl', $scope.fields);
         query.setOption("rows", $scope.count);
-        query.setQueryParameter($scope.queryname, "+location_0_coordinate:[* TO *]");
+        query.addQueryParameter("+location_0_coordinate:[* TO *]");
         return query;
     };
 
@@ -238,6 +238,7 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
      * Handle update event for a related map view query. If the user query
      * portion of that query has changed, construct a new query in the current
      * view to correspond.
+     * @todo this should change ... it should update only on route change
      */
     $scope.handleTargetUpdate = function() {
         var targetQuery = SolrSearchService.getQuery($scope.target);
@@ -285,7 +286,7 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
             query.setOption("rows", "10");
             query.setOption("sort", "title+asc");
             query.setOption("wt", "json");
-            query.setQueryParameter($scope.queryname, "+location_0_coordinate:[* TO *]");
+            query.addQueryParameter("+location_0_coordinate:[* TO *]");
             query.setUserQuery('*:*');
             return query;
         };
