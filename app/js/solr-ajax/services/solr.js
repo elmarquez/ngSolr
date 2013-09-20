@@ -175,18 +175,18 @@ function SolrQuery(Url) {
         for (var i=0; i<self.queryParameters.length; i++) {
             query += ' ' + self.queryParameters[i];
         }
-        // options
-        for (var key2 in self.options) {
-            if (self.options.hasOwnProperty(key2)) {
-                var val = self.options[key2];
-                query += "&" + key2 + "=" + val;
-            }
-        }
         // facets
         for (var key3 in self.facets) {
             if (self.facets.hasOwnProperty(key3)) {
                 var facet = self.facets[key3];
                 query += facet.getUrlFragment();
+            }
+        }
+        // options
+        for (var key2 in self.options) {
+            if (self.options.hasOwnProperty(key2)) {
+                var val = self.options[key2];
+                query += "&" + key2 + "=" + val;
             }
         }
         return query;

@@ -25,6 +25,30 @@ filters.filter('strip', function() {
     }
 });
 
+filters.filter('substitute', function() {
+    /**
+     * Return the substitution text for the specified key.
+     * @param text
+     * @return {String} Substitution text
+     */
+    var map = {
+        'ACT':'Australian Capital Territory',
+        'NSW':'New South Wales',
+        'NT': 'Northern Territory',
+        'QLD':'Queensland',
+        'SA': 'South Australia',
+        'TAS':'Tasmania',
+        'VIC':'Victoria',
+        'WA': 'Western Australia'
+    };
+    return function(text) {
+        if (text in map) {
+            return map[text];
+        }
+        return text;
+    }
+});
+
 filters.filter('trim', function() {
     /**
      * Trim starting and ending spaces from the string.
