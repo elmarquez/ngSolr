@@ -43,7 +43,7 @@ d.directive('searchbox', function() {
                 if (event.keyCode == 13) {
                     // enter key: submit query
                     if (scope.userquery != '') {
-                        scope.submit(scope.userquery);
+                        scope.handleSubmit(scope.userquery);
                     }
                 } else {
                     // all other keys: update user query
@@ -75,7 +75,7 @@ d.directive('searchbutton', function() {
         link: function(scope, element, attrs) {
             element.bind("click", function() {
                 if (scope.userquery != '') {
-                    scope.submit(scope.userquery);
+                    scope.handleSubmit(scope.userquery);
                 }
             });
         },

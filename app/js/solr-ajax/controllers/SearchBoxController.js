@@ -36,7 +36,7 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
     $scope.minSearchLength = 3;
 
     // the name of the main query
-    $scope.queryName = "defaultQuery";
+    $scope.queryName = SolrSearchService.defaultQueryName;
 
     // If true, when a user enters a new query string, the target query will be
     // replaced with a new query and the user query property will be set, If
@@ -91,32 +91,17 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
      * user input data, then execute a GET call with that URL.
      */
     $scope.handleSubmit = function() {
-        // close the autocomplete dropdown hints list
-        $("#search-box-input").autocomplete("close");
         // clean up the user query
         var trimmed = Utils.trim($scope.userquery);
         if (trimmed === '') {
             $scope.userquery = "*:*";
         }
         // build the query string
-        var query = SolrSearchService.getQuery($scope.searchHintsQuery);
-        if (query) {
-            query.setOption("rows", 10);
-            query.setOption("start", 0);
-        } else {
-            query = SolrSearchService.createQuery($scope.source);
-        }
+        var query = SolrSearchService.getQuery($scope.queryName);
         query.setUserQuery($scope.userquery);
-        // log the query
-        if (window.console) {
-            console.log("QUERY " + query);
-        }
         // update the window location
         var hash = query.getHash();
         $location.path(hash);
-        // $scope.$apply();
-        // prevent the default form submit behavior
-        return false;
     };
 
     /**
@@ -156,7 +141,7 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
         // handle location change event, update query value
         $scope.$on("$routeChangeSuccess", function() {
             var hash = ($routeParams.query || "");
-            query = SolrSearchService.getQueryFromHash(hash);
+            var query = SolrSearchService.getQueryFromHash(hash);
             $scope.userquery = query.getUserQuery();
         });
         // create a query to fetch the list of search hints

@@ -336,7 +336,7 @@ angular.module('Solr',[])
                 query.setOption("fl", "*");
                 query.setOption("json.wrf", "JSON_CALLBACK");
                 query.setOption("wt", "json");
-                query.setUserQuery("");
+                query.setUserQuery("*:*");
                 return query;
             };
 

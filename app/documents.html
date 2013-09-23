@@ -81,9 +81,10 @@
                     <div class="span5">
 
                         <form ng-controller="SearchBoxController"
+                              ng-submit="handleSubmit()"
                               data-source="http://data.esrc.unimelb.edu.au/solr/FACP">
-                            <input name="q" type="text" placeholder="Keyword or placename" searchbox style="width:380px" />
-                            <input name="submit" type="submit" value="search" searchbutton />
+                            <input name="q" type="text" placeholder="Keyword or placename" ng-model="userquery" searchbox />
+                            <input name="submit" type="submit" value="search" ng-click="handleSubmit()" searchbutton />
                         </form>
 
                     </div>
