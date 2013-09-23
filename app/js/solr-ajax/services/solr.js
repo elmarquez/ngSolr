@@ -352,6 +352,7 @@ angular.module('Solr',[])
                     if (window.console) {
                         console.log("No query named " + Name + " available");
                     }
+                    return undefined;
                 }
             };
 

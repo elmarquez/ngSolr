@@ -98,6 +98,9 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
         }
         // build the query string
         var query = SolrSearchService.getQuery($scope.queryName);
+        if (query == undefined) {
+            query = SolrSearchService.createQuery($scope.source);
+        }
         query.setUserQuery($scope.userquery);
         // update the window location
         var hash = query.getHash();
