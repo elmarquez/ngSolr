@@ -11,21 +11,32 @@
 /**
  * Provides auto-complete and extended search support aids.
  * @param $scope Controller scope
+ * @param $attrs
  * @param $location
- * @param SolrSearchService Apache Solr search service interface
- * @param Utils Utility functions
+ * @param $route
+ * @param $routeParams
+ * @param SolrSearchService
+ * @param Utils Utility
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, $location, SolrSearchService, Utils) {
+function SearchBoxController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
 
-    // the list of search hints
+    // the complete list of search hints
     $scope.hints = [];
 
     // the subset of hints displayed to the user
+    // @todo is this actually used??
     $scope.hintlist = [];
 
     // the maximum number of hints to display at any moment
     $scope.maxHints = 10;
+
+    // the minimum number characters that the user should enter before the list
+    // of search hints is displayed
+    $scope.minSearchLength = 3;
+
+    // the name of the main query
+    $scope.queryName = "defaultQuery";
 
     // If true, when a user enters a new query string, the target query will be
     // replaced with a new query and the user query property will be set, If
@@ -39,18 +50,17 @@ function SearchBoxController($scope, $location, SolrSearchService, Utils) {
     // the name of the query that returns the list of search hints
     $scope.searchHintsQuery = "searchHintsQuery";
 
-    // the name of the main query
-    $scope.target = "defaultQuery";
+    // url to solr core
+    $scope.source = undefined;
 
     // the query string provided by the user
     $scope.userquery = "";
 
-    // the minimum number characters that the user should enter before the list
-    // of search hints is displayed
-    var minSearchLength = 1;
-
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Get the list of matching hints.
+     */
     $scope.getHintList = function() {
         $scope.hintlist = $scope.hints.splice(0,10);
     };
@@ -61,7 +71,7 @@ function SearchBoxController($scope, $location, SolrSearchService, Utils) {
      */
     $scope.getHints = function() {
         var hintlist = [];
-        if ($scope.userquery.length >= minSearchLength) {
+        if ($scope.userquery.length >= $scope.minSearchLength) {
             for (var i=0;i<$scope.hints.length, hintlist.length<$scope.maxHints;i++) {
                 var token = $scope.hints[i];
                 try {
@@ -79,7 +89,6 @@ function SearchBoxController($scope, $location, SolrSearchService, Utils) {
     /**
      * Handle submit click event. Construct a valid Solr query URL from the
      * user input data, then execute a GET call with that URL.
-     * https://web/ECOMt/solr/FACP/select?q=BONDI+(fromDate:[* TO 1980-12-31T23:59:59Z] AND toDate:[1970-01-01T00:00:00Z TO *])&fq=region:(NSW)&wt=json
      */
     $scope.handleSubmit = function() {
         // close the autocomplete dropdown hints list
@@ -95,7 +104,7 @@ function SearchBoxController($scope, $location, SolrSearchService, Utils) {
             query.setOption("rows", 10);
             query.setOption("start", 0);
         } else {
-            query = SolrSearchService.createQuery();
+            query = SolrSearchService.createQuery($scope.source);
         }
         query.setUserQuery($scope.userquery);
         // log the query
@@ -134,22 +143,41 @@ function SearchBoxController($scope, $location, SolrSearchService, Utils) {
      * Initialize the controller.
      */
     $scope.init = function() {
-        // create a query
-        var query = SolrSearchService.createQuery();
-        query.setOption("rows","0");
-        query.setOption("facet","true");
-        query.setOption("facet.limit","-1");
-        query.setOption("facet.field",$scope.searchHintsField);
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                if (key == 'documentsPerPage' || key == 'pagesPerSet') {
+                    $scope[key] = parseInt($attrs[key]);
+                } else {
+                    $scope[key] = $attrs[key];
+                }
+            }
+        }
+        // handle location change event, update query value
+        $scope.$on("$routeChangeSuccess", function() {
+            var hash = ($routeParams.query || "");
+            query = SolrSearchService.getQueryFromHash(hash);
+            $scope.userquery = query.getUserQuery();
+        });
+        // create a query to fetch the list of search hints
+        var query = SolrSearchService.createQuery($scope.source);
+        query.setOption("rows", "0");
+        query.setOption("facet", "true");
+        query.setOption("facet.limit", "-1");
+        query.setOption("facet.field", $scope.searchHintsField);
         SolrSearchService.setQuery($scope.searchHintsQuery,query);
-        // handle update events on the query
+        // handle update events on the hints query
         $scope.$on($scope.searchHintsQuery, function() {
             $scope.handleUpdate();
         });
-        // update query results
+        // update the hints query
         SolrSearchService.updateQuery($scope.searchHintsQuery);
     };
+
+    // initialize the controller
+    $scope.init();
 
 }
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope', '$location', 'SolrSearchService', 'Utils'];
+SearchBoxController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils'];

@@ -80,20 +80,10 @@
                     <div class="span2 column-240">&nbsp;</div>
                     <div class="span5">
 
-                        <form class="form-inline" ng-controller="SearchBoxController" ng-submit="handleSubmit()">
-                            <div id="search-box" class="input-append">
-                                <input id="search-box-input"
-                                       searchhints
-                                       autocomplete="off"
-                                       name="q"
-                                       ng-model="userquery"
-                                       placeholder='Enter placename or keywords to search for'
-                                       style="width:380px"
-                                       type='text'
-                                       ui-items="getHints(userquery)"
-                                        />
-                                <button class="btn">Search</button>
-                            </div>
+                        <form ng-controller="SearchBoxController"
+                              data-source="http://data.esrc.unimelb.edu.au/solr/FACP">
+                            <input name="q" type="text" placeholder="Keyword or placename" searchbox style="width:380px" />
+                            <input name="submit" type="submit" value="search" searchbutton />
                         </form>
 
                     </div>

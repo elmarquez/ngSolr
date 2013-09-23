@@ -38,7 +38,7 @@ function SolrFacet(Field, Value) {
      */
     self.getUrlFragment = function() {
         // this is used to delimit the start of the facet query in the URL and aid parsing
-        var query = ''; // delimiter should come from the CONSTANTS field
+        var query = ''; // delimiter should come from the CONSTANTS field ???
         // var val = self.value.replace(' ','?');
         query += '&fq=' + self.field + ':' + self.value;
         for (var option in self.options) {
@@ -312,11 +312,10 @@ function SolrQuery(Url) {
  * @param $rootScope Application root scope
  * @param $http HTTP service
  * @param $location Location service
- * @param CONSTANTS Application constants
  */
 angular.module('Solr',[])
-    .factory('SolrSearchService',['$rootScope','$http','$location','CONSTANTS',
-        function($rootScope, $http, $location, CONSTANTS) {
+    .factory('SolrSearchService',['$rootScope','$http','$location',
+        function($rootScope, $http, $location) {
 
             var svc = {};                           // service instance
             svc.defaultQueryName = "defaultQuery";  // name of the default query
@@ -328,20 +327,16 @@ angular.module('Solr',[])
 
             /**
              * Get a default query object.
-             * @param Solr Solr core URL, without the action selector or query
+             * @param Solr Solr core URL, without the action selector or query component
              * @return {Object} A default query object.
              */
             svc.createQuery = function(Solr) {
-                if (Solr != undefined) {
-                    var query = new SolrQuery(Solr);
-                } else {
-                    var query = new SolrQuery(CONSTANTS.SOLR_BASE);
-                }
+                var query = new SolrQuery(Solr);
                 query.setOption("rows", 10);
-                query.setOption("fl", CONSTANTS.DEFAULT_FIELDS);
+                query.setOption("fl", "*");
                 query.setOption("json.wrf", "JSON_CALLBACK");
                 query.setOption("wt", "json");
-                query.setUserQuery(CONSTANTS.DEFAULT_QUERY);
+                query.setUserQuery("");
                 return query;
             };
 

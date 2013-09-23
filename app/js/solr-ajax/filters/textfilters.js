@@ -17,6 +17,7 @@ filters.filter('strip', function() {
      * @return {String} Year value
      */
     return function(text) {
+        if (text == undefined) return text;
         var i = text.indexOf(', ');
         if (i != -1) {
             return text.substring(i + 2);
@@ -55,6 +56,7 @@ filters.filter('trim', function() {
      * @param text
      */
     return function(text) {
+        if (text == undefined) return text;
         return text.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 });
@@ -67,6 +69,7 @@ filters.filter('truncate', function() {
      * @return {*}
      */
     return function(text, limit) {
+        if (text == undefined) return text;
         if (text.length > limit) {
             var t = text.substring(0,Math.min(limit,text.length));
             var i = t.lastIndexOf(" ");
