@@ -138,7 +138,7 @@ function SolrQuery(Url) {
 
     /**
      * Get the facet dictionary.
-     * @returns {Array}
+     * @returns {Dictionary}
      */
     self.getFacets = function() {
         return self.facets;

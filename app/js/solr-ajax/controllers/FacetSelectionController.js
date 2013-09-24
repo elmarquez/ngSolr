@@ -11,14 +11,23 @@
 /**
  * Displays and manages the set of facet constraints on a named query.
  * @param $scope Controller scope
+ * @param $attrs
+ * @param $location
+ * @param $route
+ * @param $routeParams
+ * @param $window
  * @param SolrSearchService Solr search service
- * @todo need to update this to read the facet list from the current query
  */
-function FacetSelectionController($scope, SolrSearchService) {
+function FacetSelectionController($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
 
-    $scope.facetkeys = [];              // facet key from target query
-    $scope.facets = [];                 // facets
-    $scope.target = 'defaultQuery';     // target query name
+    // facet key from target query
+    $scope.facetkeys = [];
+
+    // facets
+    $scope.facets = [];
+
+    // target query name
+    $scope.target = SolrSearchService.defaultQueryName;
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +39,9 @@ function FacetSelectionController($scope, SolrSearchService) {
         var key = $scope.facetkeys[Index];
         var query = SolrSearchService.getQuery($scope.target);
         query.removeFacet(key);
-        SolrSearchService.updateQuery($scope.target);
+        // change window location
+        var hash = query.getHash();
+        $location.path(hash);
     };
 
     /**
@@ -51,7 +62,17 @@ function FacetSelectionController($scope, SolrSearchService) {
      * Initialize the controller
      */
     $scope.init = function() {
-        // Handle update events from the search service.
+        // apply configured attributes
+        for (var key in $attrs) {
+            if ($scope.hasOwnProperty(key)) {
+                $scope[key] = $attrs[key];
+            }
+        }
+        // update the list of facets on route change
+        $scope.$on("$routeChangeSuccess", function() {
+            //
+        });
+        // handle updates on the query
         $scope.$on($scope.target, function() {
             $scope.handleUpdate();
         });
@@ -63,4 +84,4 @@ function FacetSelectionController($scope, SolrSearchService) {
 }
 
 // inject controller dependencies
-FacetSelectionController.$inject = ['$scope','SolrSearchService'];
+FacetSelectionController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];
