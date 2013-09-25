@@ -15,11 +15,12 @@
  * @param $location
  * @param $route
  * @param $routeParams
+ * @param $window
  * @param SolrSearchService
  * @param Utils Utility
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
+function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
 
     // the complete list of search hints
     $scope.hints = [];
@@ -37,6 +38,10 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
 
     // the name of the main query
     $scope.queryName = SolrSearchService.defaultQueryName;
+
+    // when the user submits the query, redirect to the specified URL, with the
+    // query appended, to render the results
+    $scope.redirect = undefined;
 
     // If true, when a user enters a new query string, the target query will be
     // replaced with a new query and the user query property will be set, If
@@ -104,7 +109,11 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
         query.setUserQuery($scope.userquery);
         // update the window location
         var hash = query.getHash();
-        $location.path(hash);
+        if ($scope.redirect) {
+            $window.location.href = $scope.redirect + '/#' + hash;
+        } else {
+            $location.path(hash);
+        }
     };
 
     /**
@@ -168,4 +177,4 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, So
 }
 
 // inject controller dependencies
-SearchBoxController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils'];
+SearchBoxController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils'];
