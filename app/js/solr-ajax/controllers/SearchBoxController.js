@@ -153,8 +153,12 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
         // handle location change event, update query value
         $scope.$on("$routeChangeSuccess", function() {
             var hash = ($routeParams.query || "");
-            var query = SolrSearchService.getQueryFromHash(hash);
-            $scope.userquery = query.getUserQuery();
+            if (hash != "") {
+                var query = SolrSearchService.getQueryFromHash(hash);
+                $scope.userquery = query.getUserQuery();
+            } else {
+                $scope.userquery = hash;
+            }
         });
         // create a query to fetch the list of search hints
         var query = SolrSearchService.createQuery($scope.source);
