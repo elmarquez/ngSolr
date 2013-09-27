@@ -71,7 +71,7 @@ function SolrQuery(Url) {
     var self = this;
 
     // query facets
-    self.facets = {};
+    self.facets = [];
 
     // facet counts
     self.facet_counts = {};
@@ -103,11 +103,10 @@ function SolrQuery(Url) {
 
     /**
      * Add facet constraint.
-     * @param Name
      * @param Facet
      */
-    self.addFacet = function(Name, Facet) {
-        self.facets[Name] = Facet;
+    self.addFacet = function(Facet) {
+        self.facets.push(Facet);
     };
 
     /**
@@ -137,8 +136,8 @@ function SolrQuery(Url) {
     };
 
     /**
-     * Get the facet dictionary.
-     * @returns {Dictionary}
+     * Get the facet list.
+     * @returns {List}
      */
     self.getFacets = function() {
         return self.facets;
@@ -176,11 +175,9 @@ function SolrQuery(Url) {
             query += ' ' + self.queryParameters[i];
         }
         // facets
-        for (var key3 in self.facets) {
-            if (self.facets.hasOwnProperty(key3)) {
-                var facet = self.facets[key3];
-                query += facet.getUrlFragment();
-            }
+        for (i=0; i<self.facets.length; i++) {
+            var facet = self.facets[i];
+            query += facet.getUrlFragment();
         }
         // options
         for (var key2 in self.options) {
@@ -216,11 +213,11 @@ function SolrQuery(Url) {
     };
 
     /**
-     * Remove facet by key.
-     * @param Key Facet key
+     * Remove facet by index.
+     * @param Index
      */
-    self.removeFacet = function(Key) {
-        delete self.facets[Key];
+    self.removeFacet = function(Index) {
+        self.facets.splice(Index, 1);
     };
 
     /**
@@ -413,7 +410,7 @@ angular.module('Solr',[])
                         var p = eparts[1].indexOf(':');
                         var n = eparts[1].substring(0, p);
                         var v = eparts[1].substring(p + 1);
-                        query.facets[n] = new SolrFacet(n, v);
+                        query.facets.push(new SolrFacet(n, v));
                     }
                     // query options
                     else {

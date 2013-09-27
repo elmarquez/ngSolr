@@ -20,11 +20,8 @@
  */
 function FacetSelectionController($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
 
-    // facet key from target query
-    $scope.facetkeys = [];
-
     // facets
-    $scope.facets = [];
+    $scope.items = [];
 
     // target query name
     $scope.target = SolrSearchService.defaultQueryName;
@@ -33,12 +30,11 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
 
     /**
      * Remove the facet constraint from the target query.
-     * @param Index Index of facet in the facet list
+     * @param Index Index of facet in the list
      */
     $scope.remove = function(Index) {
-        var key = $scope.facetkeys[Index];
         var query = SolrSearchService.getQuery($scope.target);
-        query.removeFacet(key);
+        query.removeFacet(Index);
         // change window location
         var hash = query.getHash();
         $location.path(hash);
@@ -48,13 +44,10 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
      * Update the controller state.
      */
     $scope.handleUpdate = function() {
-        $scope.facetkeys = [];
-        $scope.facets = [];
-        var query = SolrSearchService.getQuery($scope.target);
-        var facets = query.getFacets();
-        for (var key in facets) {
-            $scope.facetkeys.push(key);
-            $scope.facets.push(facets[key]);
+        var hash = ($routeParams.query || "");
+        var query = SolrSearchService.getQueryFromHash(hash);
+        if (query) {
+            $scope.items = query.getFacets();
         }
     };
 
@@ -70,10 +63,6 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
         }
         // update the list of facets on route change
         $scope.$on("$routeChangeSuccess", function() {
-            //
-        });
-        // handle updates on the query
-        $scope.$on($scope.target, function() {
             $scope.handleUpdate();
         });
     };

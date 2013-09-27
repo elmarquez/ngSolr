@@ -103,15 +103,15 @@
                         <!-- facet selection controller -->
                         <ul class="facet-panel"
                             ng-controller="FacetSelectionController"
-                            ng-show="facets.length>0"
+                            ng-show="items.length>0"
                             ng-cloak>
                             <li><b>Filtering By</b></li>
                             <li>
                                 <ul class="items unstyled">
-                                    <li class="facet" ng-repeat="facet in facets">
+                                    <li class="facet" ng-repeat="item in items">
                                         <i class="icon-tag"></i>
                                         <a ng-click="remove($index)">
-                                            <span class="value">{{facet.value}}</span>
+                                            <span class="value">{{item.value}}</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -238,7 +238,8 @@
                          ng-cloak>
                         <div class="column-512">
 
-                            <div class="summary">Search Results ({{totalResults}} found)
+                            <div class="summary">
+                                <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
                                 <div class="alert alert-error" ng-show="error">{{error}}</div>
                                 <div class="alert alert-info" ng-show="message">{{message}}</div>
                             </div>
