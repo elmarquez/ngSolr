@@ -386,11 +386,12 @@ angular.module('Solr',[])
             /**
              * Parse the URL hash and return a query object.
              * @param Hash Window location hash. We assume that the # separator has been removed from the string.
+             * @param Source URL to Solr core
              * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
              */
-            svc.getQueryFromHash = function(Hash) {
+            svc.getQueryFromHash = function(Hash, Source) {
                 // create a default query
-                var query = svc.createQuery();
+                var query = svc.createQuery(Source);
                 // break the query up into elements and then set each element
                 // value on the query
                 var hash_elements = decodeURI(Hash).split("&");

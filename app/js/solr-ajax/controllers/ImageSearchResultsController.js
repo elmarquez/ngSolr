@@ -138,7 +138,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
         $scope.$on("$routeChangeSuccess", function() {
                 $scope.query = ($routeParams.query || "");
                 if ($scope.query) {
-                    var query = SolrSearchService.getQueryFromHash($scope.query);
+                    var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
                     SolrSearchService.setQuery($scope.queryname,query);
                     if ($scope.source) {
                         query.solr = $scope.source;

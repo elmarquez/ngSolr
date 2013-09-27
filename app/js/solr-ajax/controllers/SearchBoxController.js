@@ -154,7 +154,7 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
         $scope.$on("$routeChangeSuccess", function() {
             var hash = ($routeParams.query || "");
             if (hash != "") {
-                var query = SolrSearchService.getQueryFromHash(hash);
+                var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
                 $scope.userquery = query.getUserQuery();
             } else {
                 $scope.userquery = hash;

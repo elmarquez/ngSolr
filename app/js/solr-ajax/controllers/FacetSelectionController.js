@@ -23,6 +23,9 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
     // facets
     $scope.items = [];
 
+    // URL to Solr core
+    $scope.source = undefined;
+
     // target query name
     $scope.target = SolrSearchService.defaultQueryName;
 
@@ -45,7 +48,7 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
      */
     $scope.handleUpdate = function() {
         var hash = ($routeParams.query || "");
-        var query = SolrSearchService.getQueryFromHash(hash);
+        var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
         if (query) {
             $scope.items = query.getFacets();
         }

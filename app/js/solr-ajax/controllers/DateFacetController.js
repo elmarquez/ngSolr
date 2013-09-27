@@ -159,7 +159,7 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
         $scope.$on("$routeChangeSuccess", function() {
             $scope.query = ($routeParams.query || "");
             if ($scope.query) {
-                var query = SolrSearchService.getQueryFromHash($scope.query);
+                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
                 $scope.userquery = query.getUserQuery();
             }
             // build a query that will fetch the earliest date in the list
@@ -197,11 +197,15 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
      */
     $scope.submit = function() {
         if ($scope.startDate <= $scope.endDate) {
-            var query = SolrSearchService.getQuery($scope.target);
-            if (query) {
+            $scope.query = ($routeParams.query || "");
+            if ($scope.query) {
+                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
                 var dateRange = $scope.getDateRangeConstraint($scope.startDateField, $scope.startDate, $scope.endDateField, $scope.endDate);
+                // @todo we need to make sure that only 1 set of date ranges are set!!!
                 query.addQueryParameter(dateRange);
-                SolrSearchService.updateQuery($scope.target);
+                // change window location
+                var hash = query.getHash();
+                $location.path(hash);
             }
         } else {
             // set the values back to the prior state

@@ -105,9 +105,9 @@ function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $
         // get the starting query
         var hash = ($routeParams.query || undefined);
         if (hash) {
-            var query = SolrSearchService.getQueryFromHash(hash);
+            var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
         } else {
-            query = SolrSearchService.createQuery();
+            query = SolrSearchService.createQuery($scope.source);
         }
         // if there is an existing query, find out if there is an existing
         // facet query corresponding to this controller's specified facet
@@ -164,7 +164,12 @@ function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $
         // update the list of facets on route change
         $scope.$on("$routeChangeSuccess", function() {
             // create a query to get the list of facets
-            var query = SolrSearchService.createQuery($scope.source);
+            var hash = ($routeParams.query || undefined);
+            if (hash) {
+                var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
+            } else {
+                query = SolrSearchService.createQuery($scope.source);
+            }
             query.setOption("facet", "true");
             query.setOption("facet.field", $scope.field);
             query.setOption("facet.limit", $scope.maxItems);

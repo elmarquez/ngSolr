@@ -203,7 +203,7 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
         $scope.$on("$routeChangeSuccess", function() {
             $scope.query = ($routeParams.query || "");
             if ($scope.query) {
-                var query = SolrSearchService.getQueryFromHash($scope.query);
+                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
                 $scope.userquery = query.getUserQuery();
             }
             // build a query that will fetch the earliest date in the list
