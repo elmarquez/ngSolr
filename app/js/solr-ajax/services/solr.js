@@ -500,7 +500,7 @@ angular.module('Solr',[])
                         },
                         // http error
                         function (result) {
-                            svc.error = "Could not get search results from server. Server responded with status code " + result['status'] + ".";
+                            svc.error = "Could not get search results from server";
                             if (window.console) {
                                 console.log(svc.error);
                             }

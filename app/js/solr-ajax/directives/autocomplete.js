@@ -55,8 +55,8 @@ d.directive('searchbox', function() {
                 delay: 500,
                 minLength: 3,
                 source: function(request, response) {
-                    var hints = scope.hints;
-                    var results = $.ui.autocomplete.filter(hints, request.term);
+                    // @todo execute a query against the index on the fly
+                    var results = $.ui.autocomplete.filter(scope.hints, request.term);
                     response(results.slice(0, 10));
                 }
             });
