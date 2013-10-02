@@ -110,7 +110,7 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
         // update the window location
         var hash = query.getHash();
         if ($scope.redirect) {
-            $window.location.href = $scope.redirect + '/#' + hash;
+            $window.location.href = $scope.redirect + '#' + hash;
         } else {
             $location.path(hash);
         }
