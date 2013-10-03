@@ -164,7 +164,14 @@
                          data-fields="*"
                          data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
                          ng-cloak>
-                         <div id="search-results">
+
+                        <div class="summary" ng-show="documents.length > 0">
+                            <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
+                            <div class="alert alert-error" ng-show="error">{{error}}</div>
+                            <div class="alert alert-info" ng-show="message">{{message}}</div>
+                        </div>
+
+                        <div id="search-results">
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                             <div id="summary">Search Results ({{totalResults}} found)</div>
