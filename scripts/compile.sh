@@ -13,6 +13,7 @@ FILTERS='../app/js/solr-ajax/filters/*'
 SERVICES='../app/js/solr-ajax/services/*'
 
 # controllers
+cat /dev/null > ../app/js/solr-ajax/controllers.js
 for f in $CONTROLLERS
 do
   cat $f >> ../app/js/solr-ajax/controllers.js

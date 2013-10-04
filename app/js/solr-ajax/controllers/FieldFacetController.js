@@ -79,7 +79,8 @@ function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $
             query = SolrSearchService.createQuery($scope.source);
         }
         var name = $scope.field;
-        var value = "(" + $scope.items[Index].value + ")";
+        // replace space characters with * to ensure matching on the space value
+        var value = "(" + $scope.items[Index].value.replace(' ','*') + ")";
         var facet = query.createFacet(name, value);
         // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) == -1) {
