@@ -10,6 +10,26 @@
 
 var filters = angular.module('Filters',[]);
 
+
+filters.filter('cleanFacetLabel', function() {
+    /**
+     * Remove punctuation and escaped chars from facet name.
+     * @param text
+     * @return {String} Substitution text
+     */
+    return function(text) {
+        var t = text.replace('(','');
+        t = t.replace(')','');
+        t = t.replace('[','');
+        t = t.replace(']','');
+        t = t.replace('*',' ');
+        t = t.replace('%2A',' ');
+        t = t.replace('?',' ');
+        t = t.replace('%3F',' ');
+        return t;
+    }
+});
+
 filters.filter('strip', function() {
     /**
      * Strip the leading month value from a date.
