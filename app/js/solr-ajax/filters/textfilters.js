@@ -30,6 +30,30 @@ filters.filter('cleanFacetLabel', function() {
     }
 });
 
+filters.filter('prettyFacetLabel', function() {
+    /**
+     * Present the facet label
+     */
+    return function(facet) {
+        // convert field name from camel case to sentence case
+        var result = facet.field.replace(/([A-Z])/g, " $1");
+        var label = result.charAt(0).toUpperCase() + result.slice(1);
+        // clean up the value text
+        var val = facet.value.replace('(','');
+        val = val.replace(')','');
+        val = val.replace('[','');
+        val = val.replace(']','');
+        val = val.replace('*','');
+        val = val.replace('%2A','');
+        val = val.replace('?','');
+        val = val.replace('%3F','');
+        val = val.replace(' TO ','');
+        val = val.replace('-01-01T00:00:00Z','');
+        val = val.replace('-12-31T23:59:59Z','');
+        return label + ": " + val;
+    }
+});
+
 filters.filter('strip', function() {
     /**
      * Strip the leading month value from a date.
