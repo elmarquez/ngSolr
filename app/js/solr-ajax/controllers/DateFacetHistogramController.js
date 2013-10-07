@@ -84,27 +84,6 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
     //////////////////////////////////////////////////////////////////////////
 
     /**
-     * Build the Solr date range constraint string. The date range will be
-     * inclusive such that all entities that existing within the specified
-     * date range will be returned.
-     * @param StartDateField
-     * @param StartDate
-     * @param EndDateField
-     * @param EndDate
-     */
-    $scope.getDateRangeConstraint = function(StartDateField, StartDate, EndDateField, EndDate) {
-        var yearStart = "-01-01T00:00:00Z";
-        var yearEnd = "-12-31T23:59:59Z";
-        // ISSUE #26 +(startDateField:[* TO userEndDate] AND endDateField:[userStartDate TO *])
-        var dateRange = "+(";
-        dateRange += StartDateField + ":[ * TO " + EndDate + yearEnd + " ]";
-        dateRange += " AND ";
-        dateRange += EndDateField + ":[ " + StartDate + yearStart + " TO * ]";
-        dateRange += ")";
-        return dateRange;
-    };
-
-    /**
      * Get the first date in the item list.
      * @param Items List of items
      * @param FieldName Date field

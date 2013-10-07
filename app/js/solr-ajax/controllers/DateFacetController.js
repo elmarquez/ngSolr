@@ -17,8 +17,6 @@
  * @param $route
  * @param $routeParams
  * @param SolrSearchService Solr search service
- *
- * @todo the method of fetching dates should use the .then() method of data retrieval
  */
 function DateFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService) {
 
@@ -49,12 +47,6 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
     // start date query name
     $scope.startDateQueryName = 'startDateQuery';
 
-    // named query to filter
-    $scope.target = SolrSearchService.defaultQueryName;
-
-    // flag used to track update process (-2 started, -1 partially done, 0 complete)
-    $scope.updateFlag = 0;
-
     // update the facet list during init
     $scope.updateOnInit = true;
 
@@ -76,6 +68,7 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
         var yearStart = "-01-01T00:00:00Z";
         var yearEnd = "-12-31T23:59:59Z";
         // ISSUE #26 +(startDateField:[* TO userEndDate] AND endDateField:[userStartDate TO *])
+        // ISSUE #20 the date query needs to be specified using a set of field queries
         var dateRange = "+(";
         dateRange += StartDateField + ":[ * TO " + EndDate + yearEnd + " ]";
         dateRange += " AND ";
@@ -110,7 +103,6 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
             $scope._endDate = $scope.getFirstDateRecord(endDateResults, $scope.endDateField);
             $scope.endDate = $scope.getFirstDateRecord(endDateResults, $scope.endDateField);
         }
-        $scope.updateFlag++;
     };
 
     /**
@@ -122,26 +114,57 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
             $scope._startDate = $scope.getFirstDateRecord(startDateResults, $scope.startDateField);
             $scope.startDate = $scope.getFirstDateRecord(startDateResults, $scope.startDateField);
         }
-        $scope.updateFlag++;
     };
 
     /**
-     * Handle update event from the target query. Update the facet list to
-     * reflect the target query result set.
+     * Handle route update event.
      */
-    $scope.handleTargetQueryUpdate = function() {
-        var query = SolrSearchService.getQuery($scope.target);
-        var userquery = query.getUserQuery();
-        // change the start date user query
-        query = SolrSearchService.getQuery($scope.startDateQueryName);
-        query.setUserQuery(userquery);
-        // change the end date user query
-        query = SolrSearchService.getQuery($scope.endDateQueryName);
-        query.setUserQuery(userquery);
-        // update queries
-        $scope.updateFlag = -2;
-        SolrSearchService.updateQuery($scope.startDateQueryName);
-        SolrSearchService.updateQuery($scope.endDateQueryName);
+    $scope.handleUpdate = function() {
+        var hash = ($routeParams.query || "");
+        // get the existing query or create a default query if none exists
+        if (hash) {
+            var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
+        } else {
+            query = SolrSearchService.createQuery($scope.source);
+        }
+        // get the earliest date in the index. if there is an existing start
+        // date value query then use that instead.
+        var f = query.getFacet($scope.endDateField);
+        if (f) {
+            // process the facet value so that we end up with only the year
+            // [1800-01-01T00:00:00Z TO *]
+            var start_year = f.value.replace('[','').replace('-01-01T00:00:00Z TO *]','');
+            $scope._startDate = start_year;
+            $scope.startDate = start_year;
+            $scope.updateFlag += 1 ;
+        } else {
+            var startDateQuery = SolrSearchService.createQuery($scope.source);
+            startDateQuery.setOption("fl", $scope.startDateField);
+            startDateQuery.setOption("rows", "1");
+            startDateQuery.setOption("sort", $scope.startDateField + " asc");
+            startDateQuery.setUserQuery($scope.userquery);
+            SolrSearchService.setQuery($scope.startDateQueryName, startDateQuery);
+            SolrSearchService.updateQuery($scope.startDateQueryName);
+        }
+        // get the oldest date in the index. if there is an existing end data
+        // query use it, otherwise create a new query to get the date.
+        f = query.getFacet($scope.startDateField);
+        if (f) {
+            // need to process the value portion
+            // [* TO 2014-12-31T23:59:59Z]
+            var end_year = f.value.replace('[* TO ','').replace('-12-31T23:59:59Z]','');
+            $scope._endDate = end_year;
+            $scope.endDate = end_year;
+            $scope.updateFlag += 1 ;
+        } else {
+            var endDateQuery = SolrSearchService.createQuery($scope.source);
+            endDateQuery.setOption("fl", $scope.endDateField);
+            endDateQuery.setOption("rows", "1");
+            endDateQuery.setOption("sort", $scope.endDateField + " desc");
+            endDateQuery.setUserQuery($scope.userquery);
+            SolrSearchService.setQuery($scope.endDateQueryName, endDateQuery);
+            SolrSearchService.updateQuery($scope.endDateQueryName);
+        }
     };
 
     /**
@@ -157,31 +180,7 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
         }
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
-            $scope.query = ($routeParams.query || "");
-            if ($scope.query) {
-                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
-                $scope.userquery = query.getUserQuery();
-            }
-            // build a query that will fetch the earliest date in the list
-            var startDateQuery = SolrSearchService.createQuery($scope.source);
-            startDateQuery.setOption("fl", $scope.startDateField);
-            startDateQuery.setOption("rows", "1");
-            startDateQuery.setOption("sort", $scope.startDateField + " asc");
-            startDateQuery.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.startDateQueryName, startDateQuery);
-            // build a query that will fetch the latest date in the list
-            var endDateQuery = SolrSearchService.createQuery($scope.source);
-            endDateQuery.setOption("fl", $scope.endDateField);
-            endDateQuery.setOption("rows", "1");
-            endDateQuery.setOption("sort", $scope.endDateField + " desc");
-            endDateQuery.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.endDateQueryName, endDateQuery);
-            // if we should update the date list during init
-            if ($scope.updateOnInit) {
-                $scope.updateFlag = -2;
-                SolrSearchService.updateQuery($scope.startDateQueryName);
-                SolrSearchService.updateQuery($scope.endDateQueryName);
-            }
+            $scope.handleUpdate();
         });
         // listen for updates on queries
         $scope.$on($scope.startDateQueryName, function () {
@@ -196,23 +195,34 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
      * Set a date range constraint on the target query.
      */
     $scope.submit = function() {
-        if ($scope.startDate <= $scope.endDate) {
-            $scope.query = ($routeParams.query || "");
-            if ($scope.query) {
-                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
-                var dateRange = $scope.getDateRangeConstraint($scope.startDateField, $scope.startDate, $scope.endDateField, $scope.endDate);
-                // @todo we need to make sure that only 1 set of date ranges are set!!!
-                query.addQueryParameter(dateRange);
-                // change window location
-                var hash = query.getHash();
-                $location.path(hash);
-            }
-        } else {
-            // set the values back to the prior state
+        // if the start date is greater than the end date, reset the date range
+        // to the original values and ignore the update request
+        if ($scope.startDate > $scope.endDate) {
+            // @todo we should signal the error to the user through the widget
             $scope.endDate = $scope._endDate;
             $scope.startDate = $scope._startDate;
-            console.log("WARNING: start date is greater than end date");
+            return;
         }
+        // get the current location
+        var hash = ($routeParams.query || "");
+        if (hash) {
+            var query = SolrSearchService.getQueryFromHash(hash, $scope.source);
+        } else {
+            query = SolrSearchService.createQuery($scope.source);
+        }
+        // remove any existing date facets
+        query.removeFacet($scope.startDateField);
+        query.removeFacet($scope.endDateField);
+        // create new date facets
+        var start_value = "[* TO " + $scope.endDate + "-12-31T23:59:59Z]";
+        var end_value = "[" + $scope.startDate + "-01-01T00:00:00Z TO *]";
+        var f = query.createFacet($scope.startDateField, start_value);
+        query.addFacet(f);
+        f = query.createFacet($scope.endDateField, end_value);
+        query.addFacet(f);
+        // change window location
+        hash = query.getHash();
+        $location.path(hash);
     };
 
     // initialize the controller

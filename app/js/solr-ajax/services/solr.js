@@ -128,6 +128,18 @@ function SolrQuery(Url) {
     };
 
     /**
+     * Get facet by name. Returns null if the facet could not be found.
+     * @param Name
+     */
+    self.getFacet = function(Name) {
+        for (var i in self.facets) {
+            if (self.facets[i].field == Name) {
+                return self.facets[i];
+            }
+        }
+    };
+
+    /**
      * Get the facet counts.
      * @returns {Int} Solr facet counts.
      */
@@ -157,10 +169,9 @@ function SolrQuery(Url) {
      * @returns {String} undefined value or undefined if not found.
      */
     self.getOption = function(Name) {
-        if (self.options[Name]) {
+        if (self.options[Name]) {  // @todo I think this might fail if we pass a bogus option name
             return self.options[Name];
         }
-        return undefined;
     };
 
     /**
@@ -213,10 +224,34 @@ function SolrQuery(Url) {
     };
 
     /**
+     * Determine if the query has a named facet.
+     * @param Name
+     */
+    self.hasFacet = function(Name) {
+        if (self.getFacet(Name)) {
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Remove facet by name.
+     * @param Name
+     */
+    self.removeFacet = function(Name) {
+        for (var i=0;i<self.facets.length;i++) {
+            if (self.facets[i].field == Name) {
+                self.removeFacetByIndex(i);
+                return;
+            }
+        }
+    };
+
+    /**
      * Remove facet by index.
      * @param Index
      */
-    self.removeFacet = function(Index) {
+    self.removeFacetByIndex = function(Index) {
         self.facets.splice(Index, 1);
     };
 
@@ -311,8 +346,7 @@ function SolrQuery(Url) {
  * @param $location Location service
  */
 angular.module('Solr',[])
-    .factory('SolrSearchService',['$rootScope','$http','$location',
-        function($rootScope, $http, $location) {
+    .factory('SolrSearchService',['$rootScope','$http', function($rootScope, $http) {
 
             var svc = {};                           // service instance
             svc.defaultQueryName = "defaultQuery";  // name of the default query
@@ -471,6 +505,22 @@ angular.module('Solr',[])
             };
 
             /**
+             * Update named queries in order.
+             * @param Queries List of query names
+             * @param BroadcastId Broadcast signal on update completion.
+             */
+            svc.updateQueriesInOrder = function(Queries, BroadcastId) {
+                var p = undefined;
+                for (var q in Queries) {
+                    if (p == undefined) {
+                        p = svc.updateQuery(q);
+                    } else {
+                        p.then(svc.updateQuery(q));
+                    }
+                }
+            };
+
+            /**
              * Update the named query.
              * @param QueryName Query name
              */
@@ -480,42 +530,39 @@ angular.module('Solr',[])
                 svc.message = null;
                 // get the named query
                 var query = svc.queries[QueryName];
-                if (query) {
-                    // fetch the search results
-                    var url = query.getSolrQueryUrl();
-                    if (window.console) {
-                        console.log("GET " + QueryName + ": " + url);
-                    }
-                    $http.jsonp(url).then(
-                        // http success
-                        function (result) {
-                            var data = result.data;
-                            query.setHighlighting(data.highlighting);
-                            if (data.hasOwnProperty('facet_counts')) {
-                                query.setFacetCounts(data.facet_counts);
-                            }
-                            query.setResponse(data.response);
-                            query.setResponseHeader(data.responseHeader);
-                            $rootScope.$broadcast(QueryName);
-                        },
-                        // http error
-                        function (result) {
-                            svc.error = "Could not get search results from server";
-                            if (window.console) {
-                                console.log(svc.error);
-                            }
-                            var response = {};
-                            response['numFound'] = 0;
-                            response['start'] = 0;
-                            response['docs'] = [];
-                            query.setFacetCounts([]);
-                            query.setHighlighting({});
-                            query.setResponse(response);
-                            query.setResponseHeader({});
-                            $rootScope.$broadcast(QueryName);
-                        }
-                    );
+                var url = query.getSolrQueryUrl();
+                if (window.console) {
+                    console.log("GET " + QueryName + ": " + url);
                 }
+                return $http.jsonp(url).then(
+                    // http success
+                    function (result) {
+                        var data = result.data;
+                        query.setHighlighting(data.highlighting);
+                        if (data.hasOwnProperty('facet_counts')) {
+                            query.setFacetCounts(data.facet_counts);
+                        }
+                        query.setResponse(data.response);
+                        query.setResponseHeader(data.responseHeader);
+                        $rootScope.$broadcast(QueryName);
+                    },
+                    // http error
+                    function (result) {
+                        svc.error = "Could not get search results from server";
+                        if (window.console) {
+                            console.log(svc.error);
+                        }
+                        var response = {};
+                        response['numFound'] = 0;
+                        response['start'] = 0;
+                        response['docs'] = [];
+                        query.setFacetCounts([]);
+                        query.setHighlighting({});
+                        query.setResponse(response);
+                        query.setResponseHeader({});
+                        $rootScope.$broadcast(QueryName);
+                    }
+                );
             };
 
             // return the service instance

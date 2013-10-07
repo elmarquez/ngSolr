@@ -37,7 +37,7 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
      */
     $scope.remove = function(Index) {
         var query = SolrSearchService.getQuery($scope.target);
-        query.removeFacet(Index);
+        query.removeFacetByIndex(Index);
         // change window location
         var hash = query.getHash();
         $location.path(hash);

@@ -172,7 +172,7 @@
                             <li>
                                 <ul class="facets unstyled">
                                     <li ng-repeat="item in items" ng-show="items">
-                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value}}</a></span>
+                                        <span class="facet-name"><a href="#" ng-click="add($event,$index)">{{item.value | cleanFacetLabel }}</a></span>
                                         <span class="facet-score" ng-show="item.score">({{item.score}})</span>
                                     </li>
                                 </ul>
