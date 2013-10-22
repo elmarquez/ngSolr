@@ -32,7 +32,8 @@ filters.filter('cleanFacetLabel', function() {
 
 filters.filter('prettyFacetLabel', function() {
     /**
-     * Present the facet label
+     * Clean up the facet label so that its more readily legible to the user.
+     * @param facet
      */
     return function(facet) {
         // convert field name from camel case to sentence case
