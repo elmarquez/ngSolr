@@ -10,7 +10,6 @@
 
 var filters = angular.module('Filters',[]);
 
-
 filters.filter('cleanFacetLabel', function() {
     /**
      * Remove punctuation and escaped chars from facet name.
@@ -18,15 +17,15 @@ filters.filter('cleanFacetLabel', function() {
      * @return {String} Substitution text
      */
     return function(text) {
-        var t = text.replace('(','');
-        t = t.replace(')','');
-        t = t.replace('[','');
-        t = t.replace(']','');
-        t = t.replace('*',' ');
-        t = t.replace('%2A',' ');
-        t = t.replace('?',' ');
-        t = t.replace('%3F',' ');
-        return t;
+        var val = text.split('(').join('');
+        val = val.split(')').join('');
+        val = val.split('[').join('');
+        val = val.split(']').join('');
+        val = val.split('*').join(' ');
+        val = val.split('%2A').join(' ');
+        val = val.split('?').join(' ');
+        val = val.split('%3F').(' ');
+        return val;
     }
 });
 
@@ -34,20 +33,21 @@ filters.filter('prettyFacetLabel', function() {
     /**
      * Clean up the facet label so that its more readily legible to the user.
      * @param facet
+     * @return {String} Substitution text
      */
     return function(facet) {
         // convert field name from camel case to sentence case
         var result = facet.field.replace(/([A-Z])/g, " $1");
         var label = result.charAt(0).toUpperCase() + result.slice(1);
-        // clean up the value text
-        var val = facet.value.replace('(','');
-        val = val.replace(')','');
-        val = val.replace('[','');
-        val = val.replace(']','');
-        val = val.replace('*','');
-        val = val.replace('%2A','');
-        val = val.replace('?','');
-        val = val.replace('%3F','');
+        // ISSUE #28 clean up the value text, remove all replacement characters
+        var val = facet.value.split('(').join('');
+        val = val.split(')').join('');
+        val = val.split('[').join('');
+        val = val.split(']').join('');
+        val = val.split('*').join(' ');
+        val = val.split('%2A').join(' ');
+        val = val.split('?').join(' ');
+        val = val.split('%3F').(' ');
         val = val.replace(' TO ','');
         val = val.replace('-01-01T00:00:00Z','');
         val = val.replace('-12-31T23:59:59Z','');
