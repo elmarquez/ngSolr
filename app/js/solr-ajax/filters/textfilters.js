@@ -81,6 +81,7 @@ filters.filter('substitute', function() {
     var map = {
         'ACT':'Australian Capital Territory',
         'NSW':'New South Wales',
+        'NA': 'Australia',
         'NT': 'Northern Territory',
         'QLD':'Queensland',
         'SA': 'South Australia',
