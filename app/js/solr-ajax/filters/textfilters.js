@@ -17,6 +17,7 @@ filters.filter('cleanFacetLabel', function() {
      * @return {String} Substitution text
      */
     return function(text) {
+        // ISSUE #28 remove all replacement characters
         var val = text.split('(').join('');
         val = val.split(')').join('');
         val = val.split('[').join('');
@@ -47,7 +48,7 @@ filters.filter('prettyFacetLabel', function() {
         val = val.split('*').join(' ');
         val = val.split('%2A').join(' ');
         val = val.split('?').join(' ');
-        val = val.split('%3F').(' ');
+        val = val.split('%3F').join(' ');
         val = val.replace(' TO ','');
         val = val.replace('-01-01T00:00:00Z','');
         val = val.replace('-12-31T23:59:59Z','');
