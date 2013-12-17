@@ -25,7 +25,7 @@ filters.filter('cleanFacetLabel', function() {
         val = val.split('*').join(' ');
         val = val.split('%2A').join(' ');
         val = val.split('?').join(' ');
-        val = val.split('%3F').(' ');
+        val = val.split('%3F').join(' ');
         return val;
     }
 });
