@@ -96,6 +96,30 @@ filters.filter('substitute', function() {
     }
 });
 
+filters.filter('swapDateFacetLabels', function() {
+    /**
+     * The date range filter matches on those entities that exist within a
+     * specified time period. TheSolr query that matches those entities has an
+     * unintuitive reversal of the fromDate and toDate query components, This
+     * filter reverses the fromDate/toDate labels in the presentation layer so
+     * that the user sees these facets appear in the way they would understand
+     * the query intuitively.
+     * @see ISSUE #29
+     */
+    return function(label) {
+        if (label.indexOf('fromDate') == 0) {
+            label = "toDate" + label.substring(8);
+        } else if (label.indexOf('From Date') == 0) {
+            label = "To Date" + label.substring(9);
+        } else if (label.indexOf('toDate') == 0) {
+            label = "fromDate" + label.substring(6);
+        } else if (label.indexOf('To Date') == 0) {
+            label = "From Date" + label.substring(7);
+        }
+        return label;
+    }
+});
+
 filters.filter('trim', function() {
     /**
      * Trim starting and ending spaces from the string.

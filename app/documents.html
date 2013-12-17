@@ -112,7 +112,7 @@
                                     <li class="facet" ng-repeat="item in items">
                                         <i class="icon-tag"></i>
                                         <a ng-click="remove($index)">
-                                            <span class="value">{{item | prettyFacetLabel }}</span>
+                                            <span class="value">{{item | prettyFacetLabel | swapDateFacetLabels}}</span>
                                         </a>
                                     </li>
                                 </ul>
