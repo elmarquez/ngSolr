@@ -78,8 +78,10 @@
 
                         <form class="form-inline"
                               ng-controller="SearchBoxController"
-                              ng-init="searchHintsField='title'"
-                              ng-submit="handleSubmit()">
+                              ng-submit="handleSubmit()"
+                              data-near-match="true"
+                              data-search-hints-field="title"
+                            >
                             <div id="search-box" class="input-append">
                                 <input id="search-box-input"
                                        searchhints

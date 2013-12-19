@@ -36,6 +36,9 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
     // of search hints is displayed
     $scope.minSearchLength = 3;
 
+    // find near matches to the user query
+    $scope.nearMatch = false;
+
     // the name of the main query
     $scope.queryName = SolrSearchService.defaultQueryName;
 
@@ -106,6 +109,7 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
         if (query == undefined) {
             query = SolrSearchService.createQuery($scope.source);
         }
+        query.setNearMatch($scope.nearMatch);
         query.setUserQuery($scope.userquery);
         // update the window location
         var hash = query.getHash();
@@ -145,6 +149,8 @@ function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $w
             if ($scope.hasOwnProperty(key)) {
                 if (key == 'documentsPerPage' || key == 'pagesPerSet') {
                     $scope[key] = parseInt($attrs[key]);
+                } else if ($attrs[key] == 'true' || $attrs[key] == 'false') {
+                    $scope[key] = $attrs[key] == "true";
                 } else {
                     $scope[key] = $attrs[key];
                 }

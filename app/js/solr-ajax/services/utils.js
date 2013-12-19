@@ -8,13 +8,14 @@
 /*---------------------------------------------------------------------------*/
 /* Utils                                                                     */
 
+var module = angular.module('Utils', []);
+
 /**
  * Utility functions used across the application.
  */
-angular.module('Utils',[]).factory('Utils',[function() {
+module.factory('Utils', [function() {
 
-    // the service
-    var svc = {};
+    var svc = {};   // service instance
 
     ///////////////////////////////////////////////////////////////////////////
 

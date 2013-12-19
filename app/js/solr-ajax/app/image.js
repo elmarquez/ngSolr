@@ -8,7 +8,7 @@
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('solr-ajax', ['Directives','Filters','Solr','Utils']);
+var app = angular.module('solr-ajax',['Autocomplete','TextFilters','Solr','Utils']);
 
 /**
  * Define application routes.

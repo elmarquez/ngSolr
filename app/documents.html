@@ -82,6 +82,7 @@
 
                         <form ng-controller="SearchBoxController"
                               ng-submit="handleSubmit()"
+                              data-near-match="true"
                               data-source="http://data.esrc.unimelb.edu.au/solr/FACP">
                             <input name="q" type="text" placeholder="Keyword or placename" ng-model="userquery" searchbox />
                             <input name="submit" type="submit" value="search" ng-click="handleSubmit()" searchbutton />

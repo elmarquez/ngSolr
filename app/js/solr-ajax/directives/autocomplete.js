@@ -8,13 +8,13 @@
 /*---------------------------------------------------------------------------*/
 /* AutoComplete                                                              */
 
-var d = angular.module('Directives',[]);
+var module = angular.module('Autocomplete', []);
 
 /**
  * Directive to add JQuery UI AutoComplete to element
  * @see http://jqueryui.com/autocomplete/
  */
-d.directive('searchhints', function() {
+module.directive('searchhints', function() {
     return {
         restrict: "A",
         link: function(scope, element) {
@@ -35,7 +35,7 @@ d.directive('searchhints', function() {
  * drop down box. The box is populated with search hints from the parent
  * searchbox element scope.
  */
-d.directive('searchbox', function() {
+module.directive('searchbox', function() {
     return {
         link: function(scope, element, attrs) {
             // update the user query
@@ -49,7 +49,7 @@ d.directive('searchbox', function() {
                     // all other keys: update user query
                     scope.userquery = event.target.value;
                 }
-            });
+           });
             // display autocomplete hints
             element.autocomplete({
                 delay: 500,
@@ -70,7 +70,7 @@ d.directive('searchbox', function() {
  * searchbutton attribute attaches a click handler to the button element that
  * calls the searchbox parent scope submit() method.
  */
-d.directive('searchbutton', function() {
+module.directive('searchbutton', function() {
     return {
         link: function(scope, element, attrs) {
             element.bind("click", function() {

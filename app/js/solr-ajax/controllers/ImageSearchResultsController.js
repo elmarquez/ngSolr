@@ -86,7 +86,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
     };
 
     /**
-     * Update the controller state.
+     * Handle update on image search results.
      */
     $scope.handleUpdate = function() {
         // clear current results
@@ -129,6 +129,8 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
             if ($scope.hasOwnProperty(key)) {
                 if (key == 'documentsPerPage' || key == 'documentsPerRow' || key == 'pagesPerSet') {
                     $scope[key] = parseInt($attrs[key]);
+                } else if ($attrs[key] == 'true' || $attrs[key] == 'false') {
+                    $scope[key] = $attrs[key] == "true";
                 } else {
                     $scope[key] = $attrs[key];
                 }
@@ -136,23 +138,24 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
         }
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
-                $scope.query = ($routeParams.query || "");
-                if ($scope.query) {
-                    var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
-                    SolrSearchService.setQuery($scope.queryname,query);
-                    if ($scope.source) {
-                        query.solr = $scope.source;
-                    }
-                    // set the display values to match those in the query
-                    $scope.documentsPerPage = (query.getOption('rows') || 10);
-                    $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
-                    $scope.userquery = query.getUserQuery();
-                    // update results
-                    SolrSearchService.setQuery($scope.queryname, query);
-                    SolrSearchService.updateQuery($scope.queryname);
+            // if there is a query in the current location
+            $scope.query = ($routeParams.query || "");
+            if ($scope.query) {
+                // get the current query
+                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
+                // if there is a data source specified, override the default
+                if ($scope.source) {
+                    query.solr = $scope.source;
                 }
+                // set the display values to match those in the query
+                $scope.documentsPerPage = (query.getOption('rows') || 10);
+                $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
+                $scope.userquery = query.getUserQuery();
+                // update results
+                SolrSearchService.setQuery($scope.queryname, query);
+                SolrSearchService.updateQuery($scope.queryname);
             }
-        );
+        });
         // handle update events from the search service
         $scope.$on($scope.queryname, function () {
             $scope.handleUpdate();

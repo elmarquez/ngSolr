@@ -8,9 +8,9 @@
 /*---------------------------------------------------------------------------*/
 /* TextFilters                                                               */
 
-var filters = angular.module('Filters',[]);
+var module = angular.module('TextFilters', []);
 
-filters.filter('cleanFacetLabel', function() {
+module.filter('cleanFacetLabel', function() {
     /**
      * Remove punctuation and escaped chars from facet name.
      * @param text
@@ -30,7 +30,7 @@ filters.filter('cleanFacetLabel', function() {
     }
 });
 
-filters.filter('prettyFacetLabel', function() {
+module.filter('prettyFacetLabel', function() {
     /**
      * Clean up the facet label so that its more readily legible to the user.
      * @param facet
@@ -56,7 +56,7 @@ filters.filter('prettyFacetLabel', function() {
     }
 });
 
-filters.filter('strip', function() {
+module.filter('strip', function() {
     /**
      * Strip the leading month value from a date.
      * @param text
@@ -72,7 +72,7 @@ filters.filter('strip', function() {
     }
 });
 
-filters.filter('substitute', function() {
+module.filter('substitute', function() {
     /**
      * Return the substitution text for the specified key.
      * @param text
@@ -97,7 +97,7 @@ filters.filter('substitute', function() {
     }
 });
 
-filters.filter('swapDateFacetLabels', function() {
+module.filter('swapDateFacetLabels', function() {
     /**
      * The date range filter matches on those entities that exist within a
      * specified time period. TheSolr query that matches those entities has an
@@ -121,7 +121,7 @@ filters.filter('swapDateFacetLabels', function() {
     }
 });
 
-filters.filter('trim', function() {
+module.filter('trim', function() {
     /**
      * Trim starting and ending spaces from the string.
      * @param text
@@ -132,7 +132,7 @@ filters.filter('trim', function() {
     }
 });
 
-filters.filter('truncate', function() {
+module.filter('truncate', function() {
     /**
      * Truncate the text to the maximum specified length.
      * @param text Text

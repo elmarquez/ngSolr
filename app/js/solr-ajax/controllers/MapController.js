@@ -264,7 +264,9 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
     $scope.init = function () {
         // apply configured attributes
         for (var key in $attrs) {
-            if ($scope.hasOwnProperty(key)) {
+            if ($attrs[key] == 'true' || $attrs[key] == 'false') {
+                $scope[key] = $attrs[key] == "true";
+            } else {
                 $scope[key] = $attrs[key];
             }
         }

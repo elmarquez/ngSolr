@@ -8,6 +8,8 @@
 /*---------------------------------------------------------------------------*/
 /* SelectionSetService                                                       */
 
+var module = angular.module('Selection', []);
+
 /**
  * Maintains a selection set and notifies listeners when changes occur to the
  * set.
@@ -15,8 +17,7 @@
  * @param $rootScope Root scope
  * @todo consider having a default and named selection sets
  */
-angular.module('Selection',[]).
-    factory('SelectionSetService', ['$rootScope', function ($rootScope) {
+module.factory('SelectionSetService', ['$rootScope', function ($rootScope) {
 
     // parameters
     var svc = {};
