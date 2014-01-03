@@ -6,15 +6,16 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* SelectionController                                                       */
+/* MapSelectionController                                                       */
 
 /**
- * Selection controller.
+ * Map selection controller.
  * @param $scope
  * @param $attrs
+ * @param $log Log service
  * @param SelectionSetService
  */
-function SelectionController($scope, $attrs, SelectionSetService) {
+function MapSelectionController($scope, $attrs, $log, SelectionSetService) {
 
     // allow only a single item to be selected at a time
     $scope.singleSelection = true;
@@ -28,9 +29,7 @@ function SelectionController($scope, $attrs, SelectionSetService) {
             SelectionSetService.remove(Id);
             SelectionSetService.clear();
         } catch (err) {
-            if (window.console) {
-                console.log(err.message);
-            }
+            $log.info(err.message);
         }
     };
 
@@ -63,4 +62,4 @@ function SelectionController($scope, $attrs, SelectionSetService) {
 }
 
 // inject controller dependencies
-SelectionController.$inject = ['$scope', '$attrs', 'SelectionSetService'];
+MapSelectionController.$inject = ['$scope','$attrs','$log','SelectionSetService'];

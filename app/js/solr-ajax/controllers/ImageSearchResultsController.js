@@ -30,6 +30,10 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
     // fields to retrieve from solr
     $scope.fields = '*';
 
+    // flag for when the controller has submitted a query and is waiting on a
+    // response
+    $scope.loading = false;
+
     // the current search results page
     $scope.page = 0;
 
@@ -136,6 +140,10 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
                 }
             }
         }
+        // handle update events from the search service
+        $scope.$on($scope.queryname, function () {
+            $scope.handleUpdate();
+        });
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
             // if there is a query in the current location
@@ -155,10 +163,6 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
                 SolrSearchService.setQuery($scope.queryname, query);
                 SolrSearchService.updateQuery($scope.queryname);
             }
-        });
-        // handle update events from the search service
-        $scope.$on($scope.queryname, function () {
-            $scope.handleUpdate();
         });
     };
 

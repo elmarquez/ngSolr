@@ -83,7 +83,7 @@
                         <form ng-controller="SearchBoxController"
                               ng-submit="handleSubmit()"
                               data-near-match="true"
-                              data-source="http://data.esrc.unimelb.edu.au/solr/FACP">
+                              data-source="https://data.esrc.unimelb.edu.au/solr/FACP">
                             <input name="q" type="text" placeholder="Keyword or placename" ng-model="userquery" searchbox />
                             <input name="submit" type="submit" value="search" ng-click="handleSubmit()" searchbutton />
                         </form>
@@ -103,7 +103,7 @@
 
                         <!-- facet selection controller -->
                         <ul class="facet-panel"
-                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-controller="FacetSelectionController"
                             ng-show="items.length>0"
                             ng-cloak>
@@ -127,7 +127,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="true"
                             data-field="region"
-                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>State</b></li>
                             <li>
@@ -147,7 +147,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="false"
                             data-field="function"
-                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Function</b></li>
                             <li>
@@ -167,7 +167,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="false"
                             data-field="localtype"
-                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Type</b></li>
                             <li>
@@ -187,10 +187,16 @@
                             ng-controller="DateFacetController"
                             data-start-date-field="fromDate"
                             data-end-date-field="toDate"
-                            data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
+                                <div id="date-histogram"
+                                     ng-controller="DateFacetHistogramController"
+                                >
+
+                                </div>
+
                                 <form class="form-horizontal" ng-submit="submit()" style="margin-bottom:0px;">
                                     <div id="date-range-histogram"></div>
                                     <table class="table-horizontal">
@@ -236,9 +242,14 @@
                          class="span5"
                          ng-controller="DocumentSearchResultsController"
                          data-fields="*"
-                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                         data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                          ng-cloak>
                         <div class="column-512">
+
+                            <div class="loading" ng-show="loading">
+                                <p>Loading search results ...</p>
+                                <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
+                            </div>
 
                             <div class="summary" ng-show="documents.length > 0">
                                 <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
@@ -246,7 +257,7 @@
                                 <div class="alert alert-info" ng-show="message">{{message}}</div>
                             </div>
 
-                            <article ng-repeat="doc in documents" class="document" ng-cloak>
+                            <article ng-repeat="doc in documents" class="document">
                                 <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
                                 <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
                                     <a ng-href="{{doc.presentation_url}}" class="thumbnail">
@@ -266,7 +277,7 @@
                             </article>
                             <div class="pagination" ng-hide="error">
                                 <ul>
-                                    <li ng-repeat="page in pages" ng-cloak>
+                                    <li ng-repeat="page in pages">
                                         <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
                                     </li>
                                 </ul>

@@ -25,30 +25,14 @@
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-responsive.min.css" />
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" media="screen" />
         <!-- scripts -->
-        <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&sensor=true"></script>
         <script type="text/javascript" src="js/google/markerclusterer.js"></script>
-        <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
-        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="js/d3js/d3.v3.min.js"></script>
-
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/MapController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/SelectionController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app/location.js"></script>
     </head>
     <body>
 
@@ -79,29 +63,39 @@
 
         <section id="search-bar">
             <div class="container-fluid">
-                <div id="location-search-form">
+                <div class="row-fluid">
+                    <div class="span2 column-240">&nbsp;</div>
+                    <div class="span5">
 
-                    <form class="form-inline" ng-controller="SearchBoxController" ng-submit="handleSubmit()">
-                        <div id="search-box" class="input-append">
-                            <input id="search-box-input"
-                                   searchhints
-                                   autocomplete="off"
-                                   name="q"
-                                   ng-model="userquery"
-                                   placeholder='Enter placename or keywords to search for'
-                                   style="width:380px"
-                                   type='text'
-                                   ui-items="getHints(userquery)"
-                                    />
-                            <button class="btn">Search</button>
-                        </div>
-                    </form>
+                        <form class="form-inline"
+                              ng-controller="SearchBoxController"
+                              ng-submit="handleSubmit()"
+                              data-near-match="true"
+                              data-search-hints-field="hints"
+                              data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                                >
+                            <div id="search-box" class="input-append">
+                                <input id="search-box-input"
+                                       searchhints
+                                       autocomplete="off"
+                                       name="q"
+                                       ng-model="userquery"
+                                       placeholder='Enter placename or keywords to search for'
+                                       style="width:380px"
+                                       type='text'
+                                       ui-items="getHints(userquery)"
+                                        />
+                                <button class="btn">Search</button>
+                            </div>
+                        </form>
 
+                    </div>
+                    <div class="span5">&nbsp;</div>
                 </div>
             </div>
         </section>
 
-        <section id="content" ng-controller="SelectionController">
+        <section id="content" ng-controller="MapSelectionController">
 
             <!-- search panel -->
             <div id="search-panel" class="column-320 bs-docs-sidebar">
@@ -116,7 +110,8 @@
                          ng-controller="DocumentSearchResultsController"
                          data-fields="*"
                          data-pages-per-set="5"
-                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                         data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                         data-update-location-on-change="false"
                          ng-cloak>
                         <h6>Search Results ({{totalResults}} found)</h6>
                         <div class="document" ng-repeat="doc in documents">
@@ -148,13 +143,25 @@
                 <div id="map"
                      ng-controller="MapController"
                      data-fields="*"
-                     data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                     data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                      data-start-latitude='-29.3456'
                      data-start-longitude='141.4346'></div>
             </div>
             <!-- /map panel -->
 
         </section>
+
+        <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/MapController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/MapSelectionController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app/location.js"></script>
 
     </body>
 </html>

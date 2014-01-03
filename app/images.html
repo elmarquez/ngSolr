@@ -28,21 +28,11 @@
         <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" media="screen" />
         <!-- scripts -->
-        <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/d3js/d3.v3.min.js"></script>
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/FacetSelectionController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/ImageSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app/image.js"></script>
     </head>
     <body>
         <header id="page-header">
@@ -80,7 +70,8 @@
                               ng-controller="SearchBoxController"
                               ng-submit="handleSubmit()"
                               data-near-match="true"
-                              data-search-hints-field="title"
+                              data-search-hints-field="hints"
+                              data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                             >
                             <div id="search-box" class="input-append">
                                 <input id="search-box-input"
@@ -112,7 +103,8 @@
                         <!-- facet selection controller -->
                         <ul class="facet-panel"
                             ng-controller="FacetSelectionController"
-                            ng-show="facets.length>0" ng-cloak>
+                            ng-show="facets.length>0"
+                            ng-cloak>
                             <li><b>Filtering By</b></li>
                             <li>
                                 <ul class="items unstyled">
@@ -164,8 +156,13 @@
                     <div id="result-panel" class="span6"
                          ng-controller="ImageSearchResultsController"
                          data-fields="*"
-                         data-source="http://data.esrc.unimelb.edu.au/solr/FACP"
+                         data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                          ng-cloak>
+
+                        <div class="loading" ng-show="loading">
+                            <p>Loading search results ...</p>
+                            <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
+                        </div>
 
                         <div class="summary" ng-show="documents.length > 0">
                             <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
@@ -211,6 +208,17 @@
                 </div>
             </div>
         </footer>
+
+        <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/FacetSelectionController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/FieldFacetController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/ImageSearchResultsController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
+        <script type="text/javascript" src="js/solr-ajax/app/image.js"></script>
 
     </body>
 </html>

@@ -20,6 +20,23 @@ module.factory('Utils', [function() {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Apply attribute values to the scope.
+     * @param attrs
+     * @param scope
+     */
+    svc.applyAttributes = function(attrs, scope) {
+        for (var key in attrs) {
+            if (scope.hasOwnProperty(key)) {
+                if (attrs[key] == 'true' || attrs[key] == 'false') {
+                    scope[key] = attrs[key] == "true";
+                } else {
+                    scope[key] = attrs[key];
+                }
+            }
+        }
+    };
+
+    /**
      * Determine if two arrays are equal.
      * @param A Array
      * @param B Array

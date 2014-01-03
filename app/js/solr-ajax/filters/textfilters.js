@@ -97,15 +97,17 @@ module.filter('substitute', function() {
     }
 });
 
-module.filter('swapDateFacetLabels', function() {
+module.filter('swapFacetLabels', function() {
     /**
-     * The date range filter matches on those entities that exist within a
-     * specified time period. TheSolr query that matches those entities has an
-     * unintuitive reversal of the fromDate and toDate query components, This
-     * filter reverses the fromDate/toDate labels in the presentation layer so
-     * that the user sees these facets appear in the way they would understand
-     * the query intuitively.
-     * @see ISSUE #29
+     * Update presentation of facet labels to improve user recognition of their
+     * meanings.
+     * @see ISSUE #29 - The date range filter matches on those entities that
+     * exist within a specified time period. TheSolr query that matches those
+     * entities has an unintuitive reversal of the fromDate and toDate query
+     * components, This filter reverses the fromDate/toDate labels in the
+     * presentation layer so that the user sees these facets appear in the way
+     * they would understand the query intuitively.
+     * @see ISSUE #305 - Substitute 'Localtype' with 'Type' in facet label
      */
     return function(label) {
         if (label.indexOf('fromDate') == 0) {
@@ -116,6 +118,8 @@ module.filter('swapDateFacetLabels', function() {
             label = "fromDate" + label.substring(6);
         } else if (label.indexOf('To Date') == 0) {
             label = "From Date" + label.substring(7);
+        } else if (label.indexOf('Localtype') == 0) {
+            label = "Type" + label.substring(9);
         }
         return label;
     }

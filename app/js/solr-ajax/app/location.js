@@ -10,12 +10,26 @@
 
 var app = angular.module('solr-ajax',['Autocomplete','Selection','Solr','TextFilters','Utils']);
 
-/**
- * Define application routes.
- * @see http://www.bennadel.com/blog/2420-Mapping-AngularJS-Routes-Onto-URL-Parameters-And-Client-Side-Events.htm
- */
+// Define application routes.
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
         when('/:query', { event: "/query" }).
         otherwise({ event: "/" });
 }]);
+
+// Reconfigure the default search query
+var m = angular.module('Solr');
+m.config(['SolrSearchServiceProvider', function(SolrSearchServiceProvider) {
+    var defaultQuery = function(query) {
+        var f = query.createFacet('location_0_coordinate', '*');
+        query.addFacet(f);
+        query.setOption("json.wrf", "JSON_CALLBACK");
+        query.setOption("rows", "10");
+        query.setOption("sort", "title+asc");
+        query.setOption("wt", "json");
+        query.setUserQuery('*:*');
+        return query;
+    };
+    SolrSearchServiceProvider.setDefaultQuery(defaultQuery);
+}]);
+

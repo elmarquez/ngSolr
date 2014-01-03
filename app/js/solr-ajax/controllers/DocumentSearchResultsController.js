@@ -27,6 +27,10 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     // the number of search results to display per page
     $scope.documentsPerPage = 10;
 
+    // flag for when the controller has submitted a query and is waiting on a
+    // response
+    $scope.loading = false;
+
     // the current search result page
     $scope.page = 0;
 
@@ -54,6 +58,9 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     // count of the number of search result sets
     $scope.totalSets = 1;
 
+    // update the browser location on query change
+    $scope.updateLocationOnChange = true;
+
     // user query
     $scope.userquery = '';
 
@@ -72,14 +79,19 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
 
     /**
      * Set the results page number.
-     * @param Start
+     * @param Start Index of starting document
      */
     $scope.handleSetPage = function(Start) {
         var query = SolrSearchService.getQuery($scope.queryname);
         query.setOption('start', Start * $scope.documentsPerPage);
-        var hash = query.getHash();
-        $location.path(hash);
-        $window.scrollTo(0, 0);
+        if ($scope.updateLocationOnChange) {
+            var hash = query.getHash();
+            $location.path(hash);
+            $window.scrollTo(0, 0);
+        } else {
+            $scope.loading = true;
+            SolrSearchService.updateQuery($scope.queryname);
+        }
     };
 
     /**
@@ -88,6 +100,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     $scope.handleUpdate = function() {
         // clear current results
         $scope.documents = [];
+        $scope.loading = false;
         // get new results
         var results = SolrSearchService.getResponse($scope.queryname);
         if (results && results.docs) {
@@ -134,6 +147,8 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
             // if there is a query in the current location
             $scope.query = ($routeParams.query || "");
             if ($scope.query) {
+                // reset state
+                $scope.loading = false;
                 // get the current query
                 var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
                 // if there is a data source specified, override the default
@@ -141,11 +156,10 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
                     query.solr = $scope.source;
                 }
                 // set the display values to match those in the query
-                $scope.documentsPerPage = (query.getOption('rows') || $scope.documentsPerPage);
-                $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
                 $scope.userquery = query.getUserQuery();
                 // update query results
                 SolrSearchService.setQuery($scope.queryname, query);
+                $scope.loading = true;
                 SolrSearchService.updateQuery($scope.queryname);
             }
         });
@@ -161,6 +175,9 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
      * value is.
      */
     $scope.updatePageIndex = function() {
+        var query = SolrSearchService.getQuery($scope.queryname);
+        $scope.documentsPerPage = (query.getOption('rows') || $scope.documentsPerPage);
+        $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
         // the default page navigation set
         $scope.pages = [];
         // determine the current zero based page set

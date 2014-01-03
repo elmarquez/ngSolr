@@ -17,8 +17,9 @@
  * @param $route
  * @param $routeParams
  * @param SolrSearchService Solr search service
+ * @param Utils Utilities module
  */
-function DateFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService) {
+function DateFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
 
     var year = new Date();
 
@@ -173,11 +174,7 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
      */
     $scope.init = function() {
         // apply configured attributes
-        for (var key in $attrs) {
-            if ($scope.hasOwnProperty(key)) {
-                $scope[key] = $attrs[key];
-            }
-        }
+        Utils.applyAttributes($attrs, $scope);
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
             $scope.handleUpdate();
@@ -231,4 +228,4 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
 }
 
 // inject controller dependencies
-DateFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService'];
+DateFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils'];

@@ -19,14 +19,22 @@
  * @param $scope
  * @oaram $attrs
  * @param $location
+ * @param $log Log service
  * @param $route
  * @param $routeParams
  * @param SolrSearchService Search service
  * @param SelectionSetService Selection set service
  * @param Utils Utility functions
  */
-function MapController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
+function MapController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
 
+    $scope.categoryToIconMap = {
+        default:"img/icon/house.png",
+        corporateBody:"img/icon/corporatebody.png",
+        government:"img/icon/corporatebody.png",
+        organization:"img/icon/corporatebody.png",
+        person:"img/icon/person.png"
+    };
     $scope.centerOnStart = true;        // center the map on the start location
     $scope.clusterManager = null;       // clustering marker manager
     $scope.clusterOptions = {
@@ -42,33 +50,20 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
     $scope.fields = '*';                // field to fetch from solr
     $scope.firstUpdate = true;          // flag to
     $scope.idToMarkerMap = {};          // id to marker map
+    $scope.infoWindow = new google.maps.InfoWindow(); // google map info window
+    $scope.loading = false;             // results loading flag
     $scope.map = undefined;             // google map
     $scope.markers = [];                // list of markers
     $scope.maxFieldLength = 120;        // maximum length of text fields in infowindow
     $scope.queryname = "mapQuery";      // name of the query
-    $scope.showMessages = true;         // show info messages window
-    $scope.showErrors = true;           // show error messages window
-    $scope.source = undefined;          // url to solr core
-    $scope.startLatitude = undefined;   // on start, center the map on latitude
-    $scope.startLongitude = undefined;  // on start, center the map on longitude
-    $scope.target = "defaultQuery";     // query to monitor
-    $scope.updateOnInit = true;         // update the result set during init
-
-    var categoryToIconMap = {
-        default:"img/icon/house.png",
-        corporateBody:"img/icon/corporatebody.png",
-        government:"img/icon/corporatebody.png",
-        organization:"img/icon/corporatebody.png",
-        person:"img/icon/person.png"
-    };
-    var infoWindow = new google.maps.InfoWindow();      // google map info window
-    var settings = {                                    // map settings
-        center:new google.maps.LatLng(-30.3456, 141.4346), // hard code to start at Australia
-        mapTypeControl:false,
+                                        // map settings
+    $scope.settings = {
+        // center:new google.maps.LatLng(-30.3456, 141.4346), // hard code to start at Australia
+        mapTypeControl: false,
         // mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
-        mapTypeId:google.maps.MapTypeId.TERRAIN,
-        navigationControl:true,
-        navigationControlOptions:{
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
+        navigationControl: true,
+        navigationControlOptions: {
             style:google.maps.NavigationControlStyle.SMALL
         },
         overviewMapControl:false,
@@ -78,10 +73,16 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
         streetViewControl:false,
         zoom:5,
         zoomControl:true,
-        zoomControlOptions:{
+        zoomControlOptions: {
             style:google.maps.ZoomControlStyle.LARGE
         }
     };
+    $scope.showMessages = true;         // show info messages window
+    $scope.showErrors = true;           // show error messages window
+    $scope.source = undefined;          // url to solr core
+    $scope.startLatitude = undefined;   // on start, center the map on latitude
+    $scope.startLongitude = undefined;  // on start, center the map on longitude
+    $scope.target = "defaultQuery";     // query to monitor
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -96,7 +97,7 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
         var query = SolrSearchService.createQuery();
         query.setOption('fl', $scope.fields);
         query.setOption("rows", $scope.count);
-        query.addQueryParameter("+location_0_coordinate:[* TO *]");
+        query.addQueryParameter("+location_0_coordinate:*");
         return query;
     };
 
@@ -111,9 +112,9 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
      */
     $scope.getMarker = function (Map, Title, Content, Category, Lat, Lng) {
         // get the marker icon
-        var icon = categoryToIconMap['default'];
-        if (Category != null && Category in categoryToIconMap) {
-            icon = categoryToIconMap[Category];
+        var icon = $scope.categoryToIconMap['default'];
+        if (Category != null && Category in $scope.categoryToIconMap) {
+            icon = $scope.categoryToIconMap[Category];
         }
         // create the marker
         var marker = new google.maps.Marker({
@@ -148,16 +149,43 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
     };
 
     /**
+     * Handle selection events. The selection set service can hold either
+     * single or multiple values. However, we show only a single info
+     * window in the current implementation.
+     * @todo enable multiple selection .. ie. multiple infowindows
+     */
+    $scope.handleSelection = function() {
+        $log.info("Map selection updated");
+        var selected = SelectionSetService.getSelectionSet();
+        if (selected) {
+            var keys = [];
+            for (var key in selected) {
+                if (selected.hasOwnProperty(key)) {
+                    keys.push(key);
+                }
+            }
+            // get the first key only
+            if (keys.length > 0) {
+                var id = keys[0];
+                var marker = $scope.idToMarkerMap[id];
+                if (marker) {
+                    var bounds = new google.maps.LatLngBounds();
+                    bounds.extend(marker.position);
+                    // $scope.map.setCenter(bounds.getCenter());
+                    // $scope.map.fitBounds(bounds);
+                    google.maps.event.trigger(marker,'click');
+                    // center the map on the results
+                    $scope.map.fitBounds(bounds);
+                }
+            }
+        }
+    };
+
+    /**
      * Handle update to map search results. Clear the existing collection of
      * map markers and add new map markers to the map.
      */
-    $scope.handleMapUpdate = function () {
-        // make sure that the infowindow is closed
-        infoWindow.close();
-        // clear current markers
-        $scope.idToMarkerMap = {};
-        $scope.clusterManager.clearMarkers();
-        $scope.markers = [];
+    $scope.handleUpdate = function () {
         // create marker bounds
         var bounds = new google.maps.LatLngBounds();
         // if there are results to display
@@ -193,125 +221,62 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
         if ($scope.clusterResults) {
             $scope.clusterManager.addMarkers($scope.markers);
         }
-        // center the view on the markers
-        if ($scope.firstUpdate && $scope.centerOnStart &&
-            $scope.startLatitude && $scope.startLongitude) {
-            var point = new google.maps.LatLng($scope.startLatitude, $scope.startLongitude);
-            $scope.map.setCenter(point, 8);
-            $scope.firstUpdate = false;
-        } else {
-            $scope.map.fitBounds(bounds);
-        }
-    };
-
-    /**
-     * Handle selection events. The selection set service can hold either
-     * single or multiple values. However, we show only a single info
-     * window in the current implementation.
-     * @todo enable multiple selection .. ie. multiple infowindows
-     */
-    $scope.handleSelection = function() {
-        var selected = SelectionSetService.getSelectionSet();
-        if (selected) {
-            var keys = [];
-            for (var key in selected) {
-                if (selected.hasOwnProperty(key)) {
-                    keys.push(key);
-                }
-            }
-            // get the first key only
-            if (keys.length > 0) {
-                var id = keys[0];
-                var marker = $scope.idToMarkerMap[id];
-                if (marker) {
-                    var bounds = new google.maps.LatLngBounds();
-                    bounds.extend(marker.position);
-                    // $scope.map.setCenter(bounds.getCenter());
-                    // $scope.map.fitBounds(bounds);
-                    google.maps.event.trigger(marker,'click');
-                }
-            }
-        }
-    };
-
-    /**
-     * Handle update event for a related map view query. If the user query
-     * portion of that query has changed, construct a new query in the current
-     * view to correspond.
-     * @todo this should change ... it should update only on route change
-     */
-    $scope.handleTargetUpdate = function() {
-        var targetQuery = SolrSearchService.getQuery($scope.target);
-        var mapQuery = SolrSearchService.getQuery($scope.queryname);
-        // if the user specified query elements have changed, then create a
-        // new map query and update the view
-        if (targetQuery.getUserQuery() !== mapQuery.getUserQuery() ||
-            !Utils.objectsAreEqual(targetQuery.getUserQueryParameters(),mapQuery.getUserQueryParameters())) {
-            var userQuery = targetQuery.getUserQuery();
-            var userQueryParams = targetQuery.getUserQueryParameters();
-            var query = $scope.createMapQuery();
-            query.setUserQuery(userQuery);
-            userQueryParams[$scope.queryname] = "+location_0_coordinate:[* TO *]";
-            query.setQueryParameters(userQueryParams);
-            SolrSearchService.setQuery($scope.queryname,query);
-            SolrSearchService.updateQuery($scope.queryname);
-        }
+        // center the map on the results
+        $scope.map.fitBounds(bounds);
     };
 
     /**
      * Initialize the controller.
      */
-    $scope.init = function () {
+    $scope.init = function() {
         // apply configured attributes
-        for (var key in $attrs) {
-            if ($attrs[key] == 'true' || $attrs[key] == 'false') {
-                $scope[key] = $attrs[key] == "true";
-            } else {
-                $scope[key] = $attrs[key];
-            }
-        }
-        // handle close click event on info window
-        google.maps.event.addListener(infoWindow, 'close', function () {
-            infoWindow.close();
-        });
-        // create map
-        $scope.map = new google.maps.Map(document.getElementById("map"), settings);
-        // create marker cluster manager
+        Utils.applyAttributes($attrs, $scope);
+        // create map, marker cluster manager. add close handler for infowindow
+        $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
         $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
-        // redefine the default search query to ensure that only records with
-        // location properties show up in the results
-        // @todo consider implementing this through the application instead
-        SolrSearchService.createQuery = function() {
-            var query = new SolrQuery($scope.source);
-            query.setOption("fl", $scope.fields);
-            query.setOption("json.wrf", "JSON_CALLBACK");
-            query.setOption("rows", "10");
-            query.setOption("sort", "title+asc");
-            query.setOption("wt", "json");
-            query.addQueryParameter("+location_0_coordinate:[* TO *]");
-            query.setUserQuery('*:*');
-            return query;
-        };
-        var targetQuery = SolrSearchService.createQuery();
-        SolrSearchService.setQuery($scope.target,targetQuery);
-        // create a new map query
-        var mapQuery = $scope.createMapQuery();
-        SolrSearchService.setQuery($scope.queryname,mapQuery);
-        // handle update events on the target query
-        $scope.$on($scope.target, function() {
-            $scope.handleTargetUpdate();
+        google.maps.event.addListener($scope.infoWindow, 'close', function() {
+            $scope.infoWindow.close();
         });
-        // handle update events on the map query
+        // handle updates on the query
         $scope.$on($scope.queryname, function() {
-            $scope.handleMapUpdate();
+            $scope.handleUpdate();
         });
-        // handle update events from the selection set service
+        // handle update on the selection set
         $scope.$on("selectionSetUpdate", function() {
             $scope.handleSelection();
         });
-        // update search results
-        if ($scope.updateOnInit) {
-            SolrSearchService.updateQuery($scope.queryname);
+        // handle location change event, update query results
+        $scope.$on("$routeChangeSuccess", function() {
+            // if there is a query in the current location
+            $scope.query = ($routeParams.query || "");
+            if ($scope.query) {
+                // reset state
+                $scope.loading = false;
+                // get the current query
+                var query = SolrSearchService.getQueryFromHash($scope.query, $scope.source);
+                // if there is a data source specified, override the default
+                if ($scope.source) {
+                    query.solr = $scope.source;
+                }
+                // make sure that the infowindow is closed
+                $scope.infoWindow.close();
+                // clear current markers
+                $scope.idToMarkerMap = {};
+                $scope.clusterManager.clearMarkers();
+                $scope.markers = [];
+                // update query results
+                SolrSearchService.setQuery($scope.queryname, query);
+                $scope.loading = true;
+                SolrSearchService.updateQuery($scope.queryname);
+            }
+        });
+        // draw the map for the first time
+        if ($scope.startLatitude && $scope.startLongitude) {
+            var point = new google.maps.LatLng($scope.startLatitude, $scope.startLongitude);
+            $scope.map.setCenter(point, 8);
+        } else {
+            var bounds = new google.maps.LatLngBounds();
+            $scope.map.fitBounds(bounds);
         }
     };
 
@@ -323,9 +288,9 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
      */
     $scope.setInfoWindow = function (Map, Marker, Content) {
         google.maps.event.addListener(Marker, 'click', function () {
-            infoWindow.close();
-            infoWindow.setContent(Content);
-            infoWindow.open(Map, Marker);
+            $scope.infoWindow.close();
+            $scope.infoWindow.setContent(Content);
+            $scope.infoWindow.open(Map, Marker);
         });
     };
 
@@ -335,4 +300,4 @@ function MapController($scope, $attrs, $location, $route, $routeParams, SolrSear
 } // MapController
 
 // inject dependencies
-MapController.$inject = ['$scope', '$attrs', '$location', '$route', '$routeParams', 'SolrSearchService', 'SelectionSetService', 'Utils'];
+MapController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','SelectionSetService','Utils'];

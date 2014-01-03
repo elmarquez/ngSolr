@@ -177,6 +177,12 @@ label {
     display: inline;
 }
 
+.search-results .loading {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+    text-align: center;
+}
 .search-results .summary {
     font-size: 12px;
     font-weight: bold;
@@ -232,11 +238,6 @@ label {
 /*--------------------------------------------------------*/
 /* Location Based Search                                  */
 
-#search-bar #location-search-bar {
-    max-width: 640px;
-    padding: 10px 20px 10px 0;
-    padding-left: 320px;
-}
 .infowindow {
     max-width: 300px;
 }

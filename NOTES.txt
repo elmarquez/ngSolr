@@ -1,25 +1,26 @@
 DEVELOPMENT NOTES
 
 
+- current problem with the encoding/decoding of +location_0_coordinate:* in
+  query. It appears that the string is being encoded or decoded twice,
+  resulting in an incorrect query being sent to solr
+- Map search
+    - we want to see ALL search results appearing in the map display
+    - we want the sidebar results listing to contain on 10 at a time of the
+      current query
+    - when we click on a result in the sidebar listing, we want to zoom in on
+      that one result in the map view
+    - we want to be able to page through the sidebar results
+    - the browser location should be able to retrieve our search results for
+      the whole set
+
+
 -------------------------------------------------------------------------------
 Interface Design
 
  * Collapsible sidebar a la sphinx
  * http://turbogears.org/2.0/docs/gettingstarted.html#getting-started
 
--------------------------------------------------------------------------------
-Unit Testing
-
- * http://pivotal.github.com/jasmine/jsdoc/symbols/jasmine.Matchers.html
- * http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-services-factories
-
--------------------------------------------------------------------------------
-Solr Queries
-
- * createdate:[1976-03-06T23:59:59.999Z/YEAR TO 1976-03-06T23:59:59.999Z]
- * It appears that multiple query elements should be separated by the + symbol
-   and we need to ensure that the whole string is URL encoded before being
-   used
 
 -------------------------------------------------------------------------------
 Mapping
@@ -39,13 +40,6 @@ Cluster Icons
 
  * http://a32.me/2012/05/handling-huge-amount-of-markers-on-google-maps-with-clusters/
 
-Routing
-
- * when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl})
-   function Controller($scope, $routeParams) {
-     // some value from the url
-     $scope.paramName = $routeParams.paramName;
-   };
 
 -------------------------------------------------------------------------------
 Angular Implementation Examples
@@ -54,6 +48,7 @@ Angular Implementation Examples
  * http://blog.angularjs.org/2012/11/angularjs-example-applications.html
  * http://onehungrymind.com/angularjs-communicating-between-controllers/
  * http://otaqui.com/blog/1374/event-emitter-pub-sub-or-deferred-promises-which-should-you-choose/
+
 
 -------------------------------------------------------------------------------
 Service Definition
@@ -65,15 +60,4 @@ Service Definition
  * http://jsfiddle.net/whnSs/
  * https://github.com/GoogleChrome/wReader-app/blob/master/js/services.js
  * https://bitbucket.org/adhilnv/contact-path/src/5fb11833841495b4be0784f8d8407a80ff30ee24/js/services.js?at=master
-
-
--------------------------------------------------------------------------------
-Miscellaneous
-
- * http://meyerweb.com/eric/tools/dencoder/
-
--------------------------------------------------------------------------------
-Application Packaging 
-
- * http://coenraets.org/blog/2012/12/phonegap-and-phonegap-build-in-5-minutes/
 

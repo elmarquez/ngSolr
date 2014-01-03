@@ -15,14 +15,16 @@
  * @param $scope Controller scope
  * @param $attrs
  * @param $location
+ * @param $log Log service
  * @param $route
  * @param $routeParams
  * @param SolrSearchService Solr search service
+ * @param Utils Utilities module
  *
  * @todo the method of fetching dates should use the .then() method of data retrieval for the start/end dates
  * @todo update to reflect the current date range, if such a facet exists
  */
-function DateFacetHistogramController($scope, $attrs, $location, $route, $routeParams, SolrSearchService) {
+function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, Utils) {
 
     var year = new Date();
 
@@ -173,11 +175,7 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
      */
     $scope.init = function() {
         // apply configured attributes
-        for (var key in $attrs) {
-            if ($scope.hasOwnProperty(key)) {
-                $scope[key] = $attrs[key];
-            }
-        }
+        Utils.applyAttributes($attrs, $scope);
         // handle location change event, update query results
         $scope.$on("$routeChangeSuccess", function() {
             $scope.query = ($routeParams.query || "");
@@ -191,14 +189,14 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
             startDateQuery.setOption("rows","1");
             startDateQuery.setOption("sort",$scope.startDateField + " asc");
             startDateQuery.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.startDateQueryName,startDateQuery);
+            SolrSearchService.setQuery($scope.startDateQueryName, startDateQuery);
             // build a query that will fetch the latest date in the list
             var endDateQuery = SolrSearchService.createQuery();
             endDateQuery.setOption("fl", $scope.endDateField);
             endDateQuery.setOption("rows","1");
             endDateQuery.setOption("sort",$scope.endDateField + " desc");
             endDateQuery.setUserQuery($scope.userquery);
-            SolrSearchService.setQuery($scope.endDateQueryName,endDateQuery);
+            SolrSearchService.setQuery($scope.endDateQueryName, endDateQuery);
             // if we should update the date list during init
             if ($scope.updateOnInit) {
                 $scope.updateFlag = -2;
@@ -230,7 +228,7 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
             // set the values back to the prior state
             $scope.endDate = $scope._endDate;
             $scope.startDate = $scope._startDate;
-            console.log("WARNING: start date is greater than end date");
+            $log.info("WARNING: start date is greater than end date");
         }
     };
 
@@ -339,4 +337,4 @@ function DateFacetHistogramController($scope, $attrs, $location, $route, $routeP
 }
 
 // inject controller dependencies
-DateFacetHistogramController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService'];
+DateFacetHistogramController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','Utils'];
