@@ -32,20 +32,7 @@
         <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
         <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/d3js/d3.v3.min.js"></script>
-
         <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/FacetSelectionController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/FieldFacetController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/controllers/SearchHistoryController.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
-        <script type="text/javascript" src="js/solr-ajax/app/document.js"></script>
     </head>
     <body>
 
@@ -113,7 +100,7 @@
                                     <li class="facet" ng-repeat="item in items">
                                         <i class="icon-tag"></i>
                                         <a ng-click="remove($index)">
-                                            <span class="value">{{item | prettyFacetLabel | swapDateFacetLabels}}</span>
+                                            <span class="value">{{item | prettyFacetLabel | swapFacetLabels}}</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -245,19 +232,16 @@
                          data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                          ng-cloak>
                         <div class="column-512">
-
-                            <div class="loading" ng-show="loading">
+                            <div class="loading" ng-show="loading" ng-cloak>
                                 <p>Loading search results ...</p>
                                 <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
                             </div>
-
-                            <div class="summary" ng-show="documents.length > 0">
+                            <div class="summary" ng-show="documents.length > 0" ng-cloak>
                                 <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
                                 <div class="alert alert-error" ng-show="error">{{error}}</div>
                                 <div class="alert alert-info" ng-show="message">{{message}}</div>
                             </div>
-
-                            <article ng-repeat="doc in documents" class="document">
+                            <article ng-repeat="doc in documents" class="document" ng-cloak>
                                 <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
                                 <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
                                     <a ng-href="{{doc.presentation_url}}" class="thumbnail">
@@ -275,7 +259,7 @@
                                     </div>
                                 </div>
                             </article>
-                            <div class="pagination" ng-hide="error">
+                            <div class="pagination" ng-hide="error" ng-cloak>
                                 <ul>
                                     <li ng-repeat="page in pages">
                                         <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
@@ -314,6 +298,22 @@
                 </div>
             </div>
         </footer>
+
+    <!-- scripts -->
+    <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/DateFacetHistogramController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/FacetSelectionController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/FieldFacetController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/SearchBoxController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/SearchHistoryController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/directives/autocomplete.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/services/selection.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/app/document.js"></script>
+
 
     </body>
 </html>

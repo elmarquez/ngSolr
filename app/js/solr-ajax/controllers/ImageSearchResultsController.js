@@ -47,7 +47,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
     $scope.rows = [];
 
     // the query name
-    $scope.queryname = SolrSearchService.defaultQueryName;
+    $scope.queryName = SolrSearchService.defaultQueryName;
 
     // url to solr core
     $scope.source = undefined;
@@ -82,7 +82,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
      * @param Start
      */
     $scope.handleSetPage = function(Start) {
-        var query = SolrSearchService.getQuery($scope.queryname);
+        var query = SolrSearchService.getQuery($scope.queryName);
         query.setOption('start', Start * $scope.documentsPerPage);
         var hash = query.getHash();
         $location.path(hash);
@@ -96,7 +96,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
         // clear current results
         $scope.rows = [];
         // get new results
-        var results = SolrSearchService.getResponse($scope.queryname);
+        var results = SolrSearchService.getResponse($scope.queryName);
         if (results && results.docs) {
             $scope.totalResults = results.numFound;
             $scope.totalPages = Math.ceil($scope.totalResults / $scope.documentsPerPage);
@@ -141,7 +141,7 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
             }
         }
         // handle update events from the search service
-        $scope.$on($scope.queryname, function () {
+        $scope.$on($scope.queryName, function () {
             $scope.handleUpdate();
         });
         // handle location change event, update query results
@@ -160,8 +160,8 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
                 $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
                 $scope.userquery = query.getUserQuery();
                 // update results
-                SolrSearchService.setQuery($scope.queryname, query);
-                SolrSearchService.updateQuery($scope.queryname);
+                SolrSearchService.setQuery($scope.queryName, query);
+                SolrSearchService.updateQuery($scope.queryName);
             }
         });
     };

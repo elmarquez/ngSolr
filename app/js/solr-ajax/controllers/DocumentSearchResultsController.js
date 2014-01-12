@@ -41,7 +41,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     $scope.pagesPerSet = 10;
 
     // the query name
-    $scope.queryname = SolrSearchService.defaultQueryName;
+    $scope.queryName = SolrSearchService.defaultQueryName;
 
     // url to solr core
     $scope.source = undefined;
@@ -82,7 +82,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
      * @param Start Index of starting document
      */
     $scope.handleSetPage = function(Start) {
-        var query = SolrSearchService.getQuery($scope.queryname);
+        var query = SolrSearchService.getQuery($scope.queryName);
         query.setOption('start', Start * $scope.documentsPerPage);
         if ($scope.updateLocationOnChange) {
             var hash = query.getHash();
@@ -90,7 +90,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
             $window.scrollTo(0, 0);
         } else {
             $scope.loading = true;
-            SolrSearchService.updateQuery($scope.queryname);
+            SolrSearchService.updateQuery($scope.queryName);
         }
     };
 
@@ -102,7 +102,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
         $scope.documents = [];
         $scope.loading = false;
         // get new results
-        var results = SolrSearchService.getResponse($scope.queryname);
+        var results = SolrSearchService.getResponse($scope.queryName);
         if (results && results.docs) {
             $scope.totalResults = results.numFound;
             // calculate the total number of pages and sets
@@ -155,16 +155,17 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
                 if ($scope.source) {
                     query.solr = $scope.source;
                 }
+                query.setOption("rows",$scope.documentsPerPage);
                 // set the display values to match those in the query
                 $scope.userquery = query.getUserQuery();
                 // update query results
-                SolrSearchService.setQuery($scope.queryname, query);
+                SolrSearchService.setQuery($scope.queryName, query);
                 $scope.loading = true;
-                SolrSearchService.updateQuery($scope.queryname);
+                SolrSearchService.updateQuery($scope.queryName);
             }
         });
         // handle update events from the search service
-        $scope.$on($scope.queryname, function () {
+        $scope.$on($scope.queryName, function () {
             $scope.handleUpdate();
         });
     };
@@ -175,7 +176,7 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
      * value is.
      */
     $scope.updatePageIndex = function() {
-        var query = SolrSearchService.getQuery($scope.queryname);
+        var query = SolrSearchService.getQuery($scope.queryName);
         $scope.documentsPerPage = (query.getOption('rows') || $scope.documentsPerPage);
         $scope.page = (Math.ceil(query.getOption('start') / $scope.documentsPerPage) || 0);
         // the default page navigation set

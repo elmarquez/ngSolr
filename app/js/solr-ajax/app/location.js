@@ -23,8 +23,9 @@ m.config(['SolrSearchServiceProvider', function(SolrSearchServiceProvider) {
     var defaultQuery = function(query) {
         var f = query.createFacet('location_0_coordinate', '*');
         query.addFacet(f);
+        query.setOption("fl", "*");
         query.setOption("json.wrf", "JSON_CALLBACK");
-        query.setOption("rows", "10");
+        query.setOption("rows", "5000");
         query.setOption("sort", "title+asc");
         query.setOption("wt", "json");
         query.setUserQuery('*:*');

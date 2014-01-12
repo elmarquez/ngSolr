@@ -159,23 +159,19 @@
                          data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
                          ng-cloak>
 
-                        <div class="loading" ng-show="loading">
+                        <div class="loading" ng-show="loading" ng-cloak>
                             <p>Loading search results ...</p>
                             <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
                         </div>
 
-                        <div class="summary" ng-show="documents.length > 0">
+                        <div class="summary" ng-show="documents.length > 0" ng-cloak>
                             <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
                             <div class="alert alert-error" ng-show="error">{{error}}</div>
                             <div class="alert alert-info" ng-show="message">{{message}}</div>
                         </div>
 
                         <div id="search-results">
-                            <div class="alert alert-error" ng-show="error">{{error}}</div>
-                            <div class="alert alert-info" ng-show="message">{{message}}</div>
-                            <div id="summary">Search Results ({{totalResults}} found)</div>
-                            <!-- images -->
-                            <div ng-repeat="row in rows" class="image-grid-row thumbnails">
+                            <div ng-repeat="row in rows" class="image-grid-row thumbnails" ng-cloak>
                                 <div ng-repeat="doc in row" class="thumbnail span3">
                                     <a ng-href="{{doc.presentation_url}}" class="thumbnail"><img ng-src="{{doc.dobj_proxy_medium}}" alt="{{doc.title}}" /></a>
                                     <div class="caption">
@@ -184,9 +180,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="pagination" ng-hide="error">
+                        <div class="pagination" ng-hide="error" ng-cloak>
                             <ul>
-                                <li ng-repeat="page in pages" ng-cloak>
+                                <li ng-repeat="page in pages">
                                     <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
                                 </li>
                             </ul>

@@ -55,7 +55,7 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
     $scope.map = undefined;             // google map
     $scope.markers = [];                // list of markers
     $scope.maxFieldLength = 120;        // maximum length of text fields in infowindow
-    $scope.queryname = "mapQuery";      // name of the query
+    $scope.queryName = "mapQuery";      // name of the query
                                         // map settings
     $scope.settings = {
         // center:new google.maps.LatLng(-30.3456, 141.4346), // hard code to start at Australia
@@ -189,7 +189,7 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
         // create marker bounds
         var bounds = new google.maps.LatLngBounds();
         // if there are results to display
-        var results = SolrSearchService.getResponse($scope.queryname);
+        var results = SolrSearchService.getResponse($scope.queryName);
         if (results && results.docs) {
             // create new map markers
             for (var i = 0; i < results.docs.length; i++) {
@@ -238,7 +238,7 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
             $scope.infoWindow.close();
         });
         // handle updates on the query
-        $scope.$on($scope.queryname, function() {
+        $scope.$on($scope.queryName, function() {
             $scope.handleUpdate();
         });
         // handle update on the selection set
@@ -265,9 +265,9 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
                 $scope.clusterManager.clearMarkers();
                 $scope.markers = [];
                 // update query results
-                SolrSearchService.setQuery($scope.queryname, query);
+                SolrSearchService.setQuery($scope.queryName, query);
                 $scope.loading = true;
-                SolrSearchService.updateQuery($scope.queryname);
+                SolrSearchService.updateQuery($scope.queryName);
             }
         });
         // draw the map for the first time
