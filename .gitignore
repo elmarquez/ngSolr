@@ -1,7 +1,5 @@
 *~
-*.min.css
 *.gz
-*.min.js
 *.zip
 
 .idea
