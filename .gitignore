@@ -3,6 +3,10 @@
 *.zip
 
 .idea
+
+logs/
+node_modules/**/*
+
 app/css/simplesearch/simplesearch.min.css
 app/img/icon
 app/img/maki

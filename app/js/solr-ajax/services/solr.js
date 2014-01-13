@@ -385,7 +385,7 @@ function SolrQuery(Url) {
 /*---------------------------------------------------------------------------*/
 /* SolrSearchService                                                         */
 
-var m = angular.module('Solr', []);
+var m = angular.module('Solr');
 
 /**
  * Used for managing and executing queries against an Apache Solr/Lucene

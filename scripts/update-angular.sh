@@ -3,12 +3,12 @@
 # pull changes from source repo into temporary directory
 mkdir angular
 cd angular
-wget http://code.angularjs.org/1.0.7/angular-1.0.7.zip
-unzip angular-1.0.7.zip
+wget http://code.angularjs.org/1.2.8/angular-1.2.8.zip
+unzip angular-1.2.8.zip
 
 # copy to target directory
 rm -fr ../../app/lib/angular/*
-cp -a angular-1.0.7/* ../../app/lib/angular/
+cp -a angular-1.2.8/* ../../app/lib/angular/
 
 # remove the documentation and internationalization directory
 rm -fr ../../app/lib/angular/docs

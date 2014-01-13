@@ -3,8 +3,6 @@
  * 'LICENSE.txt' file, which is part of this source code package.
  */
 
-'use strict';
-
 /*---------------------------------------------------------------------------*/
 /* Utils                                                                     */
 
@@ -49,9 +47,19 @@ module.factory('Utils', [function() {
     /**
      * Convert month index to common name.
      * @param Index
+     * @todo this is implemented strangely ... change the months var to an array
      */
     svc.convertMonthIndexToName = function(Index) {
         var months = {
+            '1':"January",
+            '2':"February",
+            '3':"March",
+            '4':"April",
+            '5':"May",
+            '6':"June",
+            '7':"July",
+            '8':"August",
+            '9':"September",
             '01':"January",
             '02':"February",
             '03':"March",
@@ -98,27 +106,27 @@ module.factory('Utils', [function() {
      */
     svc.objectsAreEqual = function(A, B) {
         // if both x and y are null or undefined and exactly the same
-        if ( A === B ) return true;
+        if (A === B) return true;
         // if they are not strictly equal, they both need to be Objects
-        if ( ! ( A instanceof Object ) || ! ( B instanceof Object ) ) return false;
+        if (!(A instanceof Object) || ! (B instanceof Object)) return false;
         // they must have the exact same prototype chain, the closest we can do is
         // test there constructor.
-        if ( A.constructor !== B.constructor ) return false;
-        for ( var p in A ) {
+        if (A.constructor !== B.constructor) return false;
+        for (var p in A) {
             // other properties were tested using x.constructor === y.constructor
-            if ( ! A.hasOwnProperty( p ) ) continue;
+            if (!A.hasOwnProperty(p)) continue;
             // allows to compare x[ p ] and y[ p ] when set to undefined
-            if ( ! B.hasOwnProperty( p ) ) return false;
+            if (!B.hasOwnProperty(p)) return false;
             // if they have the same strict value or identity then they are equal
-            if ( A[ p ] === B[ p ] ) continue;
+            if (A[p] === B[p]) continue;
             // Numbers, Strings, Functions, Booleans must be strictly equal
-            if ( typeof( A[ p ] ) !== "object" ) return false;
+            if (typeof(A[p]) !== "object") return false;
             // Objects and Arrays must be tested recursively
-            if ( ! Object.equals( A[ p ],  B[ p ] ) ) return false;
+            if (!svc.objectsAreEqual(A[p], B[p])) return false;
         }
-        for ( p in B ) {
+        for (p in B) {
             // allows x[ p ] to be set to undefined
-            if ( B.hasOwnProperty( p ) && ! A.hasOwnProperty( p ) ) return false;
+            if (B.hasOwnProperty(p) && !A.hasOwnProperty(p)) return false;
         }
         return true;
     };
@@ -128,7 +136,7 @@ module.factory('Utils', [function() {
      * @param s1 String 1
      * @param s2 String 2
      */
-    svc.startsWith = function(s1,s2) {
+    svc.startsWith = function(s1, s2) {
         if (s1 && s2) {
             return s1.slice(0, s2.length) == s2;
         }
@@ -148,26 +156,23 @@ module.factory('Utils', [function() {
      * @param Val
      */
     svc.trimLeadingZero = function(Val) {
-        if (Val && Val.length > 0) {
-            if (Val.substring(0,1) == '0' && Val.length > 1) {
-                Val = Val.substring(1,1);
-            }
+        if (Val && Val[0] == '0') {
+            return Val.substring(1);
         }
         return Val;
     };
 
     /**
-     * Truncate the field to the specified length.
+     * Truncate the field to the specified length. Replace the truncated
+     * portion with a ... to indicate the truncation.
      * @param Field
      * @param Length
      * @return {*}
      */
-    svc.truncate = function(Field,Length) {
+    svc.truncate = function(Field, Length) {
         if (Field && Length && Field.length > Length) {
-            // remove start/end whitespace
             Field = svc.trim(Field);
-            // truncate the document to the specified length
-            Field = Field.substring(0,Math.min(Length,Field.length));
+            Field = Field.substring(0, Math.min(Length, Field.length));
             // find the last word and truncate after that
             var i = Field.lastIndexOf(" ");
             if (i != -1) {
@@ -175,31 +180,6 @@ module.factory('Utils', [function() {
             }
         }
         return Field;
-    };
-
-    /**
-     * Truncate the document field to the specified length.
-     * @param Document Document
-     * @param FieldName Field name to truncate
-     * @param Length Maximum field length
-     */
-    svc.truncateField = function(Document,FieldName,Length) {
-        if (Document && Document[FieldName]) {
-            if (Document[FieldName] instanceof Array) {
-                Document[FieldName] = Document[FieldName][0];
-            }
-            if (Document[FieldName].length > Length) {
-                // remove start/end whitespace
-                Document[FieldName] = svc.trim(Document[FieldName]);
-                // truncate the document to the specified length
-                Document[FieldName] = Document[FieldName].substring(0,Math.min(Length,Document[FieldName].length));
-                // find the last word and truncate after that
-                var i = Document[FieldName].lastIndexOf(" ");
-                if (i != -1) {
-                    Document[FieldName] = Document[FieldName].substring(0,i) + " ...";
-                }
-            }
-        }
     };
 
     ///////////////////////////////////////////////////////////////////////////
