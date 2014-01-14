@@ -138,7 +138,12 @@ module.filter('trim', function() {
 
 module.filter('truncate', function() {
     /**
-     * Truncate the text to the maximum specified length.
+     * Truncate the text to the maximum specified length. The truncation will
+     * be made at last space character that precedes the maximum length. A
+     * ' ...' will be appended on to the string to indicate the truncation.
+     * Because there is some variability in the location of the last space
+     * char, the resultant string length may be up to the maximum length + 4
+     * characters.
      * @param text Text
      * @param limit Maximum number of characters allowed before truncation
      * @return {*}

@@ -5,9 +5,12 @@ module.exports = function(config) {
           'app/lib/angular/angular.js',
           'app/lib/angular/angular-*.js',
           'test/lib/angular/angular-mocks.js',
-          'app/js/solr-ajax/filters/textfilters.js',
-          'app/js/solr-ajax/services/utils.js',
-          'test/unit/*.js'
+          //'app/js/solr-ajax/filters/*.js',
+          'app/js/solr-ajax/services/solr.js',
+          //'test/unit/SelectionSetServiceSpec.js',
+          'test/unit/SolrServiceSpec.js',
+          //'test/unit/TextFiltersSpec.js',
+          //'test/unit/UtilsServiceSpec.js'
         ],
         exclude : [
           'app/lib/angular/angular-loader.js',

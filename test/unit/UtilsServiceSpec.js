@@ -79,7 +79,7 @@ describe('the Utils module', function() {
             expect(service).not.toBe(null);
         });
 
-        it('should return true when the objects are equal', function() {
+        it('should return true when the objects are equal, false otherwise', function() {
             var a = ['a','b','c'];
             var b = ['a','b','c'];
             var c = ['a','b'];
