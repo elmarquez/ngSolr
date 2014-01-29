@@ -1,35 +1,10 @@
 DEVELOPMENT NOTES
 
 
-- current problem with the encoding/decoding of +location_0_coordinate:* in
-  query. It appears that the string is being encoded or decoded twice,
-  resulting in an incorrect query being sent to solr
-- Map search
-    - we want to see ALL search results appearing in the map display
-    - we want the sidebar results listing to contain on 10 at a time of the
-      current query
-    - when we click on a result in the sidebar listing, we want to zoom in on
-      that one result in the map view
-    - we want to be able to page through the sidebar results
-    - the browser location should be able to retrieve our search results for
-      the whole set
-
-
 -------------------------------------------------------------------------------
-Interface Design
+Promises
 
- * Collapsible sidebar a la sphinx
- * http://turbogears.org/2.0/docs/gettingstarted.html#getting-started
-
-
--------------------------------------------------------------------------------
-Mapping
-
- * How to activate a particular marker from another panel
-    * MapMarkerService maintains a list of the current markers and info windows
-    * Another panel can subscribe to that service
-    * MapMarkerService keeps a map of ID to marker
-    * Open info window and center in view when selected by Id
+* http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
 
 Marker Clustering
 

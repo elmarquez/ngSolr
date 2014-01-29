@@ -1,6 +1,6 @@
 {
     "name": "solr-ajax",
-    "description": "Components and interface for faceted search with Apache Solr/Lucene",
+    "description": "Faceted search components and sample UIs for Apache Solr/Lucene",
     "repository": "https://bitbucket.org/esrc/eaccpf-ajax",
     "devDependencies": {
         "phantomjs" : "~1.9",

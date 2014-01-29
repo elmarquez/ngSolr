@@ -205,10 +205,10 @@ function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $
             }
         });
         // listen for updates on queries
-        $scope.$on($scope.startDateQueryName, function () {
+        $scope.$on($scope.startDateQueryName, function() {
             $scope.handleStartDateQueryUpdate();
         });
-        $scope.$on($scope.endDateQueryName, function () {
+        $scope.$on($scope.endDateQueryName, function() {
             $scope.handleEndDateQueryUpdate();
         });
     };

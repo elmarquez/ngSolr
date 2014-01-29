@@ -1,7 +1,7 @@
-AJAX Faceted Search Interface to Apache Solr/Lucene
-===================================================
+SOLR-AJAX: Single Page Faceted Search Interface to Apache Solr/Lucene
+=====================================================================
 
-SOLR-AJAX is a single page, Javascript web application for searching and
+SOLR-AJAX is a single page Javascript web application for searching and
 presenting document, image and location data from an Apache Solr/Lucene search
 index. The application is easy to customize and deploy. It includes interfaces
 and display components for:
@@ -19,18 +19,23 @@ Setup
 This application requires a functioning web server and Apache Solr/Lucene
 search index.
 
-1. Download and unzip the Solr-AJAX package. The unzipped archive will contain
+1. Download and unzip the SOLR-AJAX package. The unzipped archive will contain
    a number of subdirectories. Copy the contents of the app subdirectory to your
    web server.
+
 2. Each of the sample HTML search pages (documents.html, images.html,
-   location.html) runs a Javascript application that is located in the
-   js/solr-ajax/app folder. Edit the respective application file and replace the
-   SOLR_CORE value with the URL to your Solr search engine core. You may also
-   configure any other variables in those files.
-3. Load the HTML search page and attempt to execute searches against your
-   index. If you experience any problems, open your browser console. You
-   should see log entries for each search query that is executed, and
-   information about any errors that may have occurred.
+   location.html) runs a single-page Javascript application that is responsible
+   for executing the search actions. It will use configuration values specified
+   in the HTML to determine where to send its queries. In particular, the
+   "data-source" attribute tells the application what the URL for you Solr core
+   is. Update the "data-source" attribute to point to your Solr core ex.
+
+      data-source="http://example.com:8080/path/to/my/solr/core"
+
+3. Load the HTML search page in your browser and attempt to execute searches
+   against your Solr index. If you experience any problems, open your browser
+   console. You should see log entries for each search query that is executed,
+   and information about any errors that may have occurred.
 
 
 Credits
@@ -58,7 +63,6 @@ Thanks:
  * Google Maps - https://developers.google.com/maps
  * JQuery - http://www.jquery.com
  * JQuery UI - http://www.jqueryui.com
- * qTip - http://qtip2.com/
 
 
 License
@@ -71,16 +75,20 @@ Version History
 
 Backlog:
 
- > Icon to display while search is being executed ... should likely be bound to the SolrSearchService
- > Map document search results should update to reflect the zoom level and current view position
- > When a facet constraint is added, it should impact the typeahead filter
- > Stuck on updating fragment to reflect the current facet query -- facet query clears hash
- > Service, controller unit tests!
- > Fix page header to remove right/left whitespace when resized for mobile layout (restore default Bootstrap layout)
- > Remove $target from MapController and refactor functionality out to separate controller
- > Handle configuration attributes for controllers from markup
+ * Remove JQuery, JQuery UI dependencies for SearchBoxController
+ * Set all logging to DEBUG or ERROR instead of INFO
+ * Complete unit tests
+ * Reimplement Solr, associated controllers to use promises throughout
+ * Implement Grunt, Travis configuration for automatic linting, testing, minifying
+ * Modified map clusterer function to spread out stacked pins, from https://github.com/jawj/OverlappingMarkerSpiderfier
 
 Current:
+
+0.6.1
+
+ * Upgraded testing setup
+ * Partial unit tests for SelectionSet, Solr services
+ * Complete unit tests for TextFilter, Utils service
 
 0.6.0
 
@@ -218,8 +226,3 @@ Current:
 Known Issues
 ------------
 
- * On page load, SolrSearchService parses the window location to determine if
-   there is a starting search query. It parses the query and sets the starting
-   query with the discovered values. It is not currently able to reassociate
-   query parameters and facets with the various controllers. As such, the
-   starting query will not properly set the controller states.

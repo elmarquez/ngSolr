@@ -110,7 +110,7 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
      * @param Lat Latitude
      * @param Lng Longitude
      */
-    $scope.getMarker = function (Map, Title, Content, Category, Lat, Lng) {
+    $scope.getMarker = function(Map, Title, Content, Category, Lat, Lng) {
         // get the marker icon
         var icon = $scope.categoryToIconMap['default'];
         if (Category != null && Category in $scope.categoryToIconMap) {
@@ -121,10 +121,11 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
             icon: icon,
             map: Map,
             position: new google.maps.LatLng(Lat, Lng),
-            title: Title
+            title: Title,
+            content: Content
         });
         // attach an info window to the marker
-        $scope.setInfoWindow(Map, marker, Content);
+        // $scope.setInfoWindow(Map, marker, Content);
         // return result
         return marker;
     };
@@ -150,7 +151,7 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
 
     /**
      * Handle selection events. The selection set service can hold either
-     * single or multiple values. However, we show only a single info
+     * single or multiple values. However, here we show only a single info
      * window in the current implementation.
      * @todo enable multiple selection .. ie. multiple infowindows
      */
@@ -183,20 +184,16 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
 
     /**
      * Handle update to map search results. Clear the existing collection of
-     * map markers and add new map markers to the map.
+     * map markers and add new map markers to the map. Center and zoom the
+     * view to fit the new collection of markers.
      */
-    $scope.handleUpdate = function () {
-        // create marker bounds
+    $scope.handleUpdate = function() {
         var bounds = new google.maps.LatLngBounds();
-        // if there are results to display
         var results = SolrSearchService.getResponse($scope.queryName);
         if (results && results.docs) {
-            // create new map markers
-            for (var i = 0; i < results.docs.length; i++) {
+            for (var i=0; i<results.docs.length; i++) {
                 var item = results.docs[i];
                 if (item.location) {
-                    // create a marker
-                    var content = $scope.getMarkerContent(item);
                     // ISSUE: Solr4 returns an array rather than a string for coordinate values
                     if (typeof item.location_0_coordinate === 'string') {
                         var lat = item.location_0_coordinate;
@@ -208,20 +205,19 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
                     } else {
                         var lng = item.location_1_coordinate[0];
                     }
+                    var content = $scope.getMarkerContent(item);
                     var marker = $scope.getMarker($scope.map, item.title, content, item.type, lat, lng);
-                    // add marker to bounds
-                    bounds.extend(marker.position);
-                    // add marker to list
-                    $scope.markers.push(marker);
                     $scope.idToMarkerMap[item.id] = marker;
+                    $scope.markers.push(marker);
+                    $scope.oms.addMarker(marker);
+                    bounds.extend(marker.position);
                 }
             }
         }
         // add markers to cluster manager
-        if ($scope.clusterResults) {
-            $scope.clusterManager.addMarkers($scope.markers);
-        }
-        // center the map on the results
+//        if ($scope.clusterResults) {
+//            $scope.clusterManager.addMarkers($scope.markers);
+//        }
         $scope.map.fitBounds(bounds);
     };
 
@@ -229,14 +225,19 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
      * Initialize the controller.
      */
     $scope.init = function() {
-        // apply configured attributes
         Utils.applyAttributes($attrs, $scope);
-        // create map, marker cluster manager. add close handler for infowindow
+        // create map, marker cluster manager. add event handlers for infowindow
         $scope.map = new google.maps.Map(document.getElementById("map"), $scope.settings);
-        $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
-        google.maps.event.addListener($scope.infoWindow, 'close', function() {
+        $scope.oms = new OverlappingMarkerSpiderfier($scope.map);
+        $scope.oms.addListener('click', function(Marker, event) {
             $scope.infoWindow.close();
+            $scope.infoWindow.setContent(Marker.content);
+            $scope.infoWindow.open($scope.map, Marker);
         });
+        // $scope.clusterManager = new MarkerClusterer($scope.map, $scope.markers, $scope.clusterOptions);
+//        google.maps.event.addListener($scope.infoWindow, 'close', function() {
+//            $scope.infoWindow.close();
+//        });
         // handle updates on the query
         $scope.$on($scope.queryName, function() {
             $scope.handleUpdate();
@@ -262,12 +263,15 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
                 $scope.infoWindow.close();
                 // clear current markers
                 $scope.idToMarkerMap = {};
-                $scope.clusterManager.clearMarkers();
+                // $scope.clusterManager.clearMarkers();
                 $scope.markers = [];
                 // update query results
                 SolrSearchService.setQuery($scope.queryName, query);
                 $scope.loading = true;
                 SolrSearchService.updateQuery($scope.queryName);
+//                $scope.oms.addListener('spiderfy', function(markers) {
+//                    $scope.infoWindow.close();
+//                });
             }
         });
         // draw the map for the first time
@@ -281,17 +285,22 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
     };
 
     /**
-     * Add info window to marker
+     * Add info window to marker.
      * @param Map Google map
      * @param Marker Map marker
      * @param Content HTML content to be displayed in the info window
      */
-    $scope.setInfoWindow = function (Map, Marker, Content) {
-        google.maps.event.addListener(Marker, 'click', function () {
+    $scope.setInfoWindow = function(Map, Marker, Content) {
+        $scope.oms.addListener('click', function(Marker, event) {
             $scope.infoWindow.close();
             $scope.infoWindow.setContent(Content);
             $scope.infoWindow.open(Map, Marker);
         });
+//        google.maps.event.addListener(Marker, 'click', function () {
+//            $scope.infoWindow.close();
+//            $scope.infoWindow.setContent(Content);
+//            $scope.infoWindow.open(Map, Marker);
+//        });
     };
 
     // initialize the controller

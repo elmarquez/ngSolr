@@ -416,7 +416,7 @@ m.provider('SolrSearchService', function solrSearchServiceProvider() {
      * Create an instance of the service.
      * @type {Array}
      */
-    this.$get = ['$rootScope','$http','$log', function solrSearchServiceFactory($rootScope, $http, $log) {
+    this.$get = ['$http','$log','$q','$rootScope',function solrSearchServiceFactory($http, $log, $q, $rootScope) {
         // service instance
         var svc = {};
 

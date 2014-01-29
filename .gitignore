@@ -1,19 +1,11 @@
 *~
 *.gz
 *.zip
+test_*
 
-.idea
-
-logs/
-node_modules/**/*
-
-app/css/simplesearch/simplesearch.min.css
+.idea/
 app/img/icon
-app/img/maki
-app/img/mapiconscollection
-app/js/simplesearch/simplesearch.min.js
 lib/*
 logs/*
-node_modules/
-scripts/npm*
+node_modules/**/*
 tmp/
