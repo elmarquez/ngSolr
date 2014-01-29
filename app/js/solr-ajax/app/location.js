@@ -17,7 +17,8 @@ app.config(['$routeProvider', function($routeProvider) {
         otherwise({ event: "/" });
 }]);
 
-// Reconfigure the default search query
+// Reconfigure the default search query so that we only return those records
+// that have location coordinate values.
 var m = angular.module('Solr');
 m.config(['SolrSearchServiceProvider', function(SolrSearchServiceProvider) {
     var defaultQuery = function(query) {
