@@ -5,8 +5,8 @@
     </div>
     <div id="hints" ng-show="showHints">
         <ul id="list">
-            <li ng-repeat="hint in hints" ng-class="{'selected':hint.selected}">
-                <a ng-mousedown="selectHint($index,true);handleSubmit()">{{hint.title}}</a>
+            <li ng-repeat="hint in hints" ng-mousedown="selectHint($index,true);handleSubmit()" ng-class="{'selected':hint.selected}">
+                {{hint.title}}
             </li>
         </ul>
         <div id="message" ng-show="showMessage">{{message}}</div>
