@@ -21,7 +21,7 @@
             body {
                 font-family: "Helvetica Neue", Arial, sans-serif;
                 font-size: 12px;
-                padding: 20px;
+                padding: 20px 20px 20px 40px;
             }
 
             .searchbox {
@@ -74,62 +74,68 @@
     <body>
 
         <h1>Search Box 2 Test</h1>
-        <p>Enter a search term in the box below.</p>
+        <p>This page is for testing of the search box controller. Enter a search term in the box below.</p>
 
         <hr/>
 
-        <searchbox id="searchbox"
-                   data-near-match="true"
-                   data-placeholder="placeholder"
-                   data-search-hints-field="hints"
-                   data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
-                   ng-cloak>
-        </searchbox>
+        <div class="row">
+            <div class="span6">
+                <searchbox id="searchbox"
+                           data-near-match="true"
+                           data-placeholder="placeholder"
+                           data-search-hints-field="hints"
+                           data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                           ng-cloak>
+                </searchbox>
+            </div>
+        </div>
 
-        <div id="search-results"
-             class="span5"
-             ng-controller="DocumentSearchResultsController"
-             data-fields="*"
-             data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
-             ng-cloak>
-            <div class="column-512">
+        <div class="row">
+            <div id="search-results"
+                 class="span6"
+                 ng-controller="DocumentSearchResultsController"
+                 data-fields="*"
+                 data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                 ng-cloak>
+                <div class="column-512">
 
-                <div class="loading" ng-show="loading" ng-cloak>
-                    <p>Loading search results ...</p>
-                    <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
-                </div>
-
-                <div class="summary" ng-show="documents.length > 0" ng-cloak>
-                    <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
-                    <div class="alert alert-error" ng-show="error">{{error}}</div>
-                    <div class="alert alert-info" ng-show="message">{{message}}</div>
-                </div>
-
-                <article ng-repeat="doc in documents" class="document" ng-cloak>
-                    <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
-                    <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
-                        <a ng-href="{{doc.presentation_url}}" class="thumbnail">
-                            <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
-                        </a>
+                    <div class="loading" ng-show="loading" ng-cloak>
+                        <p>Loading search results ...</p>
+                        <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
                     </div>
-                    <div class="text">{{doc.abstract | truncate:250 }}</div>
-                    <div class="meta inline">
-                        <span class="region" ng-show="doc.region">{{doc.region}}</span>
-                        <span class="country" ng-show="doc.country">{{doc.country}}</span>
-                        <div class="existdates">
-                            <span>{{doc.fromDate}}</span>
-                            <span ng-show="doc.toDate">&ndash;</span>
-                            <span>{{doc.toDate}}</span>
+
+                    <div class="summary" ng-show="documents.length > 0" ng-cloak>
+                        <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
+                        <div class="alert alert-error" ng-show="error">{{error}}</div>
+                        <div class="alert alert-info" ng-show="message">{{message}}</div>
+                    </div>
+
+                    <article ng-repeat="doc in documents" class="document" ng-cloak>
+                        <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
+                        <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
+                            <a ng-href="{{doc.presentation_url}}" class="thumbnail">
+                                <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
+                            </a>
                         </div>
-                    </div>
-                </article>
+                        <div class="text">{{doc.abstract | truncate:250 }}</div>
+                        <div class="meta inline">
+                            <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                            <span class="country" ng-show="doc.country">{{doc.country}}</span>
+                            <div class="existdates">
+                                <span>{{doc.fromDate}}</span>
+                                <span ng-show="doc.toDate">&ndash;</span>
+                                <span>{{doc.toDate}}</span>
+                            </div>
+                        </div>
+                    </article>
 
-                <div class="pagination" ng-hide="error" ng-cloak>
-                    <ul>
-                        <li ng-repeat="page in pages">
-                            <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
-                        </li>
-                    </ul>
+                    <div class="pagination" ng-hide="error" ng-cloak>
+                        <ul>
+                            <li ng-repeat="page in pages">
+                                <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
