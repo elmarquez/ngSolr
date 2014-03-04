@@ -1,6 +1,6 @@
 <form class="searchbox">
     <div id="inputs">
-        <input id="query" type="text" placeholder="{{placeHolder}}" ng-model="userQuery" />
+        <input id="query" type="text" placeholder="{{placeHolder}}" ng-model="userQuery" autocomplete="off" />
         <input id="submit" name="submit" type="submit" value="search" ng-click="handleSubmit()" />
     </div>
     <div id="hints" ng-show="showHints">
