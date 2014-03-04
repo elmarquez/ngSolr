@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" ng-app="solr-ajax">
+    <head>
+        <!-- meta -->
+        <meta charset="utf-8">
+        <title>Test Harness for New Hints Component</title>
+        <meta name="author" content="eScholarship Research Centre, University of Melbourne">
+        <meta name="description" content="AJAX web interface to Apache Solr/Lucene">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- stylesheets -->
+        <style>
+            [ng-cloak] {display: none;}
+        </style>
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/solr-ajax/facp.css" media="screen" />
+        <!-- scripts -->
+        <script type="text/javascript" src="lib/angular/angular.js"></script>
+        <script type="text/javascript" src="lib/angular/angular-route.js"></script>
+        <style type="text/css">
+            body {
+                font-family: "Helvetica Neue", Arial, sans-serif;
+                font-size: 12px;
+                padding: 20px;
+            }
+
+            .searchbox {
+                margin-bottom: 40px;
+            }
+            #searchbox input[type=text] {
+                border:solid 1px #BFBDBD;
+                margin: 0;
+                padding: 7px;
+                width: 400px;
+            }
+            #searchbox #submit {
+                display: none;
+            }
+            #searchbox #hints {
+                background: white;
+                border: 1px solid #ccc;
+                margin-right: 22px;
+                position: absolute;
+                z-index: 1;
+                box-shadow: 0 1px 3px 0 #aaa;
+                -webkit-box-shadow: 0 2px 1px 0 #aaa;
+            }
+            #searchbox #list {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            #searchbox #list li {
+                cursor: default;
+                margin: 0 0 2px 0;
+                padding: 5px 10px 5px 10px;
+            }
+            #searchbox #list li:hover {
+                background: #dedede;
+            }
+            #searchbox #list li.selected {
+                background: #ddd;
+                font-weight: bold;
+            }
+            #searchbox #message {
+                color: #1a577a;
+                font-weight: normal;
+                padding: 7px 10px 7px 10px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <searchbox id="searchbox"
+                   data-near-match="true"
+                   data-placeholder="placeholder"
+                   data-search-hints-field="hints"
+                   data-source="https://data.esrc.info/solr/FACP"
+                   ng-cloak>
+        </searchbox>
+
+        <div id="search-results"
+             class="span5"
+             ng-controller="DocumentSearchResultsController"
+             data-fields="*"
+             data-source="https://data.esrc.info/solr/FACP"
+             ng-cloak>
+            <div class="column-512">
+
+                <div class="loading" ng-show="loading" ng-cloak>
+                    <p>Loading search results ...</p>
+                    <img src="img/ajax-loader-bar.gif" alt="Loading search results" />
+                </div>
+
+                <div class="summary" ng-show="documents.length > 0" ng-cloak>
+                    <div style="padding-bottom: 20px;">Search Results ({{totalResults}} found)</div>
+                    <div class="alert alert-error" ng-show="error">{{error}}</div>
+                    <div class="alert alert-info" ng-show="message">{{message}}</div>
+                </div>
+
+                <article ng-repeat="doc in documents" class="document" ng-cloak>
+                    <a ng-href="{{doc.presentation_url}}" class="title">{{doc.title}}</a>
+                    <div class="thumb" ng-show="doc.dobj_proxy_small" style="margin-left:10px;">
+                        <a ng-href="{{doc.presentation_url}}" class="thumbnail">
+                            <img ng-src="{{doc.dobj_proxy_small}}" alt="{{doc.title}}" height="64px" width="64px" />
+                        </a>
+                    </div>
+                    <div class="text">{{doc.abstract | truncate:250 }}</div>
+                    <div class="meta inline">
+                        <span class="region" ng-show="doc.region">{{doc.region}}</span>
+                        <span class="country" ng-show="doc.country">{{doc.country}}</span>
+                        <div class="existdates">
+                            <span>{{doc.fromDate}}</span>
+                            <span ng-show="doc.toDate">&ndash;</span>
+                            <span>{{doc.toDate}}</span>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="pagination" ng-hide="error" ng-cloak>
+                    <ul>
+                        <li ng-repeat="page in pages">
+                            <a ng-class="{iscurrent:page.isCurrent}" ng-click="$parent.handleSetPage(page.number)">{{page.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <!-- scripts -->
+    <script type="text/javascript" src="js/solr-ajax/controllers/DocumentSearchResultsController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/controllers/test_SearchBoxController.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/directives/searchhints.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/filters/textfilters.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
+    <script type="text/javascript" src="js/solr-ajax/app/test_document.js"></script>
+
+    </body>
+</html>

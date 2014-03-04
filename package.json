@@ -1,8 +1,18 @@
 {
     "name": "solr-ajax",
+    "author": "Davis Marques, eScholarship Research Center, University of Melbourne",
     "description": "Faceted search components and sample UIs for Apache Solr/Lucene",
     "repository": "https://bitbucket.org/esrc/eaccpf-ajax",
+    "version": "0.6.1",
     "devDependencies": {
+        "grunt": "~0.4.0",
+        "grunt-contrib-cssmin": "*",
+        "grunt-contrib-sass": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-cssc": "*",
+        "grunt-htmlhint": "*",
+        "matchdep": "*",
         "phantomjs" : "~1.9",
         "karma" : "~0.10",
         "karma-junit-reporter" : "~0.1",

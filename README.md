@@ -3,8 +3,8 @@ SOLR-AJAX: Single Page Faceted Search Interface to Apache Solr/Lucene
 
 SOLR-AJAX is a single page Javascript web application for searching and
 presenting document, image and location data from an Apache Solr/Lucene search
-index. The application is easy to customize and deploy. It includes interfaces
-and display components for:
+index. The application can be installed and running with almost no setup. It
+includes interfaces and display components for:
 
  * Document search
  * Image search
@@ -80,14 +80,19 @@ Version History
 
 Backlog:
 
- * Remove JQuery, JQuery UI dependencies for SearchBoxController
  * Set all logging to DEBUG or ERROR instead of INFO
  * Complete unit tests
  * Reimplement Solr, associated controllers to use promises throughout
  * Implement Grunt, Travis configuration for automatic linting, testing, minifying
  * Implement modified map clusterer function to spread out stacked pins, from https://github.com/jawj/OverlappingMarkerSpiderfier
+ * DateFacetController should work with either of year, or start/end date ranges or ... split into separate controllers
+ * Finish graph controller, graph service component
 
 Current:
+
+0.6.2
+
+ ? Remove JQuery, JQuery UI dependencies for SearchBoxController
 
 0.6.1
 

@@ -33,20 +33,20 @@ body {
     margin: 0;
     padding-top: 5px;
 }
-#search-bar {
+#searchbar {
     background: #efefef;
     border-bottom:1px solid #DEDEDE;
     height: 50px;
     margin: 0;
     padding: 0;
 }
-#search-bar form {
+#searchbar form {
     margin: 10px 0 10px 0;
     padding: 0;
 }
-#search-box #search-box-input {
-    font-weight: bold;
-}
+
+
+
 #content {
     background: white;
     margin: 0;
@@ -89,7 +89,7 @@ body {
 /* General Styles                                         */
 
 a {
-    cursor: pointer;
+    cursor: default;
 }
 .clickable {
   cursor: hand;

@@ -449,7 +449,7 @@ m.provider('SolrSearchService', function solrSearchServiceProvider() {
             try {
                 return svc.queries[Name];
             } catch (Err) {
-                $log.info("No query named " + Name + " available");
+                $log.debug("No query named " + Name + " available");
                 return undefined;
             }
         };
@@ -543,7 +543,7 @@ m.provider('SolrSearchService', function solrSearchServiceProvider() {
             try {
                 return svc.queries[Name].response;
             } catch (Err) {
-                $log.info("Query " + Name + " not found");
+                $log.debug("Query " + Name + " not found");
             }
         };
 
@@ -609,7 +609,7 @@ m.provider('SolrSearchService', function solrSearchServiceProvider() {
             // get the named query, reset error state, get the query url
             var query = svc.queries[QueryName];
             var url = query.getSolrQueryUrl();
-            $log.info("GET " + QueryName + ": " + url);
+            $log.debug("GET " + QueryName + ": " + url);
             // execute the query
             return $http.jsonp(url).then(
                 // success

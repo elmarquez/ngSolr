@@ -1,0 +1,14 @@
+<form class="searchbox">
+    <div id="inputs">
+        <input id="query" type="text" placeholder="{{placeHolder}}" ng-model="userQuery" />
+        <input id="submit" name="submit" type="submit" value="search" ng-click="handleSubmit()" />
+    </div>
+    <div id="hints" ng-show="showHints">
+        <ul id="list">
+            <li ng-repeat="hint in hints" ng-class="{'selected':hint.selected}">
+                <a ng-mousedown="selectHint($index,true);handleSubmit()">{{hint.title}}</a>
+            </li>
+        </ul>
+        <div id="message" ng-show="showMessage">{{message}}</div>
+    </div>
+</form>

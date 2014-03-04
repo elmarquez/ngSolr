@@ -71,7 +71,8 @@
                         <form ng-controller="SearchBoxController"
                               ng-submit="handleSubmit()"
                               data-near-match="true"
-                              data-source="https://data.esrc.unimelb.edu.au/solr/FACP">
+                              data-search-hints-field="hints"
+                              data-source="https://data.esrc.info/solr/FACP">
                             <input name="q" type="text" placeholder="Keyword or placename" ng-model="userquery" searchbox />
                             <input name="submit" type="submit" value="search" ng-click="handleSubmit()" searchbutton />
                         </form>
@@ -91,7 +92,7 @@
 
                         <!-- facet selection controller -->
                         <ul class="facet-panel"
-                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.info/solr/FACP"
                             ng-controller="FacetSelectionController"
                             ng-show="items.length>0"
                             ng-cloak>
@@ -115,7 +116,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="true"
                             data-field="region"
-                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.info/solr/FACP"
                             ng-cloak>
                             <li><b>State</b></li>
                             <li>
@@ -135,7 +136,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="false"
                             data-field="function"
-                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.info/solr/FACP"
                             ng-cloak>
                             <li><b>Function</b></li>
                             <li>
@@ -155,7 +156,7 @@
                             ng-hide="selected && exclusive"
                             data-exclusive="false"
                             data-field="localtype"
-                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.info/solr/FACP"
                             ng-cloak>
                             <li><b>Type</b></li>
                             <li>
@@ -175,7 +176,7 @@
                             ng-controller="DateFacetController"
                             data-start-date-field="fromDate"
                             data-end-date-field="toDate"
-                            data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                            data-source="https://data.esrc.info/solr/FACP"
                             ng-cloak>
                             <li><b>Dates</b></li>
                             <li>
@@ -230,7 +231,7 @@
                          class="span5"
                          ng-controller="DocumentSearchResultsController"
                          data-fields="*"
-                         data-source="https://data.esrc.unimelb.edu.au/solr/FACP"
+                         data-source="https://data.esrc.info/solr/FACP"
                          ng-cloak>
                         <div class="column-512">
 
@@ -318,7 +319,6 @@
     <script type="text/javascript" src="js/solr-ajax/services/solr.js"></script>
     <script type="text/javascript" src="js/solr-ajax/services/utils.js"></script>
     <script type="text/javascript" src="js/solr-ajax/app/document.js"></script>
-
 
     </body>
 </html>
