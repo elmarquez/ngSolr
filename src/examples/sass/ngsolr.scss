@@ -1,0 +1,373 @@
+/*--------------------------------------------------------*/
+/* Screen Styles                                          */
+
+/*--------------------------------------------------------*/
+/* Page Layout                                            */
+
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+body {
+  background: #efefef;
+  height: 100%;
+}
+#page-header {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar-inverse {
+  margin: 0;
+  padding: 0;
+}
+#page-header .navbar-inner {
+  border-radius: 0;
+}
+#page-header .form-inline {
+  margin: 0;
+  padding-top: 5px;
+}
+#searchbar {
+  background: #efefef;
+  border-bottom:1px solid #DEDEDE;
+  height: 50px;
+  margin: 0;
+  padding: 0;
+}
+#searchbar form {
+  margin: 10px 0 10px 0;
+  padding: 0;
+}
+
+
+
+#content {
+  background: white;
+  margin: 0;
+  padding-top: 20px;
+}
+#search-panel {
+  min-width: 240px;
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+#sidebar {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 20px;
+}
+#footer {
+  border-top: 1px solid #dedede;
+  color: #666;
+  font-size: small;
+  min-height: 40px;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+/*--------------------------------------------------------*/
+/* Branding                                               */
+
+.brand-title {
+  color: #ccc;
+  display: block;
+  float: left;
+  font-size: 20px;
+  font-weight: 200;
+  margin-left: -20px;
+  padding: 10px 20px 10px;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+}
+
+/*--------------------------------------------------------*/
+/* General Styles                                         */
+
+a {
+  cursor: default;
+}
+.clickable {
+  cursor: hand;
+}
+.inset {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+label {
+  font-size: small;
+}
+.notice {
+  background: #ffffe0;
+  border: 1px solid #ffe4b5;
+  font-size: small;
+  line-height: 1.4em;
+  padding: 5px;
+}
+
+/*--------------------------------------------------------*/
+/* Document Search Results                                */
+
+.reading-column {
+  max-width: 512px;
+}
+.document {
+  display: table;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.document .country {
+  display: inline;
+}
+.document .existdates {
+  display: inline;
+}
+.document .existdates:before {
+  display: inline;
+}
+.document .facets {
+  color: #aaa;
+  display: none;
+  font-size: small;
+}
+.document .meta {
+  color: #708090;
+  display: inline;
+  font-size: small;
+  padding-top: 3px;
+}
+.document .region {
+  display: inline;
+}
+.document .more {
+  font-size: small;
+}
+.document .source {
+  color: green;
+  font-size: small;
+}
+.document .summary {
+  font-size: small;
+  line-height: 1.25em;
+}
+.document .summary em {
+  background: yellow;
+}
+.document .text {
+  font-size: small;
+  line-height: 1.25em;
+}
+.document .text em {
+  background: yellow;
+}
+.document .thumb {
+  display: inline;
+  float: right;
+}
+.document .title {
+  display: table;
+  font-size: medium;
+  font-weight: bold;
+}
+.document .type {
+  display: inline;
+}
+
+.search-results .loading {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  text-align: center;
+}
+.search-results .summary {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 0;
+}
+.search-results .pages {
+  clear: both;
+  display: block;
+  margin: 0 0 5px 0;
+  padding: 10px 0 10px 0;
+}
+.search-results .pages ul {
+  background: none;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+.search-results .pages ul li {
+  background: none;
+  cursor: pointer;
+  display: inline;
+  font-weight: bold;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+.search-results .pages ul li a {
+  background: none;
+  border: 1px solid #ddd;
+  border-left: none;
+  float: left;
+  line-height: 20px;
+  padding: 4px 12px 4px 12px;
+  text-decoration: none;
+}
+.search-results .pages .iscurrent {
+  color: #555;
+  cursor: default;
+}
+.search-results .pages ul li:first-child a {
+  border-left: 1px solid #ddd;
+}
+
+/*--------------------------------------------------------*/
+/* Image Search Results                                   */
+
+.image-grid-row {
+  margin-bottom: 20px;
+}
+
+/*--------------------------------------------------------*/
+/* Location Based Search                                  */
+
+.infowindow {
+  max-width: 300px;
+}
+.infowindow .title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.infowindow .address {
+  font-size: small;
+  font-style: italic;
+}
+.infowindow .existdates {
+  font-size: small;
+  font-style: italic;
+  padding-bottom: 5px;
+}
+.infowindow .type {
+  font-size: small;
+  font-style: italic;
+  padding-bottom: 5px;
+}
+.infowindow .summary {
+
+}
+#map {
+  bottom: 0;
+  left: 320px;
+  position: absolute;
+  right: 0;
+  top: 93px;
+  z-index: 0;
+}
+#map img{
+  max-width: none;
+}
+
+/*--------------------------------------------------------*/
+/* Facet Panel                                            */
+
+.facet-panel {
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  list-style: none;
+  margin-bottom: 20px;
+  margin-left: 0;
+  padding: 0;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+.facet-panel>li {
+  border-bottom: 1px solid #E5E5E5;
+  padding: 8px 15px;
+  padding-right: 8px;
+}
+.facet-panel>li a {
+  cursor: pointer;
+}
+.facet-panel>li:first-child {
+  color: #333;
+  font-weight: bold;
+}
+.facet-panel>li:last-child {
+  border-bottom: none;
+}
+.facet-panel .fieldname {
+  font-weight: normal;
+}
+.facet-panel .facet-name {
+  font-size: small;
+}
+.facet-panel .facet-score {
+  color: #666;
+  font-size: small;
+}
+.facet-panel .facet a:hover {
+  text-decoration: line-through;
+}
+
+.year-input {
+  width: auto;
+}
+
+/*--------------------------------------------------------*/
+/* Sidebar Panel                                          */
+
+#sidebar {
+  background: white;
+  position: absolute;
+  z-index: 100;
+}
+
+/*--------------------------------------------------------*/
+/* Graphics Panel                                         */
+
+.chart div {
+  background-color: #ddd;
+  color: white;
+  font: 10px sans-serif;
+  margin: 1px;
+  padding: 3px;
+  text-align: right;
+}
+.chart div:hover {
+  background-color: steelblue;
+}
+
+/*--------------------------------------------------------*/
+/* Other Styles                                           */
+
+.column-240 {
+/* max-width: 240px; */
+}
+.column-320 {
+  max-width: 320px;
+  overflow: hidden;
+}
+.column-512 {
+  max-width: 512px;
+  overflow: hidden;
+}
+.column-620 {
+  max-width: 640px;
+  overflow: hidden;
+}
+.text-medium {
+  font-size: medium;
+}
+.text-small {
+  font-size: small;
+}
+.text-xsmall {
+  font-size: x-small;
+}

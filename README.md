@@ -1,7 +1,7 @@
-SOLR-AJAX: Single Page Faceted Search Interface to Apache Solr/Lucene
-=====================================================================
+ngSolr: Faceted Search for Apache Solr/Lucene
+=============================================
 
-SOLR-AJAX is a single page Javascript web application for searching and
+ngSolr is a single page Javascript web application for searching and
 presenting document, image and location data from an Apache Solr/Lucene search
 index. The application can be installed and running with almost no setup. It
 includes interfaces and display components for:
@@ -10,7 +10,7 @@ includes interfaces and display components for:
  * Image search
  * Map search
 
-A live demo is available online at https://web.esrc.unimelb.edu.au/ECOM/.
+A live demo is available online at https://www.davismarques.com/ngsolr.
 
 
 Setup
@@ -19,7 +19,7 @@ Setup
 This application requires a functioning web server and Apache Solr/Lucene
 search index.
 
-1. Download and unzip the SOLR-AJAX package. The unzipped archive will contain
+1. Download and unzip the ngSolr package. The unzipped archive will contain
    a number of subdirectories. Copy the contents of the app subdirectory to
    your web server.
 
@@ -46,7 +46,7 @@ search index.
 Credits
 -------
 
-SOLR-AJAX is a project of the eScholarship Research Center at the University of
+ngSolr is a project of the eScholarship Research Center at the University of
 Melbourne. For more information about the project, please contact us at:
 
   > eScholarship Research Center

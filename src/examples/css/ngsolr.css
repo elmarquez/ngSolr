@@ -1,0 +1,488 @@
+/*--------------------------------------------------------*/
+/* Screen Styles                                          */
+/*--------------------------------------------------------*/
+/* Page Layout                                            */
+/* line 7, ../sass/ngsolr.scss */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* line 13, ../sass/ngsolr.scss */
+body {
+  background: #efefef;
+  height: 100%;
+}
+
+/* line 17, ../sass/ngsolr.scss */
+#page-header {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 21, ../sass/ngsolr.scss */
+#page-header .navbar {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 25, ../sass/ngsolr.scss */
+#page-header .navbar-inverse {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 29, ../sass/ngsolr.scss */
+#page-header .navbar-inner {
+  border-radius: 0;
+}
+
+/* line 32, ../sass/ngsolr.scss */
+#page-header .form-inline {
+  margin: 0;
+  padding-top: 5px;
+}
+
+/* line 36, ../sass/ngsolr.scss */
+#searchbar {
+  background: #efefef;
+  border-bottom: 1px solid #DEDEDE;
+  height: 50px;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 43, ../sass/ngsolr.scss */
+#searchbar form {
+  margin: 10px 0 10px 0;
+  padding: 0;
+}
+
+/* line 50, ../sass/ngsolr.scss */
+#content {
+  background: white;
+  margin: 0;
+  padding-top: 20px;
+}
+
+/* line 55, ../sass/ngsolr.scss */
+#search-panel {
+  min-width: 240px;
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+/* line 60, ../sass/ngsolr.scss */
+#sidebar {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 20px;
+}
+
+/* line 65, ../sass/ngsolr.scss */
+#footer {
+  border-top: 1px solid #dedede;
+  color: #666;
+  font-size: small;
+  min-height: 40px;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+/*--------------------------------------------------------*/
+/* Branding                                               */
+/* line 77, ../sass/ngsolr.scss */
+.brand-title {
+  color: #ccc;
+  display: block;
+  float: left;
+  font-size: 20px;
+  font-weight: 200;
+  margin-left: -20px;
+  padding: 10px 20px 10px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+/*--------------------------------------------------------*/
+/* General Styles                                         */
+/* line 91, ../sass/ngsolr.scss */
+a {
+  cursor: default;
+}
+
+/* line 94, ../sass/ngsolr.scss */
+.clickable {
+  cursor: hand;
+}
+
+/* line 97, ../sass/ngsolr.scss */
+.inset {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* line 101, ../sass/ngsolr.scss */
+label {
+  font-size: small;
+}
+
+/* line 104, ../sass/ngsolr.scss */
+.notice {
+  background: #ffffe0;
+  border: 1px solid #ffe4b5;
+  font-size: small;
+  line-height: 1.4em;
+  padding: 5px;
+}
+
+/*--------------------------------------------------------*/
+/* Document Search Results                                */
+/* line 115, ../sass/ngsolr.scss */
+.reading-column {
+  max-width: 512px;
+}
+
+/* line 118, ../sass/ngsolr.scss */
+.document {
+  display: table;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+/* line 123, ../sass/ngsolr.scss */
+.document .country {
+  display: inline;
+}
+
+/* line 126, ../sass/ngsolr.scss */
+.document .existdates {
+  display: inline;
+}
+
+/* line 129, ../sass/ngsolr.scss */
+.document .existdates:before {
+  display: inline;
+}
+
+/* line 132, ../sass/ngsolr.scss */
+.document .facets {
+  color: #aaa;
+  display: none;
+  font-size: small;
+}
+
+/* line 137, ../sass/ngsolr.scss */
+.document .meta {
+  color: #708090;
+  display: inline;
+  font-size: small;
+  padding-top: 3px;
+}
+
+/* line 143, ../sass/ngsolr.scss */
+.document .region {
+  display: inline;
+}
+
+/* line 146, ../sass/ngsolr.scss */
+.document .more {
+  font-size: small;
+}
+
+/* line 149, ../sass/ngsolr.scss */
+.document .source {
+  color: green;
+  font-size: small;
+}
+
+/* line 153, ../sass/ngsolr.scss */
+.document .summary {
+  font-size: small;
+  line-height: 1.25em;
+}
+
+/* line 157, ../sass/ngsolr.scss */
+.document .summary em {
+  background: yellow;
+}
+
+/* line 160, ../sass/ngsolr.scss */
+.document .text {
+  font-size: small;
+  line-height: 1.25em;
+}
+
+/* line 164, ../sass/ngsolr.scss */
+.document .text em {
+  background: yellow;
+}
+
+/* line 167, ../sass/ngsolr.scss */
+.document .thumb {
+  display: inline;
+  float: right;
+}
+
+/* line 171, ../sass/ngsolr.scss */
+.document .title {
+  display: table;
+  font-size: medium;
+  font-weight: bold;
+}
+
+/* line 176, ../sass/ngsolr.scss */
+.document .type {
+  display: inline;
+}
+
+/* line 180, ../sass/ngsolr.scss */
+.search-results .loading {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* line 186, ../sass/ngsolr.scss */
+.search-results .summary {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+/* line 192, ../sass/ngsolr.scss */
+.search-results .pages {
+  clear: both;
+  display: block;
+  margin: 0 0 5px 0;
+  padding: 10px 0 10px 0;
+}
+
+/* line 198, ../sass/ngsolr.scss */
+.search-results .pages ul {
+  background: none;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 205, ../sass/ngsolr.scss */
+.search-results .pages ul li {
+  background: none;
+  cursor: pointer;
+  display: inline;
+  font-weight: bold;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 214, ../sass/ngsolr.scss */
+.search-results .pages ul li a {
+  background: none;
+  border: 1px solid #ddd;
+  border-left: none;
+  float: left;
+  line-height: 20px;
+  padding: 4px 12px 4px 12px;
+  text-decoration: none;
+}
+
+/* line 223, ../sass/ngsolr.scss */
+.search-results .pages .iscurrent {
+  color: #555;
+  cursor: default;
+}
+
+/* line 227, ../sass/ngsolr.scss */
+.search-results .pages ul li:first-child a {
+  border-left: 1px solid #ddd;
+}
+
+/*--------------------------------------------------------*/
+/* Image Search Results                                   */
+/* line 234, ../sass/ngsolr.scss */
+.image-grid-row {
+  margin-bottom: 20px;
+}
+
+/*--------------------------------------------------------*/
+/* Location Based Search                                  */
+/* line 241, ../sass/ngsolr.scss */
+.infowindow {
+  max-width: 300px;
+}
+
+/* line 244, ../sass/ngsolr.scss */
+.infowindow .title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* line 248, ../sass/ngsolr.scss */
+.infowindow .address {
+  font-size: small;
+  font-style: italic;
+}
+
+/* line 252, ../sass/ngsolr.scss */
+.infowindow .existdates {
+  font-size: small;
+  font-style: italic;
+  padding-bottom: 5px;
+}
+
+/* line 257, ../sass/ngsolr.scss */
+.infowindow .type {
+  font-size: small;
+  font-style: italic;
+  padding-bottom: 5px;
+}
+
+/* line 265, ../sass/ngsolr.scss */
+#map {
+  bottom: 0;
+  left: 320px;
+  position: absolute;
+  right: 0;
+  top: 93px;
+  z-index: 0;
+}
+
+/* line 273, ../sass/ngsolr.scss */
+#map img {
+  max-width: none;
+}
+
+/*--------------------------------------------------------*/
+/* Facet Panel                                            */
+/* line 280, ../sass/ngsolr.scss */
+.facet-panel {
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  list-style: none;
+  margin-bottom: 20px;
+  margin-left: 0;
+  padding: 0;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+/* line 290, ../sass/ngsolr.scss */
+.facet-panel > li {
+  border-bottom: 1px solid #E5E5E5;
+  padding: 8px 15px;
+  padding-right: 8px;
+}
+
+/* line 295, ../sass/ngsolr.scss */
+.facet-panel > li a {
+  cursor: pointer;
+}
+
+/* line 298, ../sass/ngsolr.scss */
+.facet-panel > li:first-child {
+  color: #333;
+  font-weight: bold;
+}
+
+/* line 302, ../sass/ngsolr.scss */
+.facet-panel > li:last-child {
+  border-bottom: none;
+}
+
+/* line 305, ../sass/ngsolr.scss */
+.facet-panel .fieldname {
+  font-weight: normal;
+}
+
+/* line 308, ../sass/ngsolr.scss */
+.facet-panel .facet-name {
+  font-size: small;
+}
+
+/* line 311, ../sass/ngsolr.scss */
+.facet-panel .facet-score {
+  color: #666;
+  font-size: small;
+}
+
+/* line 315, ../sass/ngsolr.scss */
+.facet-panel .facet a:hover {
+  text-decoration: line-through;
+}
+
+/* line 319, ../sass/ngsolr.scss */
+.year-input {
+  width: auto;
+}
+
+/*--------------------------------------------------------*/
+/* Sidebar Panel                                          */
+/* line 326, ../sass/ngsolr.scss */
+#sidebar {
+  background: white;
+  position: absolute;
+  z-index: 100;
+}
+
+/*--------------------------------------------------------*/
+/* Graphics Panel                                         */
+/* line 335, ../sass/ngsolr.scss */
+.chart div {
+  background-color: #ddd;
+  color: white;
+  font: 10px sans-serif;
+  margin: 1px;
+  padding: 3px;
+  text-align: right;
+}
+
+/* line 343, ../sass/ngsolr.scss */
+.chart div:hover {
+  background-color: steelblue;
+}
+
+/*--------------------------------------------------------*/
+/* Other Styles                                           */
+/* line 350, ../sass/ngsolr.scss */
+.column-240 {
+  /* max-width: 240px; */
+}
+
+/* line 353, ../sass/ngsolr.scss */
+.column-320 {
+  max-width: 320px;
+  overflow: hidden;
+}
+
+/* line 357, ../sass/ngsolr.scss */
+.column-512 {
+  max-width: 512px;
+  overflow: hidden;
+}
+
+/* line 361, ../sass/ngsolr.scss */
+.column-620 {
+  max-width: 640px;
+  overflow: hidden;
+}
+
+/* line 365, ../sass/ngsolr.scss */
+.text-medium {
+  font-size: medium;
+}
+
+/* line 368, ../sass/ngsolr.scss */
+.text-small {
+  font-size: small;
+}
+
+/* line 371, ../sass/ngsolr.scss */
+.text-xsmall {
+  font-size: x-small;
+}

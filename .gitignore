@@ -1,11 +1,12 @@
 *~
 *.gz
 *.zip
-test_*
 
-.idea/
-app/img/icon
-lib/*
-logs/*
-node_modules/**/*
-tmp/
+.idea
+.sass-cache
+
+dist/examples
+logs
+node_modules
+tmp
+vendor
