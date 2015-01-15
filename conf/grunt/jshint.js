@@ -7,6 +7,9 @@ module.exports = {
         jshintrc: 'conf/.jshintrc',
         reporter: require('jshint-stylish')
     },
+    dist: [
+        'dist/ngsolr.js'
+    ],
     src: [
         'Gruntfile.js',
         '<%= src %>/**/*.js',

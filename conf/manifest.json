@@ -1,0 +1,50 @@
+{
+  "title": "<%= pkg.name %>",
+  "description": "<%= pkg.description %>",
+  "version": "<%= pkg.version %>",
+  "pkg": "<%= pkg %>",
+  "app": {
+    "css": [
+      "css/ngsolr.min.css"
+    ],
+    "js": [
+      "js/ngsolr/app.js",
+      "js/ngsolr/services/utils.js",
+      "js/ngsolr/services/solr.js",
+      "js/ngsolr/services/selection.js",
+      "js/ngsolr/filters/textfilters.js",
+      "js/ngsolr/directives/searchbox.js",
+      "js/ngsolr/controllers/DateFacetController.js",
+      "js/ngsolr/controllers/DateFacetHistogramController.js",
+      "js/ngsolr/controllers/DocumentSearchResultsController.js",
+      "js/ngsolr/controllers/FacetSelectionController.js",
+      "js/ngsolr/controllers/FieldFacetController.js",
+      "js/ngsolr/controllers/ImageSearchResultsController.js",
+      "js/ngsolr/controllers/MapController.js",
+      "js/ngsolr/controllers/MapSelectionController.js",
+      "js/ngsolr/controllers/SearchBoxController.js",
+      "js/ngsolr/controllers/SearchHistoryController.js",
+      "https://maps.googleapis.com/maps/api/js",
+      "js/google/infobox.js",
+      "js/google/markerclusterer.js",
+      "js/oms/oms.min.js"
+    ]
+  },
+  "vendor": {
+    "css": [
+      "vendor/angular/angular-csp.css",
+      "vendor/bootstrap/dist/css/bootstrap.min.css",
+      "vendor/bootstrap/dist/css/bootstrap-theme.min.css",
+      "vendor/fontawesome/css/font-awesome.min.css"
+    ],
+    "js": [
+      "vendor/jquery/dist/jquery.min.js",
+      "vendor/angular/angular.min.js",
+      "vendor/angular-route/angular-route.min.js",
+      "vendor/angular-sanitize/angular-sanitize.min.js",
+      "vendor/angular-touch/angular-touch.min.js",
+      "vendor/bootstrap/dist/js/bootstrap.min.js",
+      "vendor/d3/d3.min.js"
+    ]
+  }
+}

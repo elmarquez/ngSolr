@@ -11,7 +11,8 @@
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  */
-function SearchHistoryController($scope, $attrs, SolrSearchService) {
+angular.module('ngSolr').controller('SearchHistoryController',
+    ['$scope', '$attrs', 'SolrSearchService', function ($scope, $attrs, SolrSearchService) {
 
     var key, newquery, query;
 
@@ -69,16 +70,13 @@ function SearchHistoryController($scope, $attrs, SolrSearchService) {
     $scope.setQuery = function(QueryIndex) {
         if (QueryIndex >= 0 && QueryIndex <= $scope.queries.length) {
             query = $scope.queries[QueryIndex];
-            if (query) {
-                // set the query in the search service, then force it to update
-            }
+            //if (query) {
+            //    // set the query in the search service, then force it to update
+            //}
         }
     };
 
     // initialize the controller
     $scope.init();
 
-}
-
-// inject controller dependencies
-SearchHistoryController.$inject = ['$scope', '$attrs', 'SolrSearchService'];
+}]);

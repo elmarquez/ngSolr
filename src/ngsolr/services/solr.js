@@ -385,8 +385,6 @@ function SolrQuery(Url) {
 /*---------------------------------------------------------------------------*/
 /* SolrSearchService                                                         */
 
-var m = angular.module('Solr', []);
-
 /**
  * Used for managing and executing queries against an Apache Solr/Lucene
  * search index. The service provides shared search configuration for multiple
@@ -400,266 +398,263 @@ var m = angular.module('Solr', []);
  * @see http://plnkr.co/edit/ia5b1OcyBD5piP7q8ATr?p=preview
  * @see http://docs.angularjs.org/guide/providers
  */
-m.provider('SolrSearchService', function solrSearchServiceProvider() {
+angular
+    .module('ngSolr')
+    .factory('SolrSearchService', ['$http','$log','$q','$rootScope',
+        function ($http, $log, $q, $rootScope) {
 
-    // the default search query
-    var defaultQuery = function(query) {
-        query.setOption('fl', '*');
-        query.setOption('json.wrf', 'JSON_CALLBACK');
-        query.setOption('rows', 10);
-        query.setOption('wt', 'json');
-        query.setUserQuery('*:*');
-        return query;
-    };
+            // the default search query
+            var defaultQuery = function(query) {
+                query.setOption('fl', '*');
+                query.setOption('json.wrf', 'JSON_CALLBACK');
+                query.setOption('rows', 10);
+                query.setOption('wt', 'json');
+                query.setUserQuery('*:*');
+                return query;
+            };
 
-    /**
-     * Create an instance of the service.
-     * @type {Array}
-     */
-    this.$get = ['$http','$log','$q','$rootScope',function solrSearchServiceFactory($http, $log, $q, $rootScope) {
-        // service instance
-        var svc = {};
+            /**
+             * Set the function that creates the default search query.
+             * @param Query
+             */
+            this.setDefaultQuery = function(Query) {
+                defaultQuery = Query;
+            };
 
-        // name of the default query
-        svc.defaultQueryName = 'defaultQuery';
+            // service instance
+            var svc = {};
 
-        // search queries
-        svc.queries = {};
+            // name of the default query
+            svc.defaultQueryName = 'defaultQuery';
 
-        ///////////////////////////////////////////////////////////////////////////
+            // search queries
+            svc.queries = {};
 
-        /**
-         * Create a default query object.
-         * @param Core Solr core URL, without the action selector or query component
-         * @return {Object} A default query object.
-         */
-        svc.createQuery = function(Core) {
-            // create the base query object, configure it with our default values
-            // and then return it
-            var query = new SolrQuery(Core);
-            return defaultQuery(query);
-        };
+            ///////////////////////////////////////////////////////////////////////////
 
-        /**
-         * Get the query object.
-         * @param Name Query name
-         * @return {Object} The query object or undefined if not found.
-         */
-        svc.getQuery = function(Name) {
-            try {
-                return svc.queries[Name];
-            } catch (Err) {
-                $log.debug('No query named ' + Name + ' available');
-                return undefined;
-            }
-        };
+            /**
+             * Create a default query object.
+             * @param Core Solr core URL, without the action selector or query component
+             * @return {Object} A default query object.
+             */
+            svc.createQuery = function(Core) {
+                // create the base query object, configure it with our default values
+                // and then return it
+                var query = new SolrQuery(Core);
+                return defaultQuery(query);
+            };
 
-        /**
-         * Split the query string up into its constituent parts. Return a
-         * list of parts. The first part is the user query. The remaining
-         * parts are the query parameters. The protocol is that query
-         * parameters are to be preceeded by a space, followed by a + or
-         * - character.
-         * @param Query
-         * ex. *:* +localtype:'Organisation' +function:'Home' -type:'Digital Object' +(fromDate:[ * TO 1973-01-01T00:00:00Z] AND toDate:[1973-12-31T23:59:59Z TO *]) -(something:[range])
-         */
-        svc.getQueryComponents = function(Query) {
-            var parts = [];
-            while (Query.length > 0) {
-                // trim any starting whitespace
-                Query = Query.replace(/^\s\s*/, '');
-                var x = Query.indexOf(' +');
-                var y = Query.indexOf(' -');
-                if (x === -1 && y === -1) {
-                    parts.push(Query); // there are no subsequent parameters
-                    return parts;
-                } else if (x > -1 && (y === -1 || x < y)) {
-                    parts.push(Query.substring(0, x));
-                    Query = Query.substring(x);
-                } else if (y > -1) {
-                    parts.push(Query.substring(0, y));
-                    Query = Query.substring(y);
+            /**
+             * Get the query object.
+             * @param Name Query name
+             * @return {Object} The query object or undefined if not found.
+             */
+            svc.getQuery = function(Name) {
+                try {
+                    return svc.queries[Name];
+                } catch (Err) {
+                    $log.debug('No query named ' + Name + ' available');
+                    return undefined;
                 }
-            }
-            return parts;
-        };
+            };
 
-        /**
-         * Parse the URL hash and return a query object.
-         * @param Hash Window location hash. We assume that the # separator has been removed from the string.
-         * @param CoreUrl URL to Solr core
-         * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
-         */
-        svc.getQueryFromHash = function(Hash, CoreUrl) {
-            // create a default query
-            var query = svc.createQuery(CoreUrl);
-            // break the query up into elements and then set each element
-            // value on the query
-            var hash_elements = decodeURI(Hash).split('&');
-            for (var i=0; i<hash_elements.length; i++) {
-                var element = hash_elements[i];
-                var eparts = element.split('=');
-                // user query and query parameters
-                if (svc.startsWith(element, 'q')) {
-                    var params = svc.getQueryComponents(element.substring(2));
-                    query.setUserQuery(params.shift());
-                    for (var j=0; j<params.length; j++) {
-                        query.addQueryParameter(params[j]);
+            /**
+             * Split the query string up into its constituent parts. Return a
+             * list of parts. The first part is the user query. The remaining
+             * parts are the query parameters. The protocol is that query
+             * parameters are to be preceeded by a space, followed by a + or
+             * - character.
+             * @param Query
+             * ex. *:* +localtype:'Organisation' +function:'Home' -type:'Digital Object' +(fromDate:[ * TO 1973-01-01T00:00:00Z] AND toDate:[1973-12-31T23:59:59Z TO *]) -(something:[range])
+             */
+            svc.getQueryComponents = function(Query) {
+                var parts = [];
+                while (Query.length > 0) {
+                    // trim any starting whitespace
+                    Query = Query.replace(/^\s\s*/, '');
+                    var x = Query.indexOf(' +');
+                    var y = Query.indexOf(' -');
+                    if (x === -1 && y === -1) {
+                        parts.push(Query); // there are no subsequent parameters
+                        return parts;
+                    } else if (x > -1 && (y === -1 || x < y)) {
+                        parts.push(Query.substring(0, x));
+                        Query = Query.substring(x);
+                    } else if (y > -1) {
+                        parts.push(Query.substring(0, y));
+                        Query = Query.substring(y);
                     }
                 }
-                // facets
-                else if (svc.startsWith(element, 'fq')) {
-                    var p = eparts[1].indexOf(':');
-                    var field = eparts[1].substring(0, p);
-                    var value = eparts[1].substring(p + 1);
-                    var facet = new SolrFacet(field, value);
-                    query.addFacet(facet);
+                return parts;
+            };
+
+            /**
+             * Parse the URL hash and return a query object.
+             * @param Hash Window location hash. We assume that the # separator has been removed from the string.
+             * @param CoreUrl URL to Solr core
+             * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
+             */
+            svc.getQueryFromHash = function(Hash, CoreUrl) {
+                // create a default query
+                var query = svc.createQuery(CoreUrl);
+                // break the query up into elements and then set each element
+                // value on the query
+                var hash_elements = decodeURI(Hash).split('&');
+                for (var i=0; i<hash_elements.length; i++) {
+                    var element = hash_elements[i];
+                    var eparts = element.split('=');
+                    // user query and query parameters
+                    if (svc.startsWith(element, 'q')) {
+                        var params = svc.getQueryComponents(element.substring(2));
+                        query.setUserQuery(params.shift());
+                        for (var j=0; j<params.length; j++) {
+                            query.addQueryParameter(params[j]);
+                        }
+                    }
+                    // facets
+                    else if (svc.startsWith(element, 'fq')) {
+                        var p = eparts[1].indexOf(':');
+                        var field = eparts[1].substring(0, p);
+                        var value = eparts[1].substring(p + 1);
+                        var facet = new SolrFacet(field, value);
+                        query.addFacet(facet);
+                    }
+                    // query options
+                    else {
+                        var name = eparts[0].replace('&', '');
+                        if (eparts.length===2) {
+                            query.setOption(name, eparts[1]);
+                        } else {
+                            query.setOption(name, '');
+                        }
+                    }
                 }
-                // query options
-                else {
-                    var name = eparts[0].replace('&', '');
-                    if (eparts.length===2) {
-                        query.setOption(name, eparts[1]);
+                // if there is a near match char on the end of the user query
+                // component, strip it then set nearMatch = true on the query
+                // object
+                var userquery = query.getUserQuery();
+                if (userquery.indexOf('~', userquery.length - 1) !== -1) {
+                    userquery = userquery.substring(0, userquery.length-1);
+                    query.setUserQuery(userquery);
+                    query.setNearMatch(true);
+                }
+                // return the query
+                return query;
+            };
+
+            /**
+             * Get the query response.
+             * @param Name Query name
+             * @return {Object} The query response object or undefined if not found.
+             */
+            svc.getResponse = function(Name) {
+                try {
+                    return svc.queries[Name].response;
+                } catch (Err) {
+                    $log.debug('Query ' + Name + ' not found');
+                }
+            };
+
+            /**
+             * Set the function that creates the default query.
+             * @param DefaultQuery
+             */
+            svc.setDefaultQuery = function(DefaultQuery) {
+                defaultQuery = DefaultQuery;
+            };
+
+            /**
+             * Set the query by name.
+             * @param Query Query object
+             * @param Name Query name
+             */
+            svc.setQuery = function(Name, Query) {
+                svc.queries[Name] = Query;
+            };
+
+            /**
+             * Determine if the string s1 starts with the string s2
+             * @param s1 String 1
+             * @param s2 String 2
+             */
+            svc.startsWith = function(s1, s2) {
+                try {
+                    return s1.slice(0, s2.length) === s2;
+                } catch (Err) {}
+                return false;
+            };
+
+            /**
+             * Update all queries.
+             */
+            svc.updateAllQueries = function () {
+                for (var key in svc.queries) {
+                    svc.updateQuery(key);
+                }
+            };
+
+            /**
+             * Update named queries in order.
+             * @param Queries List of query names
+             */
+            svc.updateQueriesInOrder = function(Queries) {
+                var p, q;
+                for (q in Queries) {
+                    if (p === undefined) {
+                        p = svc.updateQuery(q);
                     } else {
-                        query.setOption(name, '');
+                        p.then(svc.updateQuery(q));
                     }
                 }
-            }
-            // if there is a near match char on the end of the user query
-            // component, strip it then set nearMatch = true on the query
-            // object
-            var userquery = query.getUserQuery();
-            if (userquery.indexOf('~', userquery.length - 1) !== -1) {
-                userquery = userquery.substring(0, userquery.length-1);
-                query.setUserQuery(userquery);
-                query.setNearMatch(true);
-            }
-            // return the query
-            return query;
-        };
+            };
 
-        /**
-         * Get the query response.
-         * @param Name Query name
-         * @return {Object} The query response object or undefined if not found.
-         */
-        svc.getResponse = function(Name) {
-            try {
-                return svc.queries[Name].response;
-            } catch (Err) {
-                $log.debug('Query ' + Name + ' not found');
-            }
-        };
-
-        /**
-         * Set the function that creates the default query.
-         * @param DefaultQuery
-         */
-        svc.setDefaultQuery = function(DefaultQuery) {
-            defaultQuery = DefaultQuery;
-        };
-
-        /**
-         * Set the query by name.
-         * @param Query Query object
-         * @param Name Query name
-         */
-        svc.setQuery = function(Name, Query) {
-            svc.queries[Name] = Query;
-        };
-
-        /**
-         * Determine if the string s1 starts with the string s2
-         * @param s1 String 1
-         * @param s2 String 2
-         */
-        svc.startsWith = function(s1, s2) {
-            try {
-                return s1.slice(0, s2.length) === s2;
-            } catch (Err) {}
-            return false;
-        };
-
-        /**
-         * Update all queries.
-         */
-        svc.updateAllQueries = function () {
-            for (var key in svc.queries) {
-                svc.updateQuery(key);
-            }
-        };
-
-        /**
-         * Update named queries in order.
-         * @param Queries List of query names
-         */
-        svc.updateQueriesInOrder = function(Queries) {
-            var p, q;
-            for (q in Queries) {
-                if (p === undefined) {
-                    p = svc.updateQuery(q);
-                } else {
-                    p.then(svc.updateQuery(q));
-                }
-            }
-        };
-
-        /**
-         * Update the named query.
-         * @param QueryName Query name
-         */
-        svc.updateQuery = function(QueryName) {
-            // get the named query, reset error state, get the query url
-            var query = svc.queries[QueryName];
-            var url = query.getSolrQueryUrl();
-            $log.debug('GET ' + QueryName + ': ' + url);
-            // execute the query
-            return $http.jsonp(url).then(
-                // success
-                function (result) {
-                    // set query result values
-                    query.setErrorMessage(null);
-                    var data = result.data;
-                    query.setHighlighting(data.highlighting);
-                    if (data.hasOwnProperty('facet_counts')) {
-                        query.setFacetCounts(data.facet_counts);
+            /**
+             * Update the named query.
+             * @param QueryName Query name
+             */
+            svc.updateQuery = function(QueryName) {
+                // get the named query, reset error state, get the query url
+                var query = svc.queries[QueryName];
+                var url = query.getSolrQueryUrl();
+                $log.debug('GET ' + QueryName + ': ' + url);
+                // execute the query
+                return $http.jsonp(url).then(
+                    // success
+                    function (result) {
+                        // set query result values
+                        query.setErrorMessage(null);
+                        var data = result.data;
+                        query.setHighlighting(data.highlighting);
+                        if (data.hasOwnProperty('facet_counts')) {
+                            query.setFacetCounts(data.facet_counts);
+                        }
+                        query.setResponse(data.response);
+                        query.setResponseHeader(data.responseHeader);
+                        // notify listeners of changes
+                        $rootScope.$broadcast(QueryName);
+                    },
+                    // error
+                    function () {
+                        var msg = 'Could not get search results from server';
+                        $log.error(msg);
+                        // set query result values
+                        var response = {};
+                        response.numFound = 0;
+                        response.start = 0;
+                        response.docs = [];
+                        query.setErrorMessage(msg);
+                        query.setFacetCounts([]);
+                        query.setHighlighting({});
+                        query.setResponse(response);
+                        query.setResponseHeader({});
+                        // notify listeners of changes
+                        $rootScope.$broadcast(QueryName);
                     }
-                    query.setResponse(data.response);
-                    query.setResponseHeader(data.responseHeader);
-                    // notify listeners of changes
-                    $rootScope.$broadcast(QueryName);
-                },
-                // error
-                function () {
-                    var msg = 'Could not get search results from server';
-                    $log.error(msg);
-                    // set query result values
-                    var response = {};
-                    response.numFound = 0;
-                    response.start = 0;
-                    response.docs = [];
-                    query.setErrorMessage(msg);
-                    query.setFacetCounts([]);
-                    query.setHighlighting({});
-                    query.setResponse(response);
-                    query.setResponseHeader({});
-                    // notify listeners of changes
-                    $rootScope.$broadcast(QueryName);
-                }
-            );
-        };
+                );
+            };
 
-        // return the service instance
-        return svc;
-    }];
+            // return the service instance
+            return svc;
 
-    /**
-     * Set the function that creates the default search query.
-     * @param Query
-     */
-    this.setDefaultQuery = function(Query) {
-        defaultQuery = Query;
-    };
-
-}); // SolrSearchServiceProvider
+}]);
 

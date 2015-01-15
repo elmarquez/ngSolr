@@ -28,7 +28,9 @@
  * @param SelectionSetService Selection set service
  * @param Utils Utility functions
  */
-function MapController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
+angular.module('ngSolr').controller('MapController',
+    ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','SelectionSetService','Utils',
+    function ($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
 
     var i, lat, lng;
 
@@ -305,7 +307,4 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
     // initialize the controller
     $scope.init();
 
-}
-
-// inject dependencies
-MapController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','SelectionSetService','Utils'];
+}]);

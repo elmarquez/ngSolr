@@ -19,7 +19,11 @@
  * @param SolrSearchService
  * @param Utils
  */
-function DocumentSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DocumentSearchResultsController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
 
     // document search results
     $scope.documents = [];
@@ -214,7 +218,4 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     // initialize the controller
     $scope.init();
 
-}
-
-// inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils'];
+}]);

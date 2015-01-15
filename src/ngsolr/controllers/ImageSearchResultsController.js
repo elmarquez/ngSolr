@@ -16,7 +16,9 @@
  * @param $window
  * @param SolrSearchService Solr search service.
  */
-function ImageSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
+angular.module('ngSolr').controller('ImageSearchResultsController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
 
     // the number of items per page
     $scope.documentsPerPage = 16;
@@ -204,7 +206,4 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
     // initialize the controller
     $scope.init();
 
-}
-
-// inject dependencies
-ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];
+}]);

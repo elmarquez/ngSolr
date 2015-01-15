@@ -1,66 +1,98 @@
-/*--------------------------------------------------------*/
-/* Screen Styles                                          */
+//-----------------------------------------------------------------------------
+// ngSolr example page styles
+//
 
-/*--------------------------------------------------------*/
-/* Page Layout                                            */
+//-----------------------------------------------------------------------------
+// Variables
 
-html {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
+$body-background: #f5f5f5;
+$content-background: white;
+$header-background: white;
+$header-color: #333;
+$header-height: 56px;
+$searchbar-background: whitesmoke;
+$spacing: 20px;
+
+//-----------------------------------------------------------------------------
+// Global Defaults, Mixins
+
 body {
-  background: #efefef;
-  height: 100%;
+  background: $body-background;
 }
-#page-header {
-  margin: 0;
+div {
+  box-sizing: border-box;
+}
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+}
+
+//-----------------------------------------------------------------------------
+
+#header {
+  background: $header-background;
+  box-shadow: 0 4px 6px rgba(50,50,50,0.35);
+  color: $header-color;
+  font-weight: bold;
+  height: $header-height;
+  overflow: hidden;
   padding: 0;
 }
-#page-header .navbar {
-  margin: 0;
-  padding: 0;
-}
-#page-header .navbar-inverse {
-  margin: 0;
-  padding: 0;
-}
-#page-header .navbar-inner {
-  border-radius: 0;
-}
-#page-header .form-inline {
-  margin: 0;
-  padding-top: 5px;
+#header div {
+  @include vertical-align;
 }
 #searchbar {
-  background: #efefef;
   border-bottom:1px solid #DEDEDE;
-  height: 50px;
+  padding: $spacing 0 $spacing 0;
+}
+#searchbox input[type=text] {
+  border: solid 1px #BFBDBD;
+  margin: 0;
+  padding: 7px;
+  width: 400px;
+}
+#searchbox #submit {
+  display: none;
+}
+#searchbox #hints {
+  background: white;
+  border: 1px solid #ccc;
+  margin-right: 22px;
+  position: absolute;
+  z-index: 1;
+  /*
+  box-shadow: 0 1px 3px 0 #aaa;
+  -webkit-box-shadow: 0 2px 1px 0 #aaa;
+  */
+}
+#searchbox #list {
+  list-style: none;
   margin: 0;
   padding: 0;
 }
-#searchbar form {
-  margin: 10px 0 10px 0;
-  padding: 0;
+#searchbox #list li {
+  cursor: default;
+  margin: 0 0 2px 0;
+  padding: 5px 10px 5px 10px;
 }
-
-
-
+#searchbox #list li:hover {
+  background: #dedede;
+}
+#searchbox #list li.selected {
+  background: #ddd;
+  font-weight: bold;
+}
+#searchbox #message {
+  color: #1a577a;
+  font-weight: normal;
+  padding: 7px 10px 7px 10px;
+}
 #content {
   background: white;
-  margin: 0;
-  padding-top: 20px;
-}
-#search-panel {
-  min-width: 240px;
-  overflow: hidden;
-  padding-bottom: 20px;
-}
-#sidebar {
-  margin: 0;
-  padding: 0;
-  padding-bottom: 20px;
+  padding-top: $spacing;
 }
 #footer {
   border-top: 1px solid #dedede;
@@ -72,20 +104,6 @@ body {
 }
 
 /*--------------------------------------------------------*/
-/* Branding                                               */
-
-.brand-title {
-  color: #ccc;
-  display: block;
-  float: left;
-  font-size: 20px;
-  font-weight: 200;
-  margin-left: -20px;
-  padding: 10px 20px 10px;
-  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-}
-
-/*--------------------------------------------------------*/
 /* General Styles                                         */
 
 a {
@@ -94,27 +112,30 @@ a {
 .clickable {
   cursor: hand;
 }
-.inset {
-  padding-left: 20px;
-  padding-right: 20px;
+.reading-column {
+  max-width: 512px;
 }
-label {
-  font-size: small;
+ul.inline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.notice {
-  background: #ffffe0;
-  border: 1px solid #ffe4b5;
-  font-size: small;
-  line-height: 1.4em;
-  padding: 5px;
+ul.inline li {
+  display: inline;
+  padding-right: $spacing;
+}
+ul.unstyled {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.year-input {
+  width: auto;
 }
 
 /*--------------------------------------------------------*/
 /* Document Search Results                                */
 
-.reading-column {
-  max-width: 512px;
-}
 .document {
   display: table;
   margin-bottom: 10px;
@@ -158,8 +179,6 @@ label {
   background: yellow;
 }
 .document .text {
-  font-size: small;
-  line-height: 1.25em;
 }
 .document .text em {
   background: yellow;
@@ -275,61 +294,6 @@ label {
 }
 
 /*--------------------------------------------------------*/
-/* Facet Panel                                            */
-
-.facet-panel {
-  border: 1px solid #E5E5E5;
-  border-radius: 4px;
-  list-style: none;
-  margin-bottom: 20px;
-  margin-left: 0;
-  padding: 0;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-}
-.facet-panel>li {
-  border-bottom: 1px solid #E5E5E5;
-  padding: 8px 15px;
-  padding-right: 8px;
-}
-.facet-panel>li a {
-  cursor: pointer;
-}
-.facet-panel>li:first-child {
-  color: #333;
-  font-weight: bold;
-}
-.facet-panel>li:last-child {
-  border-bottom: none;
-}
-.facet-panel .fieldname {
-  font-weight: normal;
-}
-.facet-panel .facet-name {
-  font-size: small;
-}
-.facet-panel .facet-score {
-  color: #666;
-  font-size: small;
-}
-.facet-panel .facet a:hover {
-  text-decoration: line-through;
-}
-
-.year-input {
-  width: auto;
-}
-
-/*--------------------------------------------------------*/
-/* Sidebar Panel                                          */
-
-#sidebar {
-  background: white;
-  position: absolute;
-  z-index: 100;
-}
-
-/*--------------------------------------------------------*/
 /* Graphics Panel                                         */
 
 .chart div {
@@ -342,32 +306,4 @@ label {
 }
 .chart div:hover {
   background-color: steelblue;
-}
-
-/*--------------------------------------------------------*/
-/* Other Styles                                           */
-
-.column-240 {
-/* max-width: 240px; */
-}
-.column-320 {
-  max-width: 320px;
-  overflow: hidden;
-}
-.column-512 {
-  max-width: 512px;
-  overflow: hidden;
-}
-.column-620 {
-  max-width: 640px;
-  overflow: hidden;
-}
-.text-medium {
-  font-size: medium;
-}
-.text-small {
-  font-size: small;
-}
-.text-xsmall {
-  font-size: x-small;
 }

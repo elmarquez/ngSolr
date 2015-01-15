@@ -18,7 +18,9 @@
  * @param $window
  * @param SolrSearchService Solr search service
  */
-function FacetSelectionController($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
+angular.module('ngSolr').controller('FacetSelectionController',
+    ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+    function ($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
 
     var hash, key, query;
 
@@ -75,7 +77,4 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
     // initialize the controller
     $scope.init();
 
-}
-
-// inject controller dependencies
-FacetSelectionController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];
+}]);

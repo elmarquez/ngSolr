@@ -6,9 +6,6 @@
 /* jshint loopfunc:true */
 'use strict';
 
-/*---------------------------------------------------------------------------*/
-/* DateFacetHistogramController                                              */
-
 /**
  * Date facet controller filters a query by year range, displays controls to
  * set the start/end dates, displays a histogram control to both view and
@@ -25,7 +22,11 @@
  * @todo the method of fetching dates should use the .then() method of data retrieval for the start/end dates
  * @todo update to reflect the current date range, if such a facet exists
  */
-function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DateFacetHistogramController',
+        ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, Utils) {
 
     var bin, count, date, endDateResults, i, item, query, startDateResults, userquery;
 
@@ -336,7 +337,4 @@ function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $
             .remove();
     };
 
-}
-
-// inject controller dependencies
-DateFacetHistogramController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','Utils'];
+}]);

@@ -1,14 +1,49 @@
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-
 'use strict';
+
 
 /*---------------------------------------------------------------------------*/
 /* Application                                                               */
 
-var app = angular.module('solr-ajax',['ngRoute','Autocomplete','TextFilters','Solr','Utils']);
+var app = angular.module('ngSolr', ['ngRoute','ngSanitize']);
+
+// Application configuration
+app.constant('Cfg', {
+    'api': 'api/data/',
+    'env': [ 'development','staging','production']
+});
+
+// Solr query defaults
+app.constant('Solr', {
+    defaultQuery: function(query) {
+        var f = query.createFacet('location_0_coordinate', '*');
+        query.addFacet(f);
+        query.setOption('fl', '*');
+        query.setOption('json.wrf', 'JSON_CALLBACK');
+        query.setOption('rows', '5000');
+        query.setOption('sort', 'title+asc');
+        query.setOption('wt', 'json');
+        query.setUserQuery('*:*');
+        return query;
+    }
+});
+
+//// Reconfigure the default search query so that we only return those records
+//// that have location coordinate values.
+//var m = angular.module('Solr');
+//m.config(['SolrSearchServiceProvider', function(SolrSearchServiceProvider) {
+//    var defaultQuery = function(query) {
+//        var f = query.createFacet('location_0_coordinate', '*');
+//        query.addFacet(f);
+//        query.setOption('fl', '*');
+//        query.setOption('json.wrf', 'JSON_CALLBACK');
+//        query.setOption('rows', '5000');
+//        query.setOption('sort', 'title+asc');
+//        query.setOption('wt', 'json');
+//        query.setUserQuery('*:*');
+//        return query;
+//    };
+//    SolrSearchServiceProvider.setDefaultQuery(defaultQuery);
+//}]);
 
 /**
  * Define application routes.
@@ -19,14 +54,10 @@ app.config(['$routeProvider', function($routeProvider) {
         when('/:query', { event: '/query' }).
         otherwise({ event: '/' });
 }]);
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
+
 /* jshint camelcase:false */
-'use strict';
+
 
 /**
  * Date facet controller filters a query by year range, displays controls to
@@ -39,7 +70,11 @@ app.config(['$routeProvider', function($routeProvider) {
  * @param SolrSearchService Solr search service
  * @param Utils Utilities module
  */
-function DateFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DateFacetController',
+        ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
 
     var date, dateRange, endDateQuery, endDateResults, end_value, end_year,
         f, hash, i, item, query, start_value, start_year, startDateQuery,
@@ -247,22 +282,11 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject controller dependencies
-DateFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils'];
-;
-
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* global d3 */
 /* jshint loopfunc:true */
-'use strict';
 
-/*---------------------------------------------------------------------------*/
-/* DateFacetHistogramController                                              */
 
 /**
  * Date facet controller filters a query by year range, displays controls to
@@ -280,7 +304,11 @@ DateFacetController.$inject = ['$scope','$attrs','$location','$route','$routePar
  * @todo the method of fetching dates should use the .then() method of data retrieval for the start/end dates
  * @todo update to reflect the current date range, if such a facet exists
  */
-function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DateFacetHistogramController',
+        ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, Utils) {
 
     var bin, count, date, endDateResults, i, item, query, startDateResults, userquery;
 
@@ -591,18 +619,9 @@ function DateFacetHistogramController($scope, $attrs, $location, $log, $route, $
             .remove();
     };
 
-}
+}]);
 
-// inject controller dependencies
-DateFacetHistogramController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','Utils'];
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-
-'use strict';
 
 /*---------------------------------------------------------------------------*/
 /* DocumentSearchResultsController                                           */
@@ -618,7 +637,11 @@ DateFacetHistogramController.$inject = ['$scope','$attrs','$location','$log','$r
  * @param SolrSearchService
  * @param Utils
  */
-function DocumentSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DocumentSearchResultsController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
 
     // document search results
     $scope.documents = [];
@@ -813,18 +836,9 @@ function DocumentSearchResultsController($scope, $attrs, $location, $route, $rou
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject controller dependencies
-DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils'];
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-
-'use strict';
 
 /*---------------------------------------------------------------------------*/
 /* FacetSelectionController                                                  */
@@ -839,7 +853,9 @@ DocumentSearchResultsController.$inject = ['$scope','$attrs','$location','$route
  * @param $window
  * @param SolrSearchService Solr search service
  */
-function FacetSelectionController($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
+angular.module('ngSolr').controller('FacetSelectionController',
+    ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+    function ($scope, $attrs, $location, $route, $routeParams, $window,  SolrSearchService) {
 
     var hash, key, query;
 
@@ -896,18 +912,10 @@ function FacetSelectionController($scope, $attrs, $location, $route, $routeParam
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject controller dependencies
-FacetSelectionController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];
-;
-
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* jshint camelcase:false */
-'use strict';
+
 
 /**
  * Facet field query controller. Fetches a list of facet values from the search
@@ -925,7 +933,11 @@ FacetSelectionController.$inject = ['$scope','$attrs','$location','$route','$rou
  * @param $window
  * @param SolrSearchService Solr search service
  */
-function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
+angular
+    .module('ngSolr')
+    .controller('FieldFacetController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
 
     var count, f, facet, facet_fields, facets, facet_query, hash, i, key, name, query, results, s, selected_values, value;
 
@@ -1090,17 +1102,9 @@ function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject dependencies
-FieldFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-
-'use strict';
 
 /**
  * Image based search controller. Present search results for a named query.
@@ -1113,7 +1117,9 @@ FieldFacetController.$inject = ['$scope','$attrs','$location','$route','$routePa
  * @param $window
  * @param SolrSearchService Solr search service.
  */
-function ImageSearchResultsController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
+angular.module('ngSolr').controller('ImageSearchResultsController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
 
     // the number of items per page
     $scope.documentsPerPage = 16;
@@ -1301,19 +1307,11 @@ function ImageSearchResultsController($scope, $attrs, $location, $route, $routeP
     // initialize the controller
     $scope.init();
 
-}
-
-// inject dependencies
-ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];;
-
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
+}]);
 
 /* global OverlappingMarkerSpiderfier, google */
 /* jshint camelcase:false */
-'use strict';
+
 
 /*---------------------------------------------------------------------------*/
 /* MapController                                                             */
@@ -1336,7 +1334,9 @@ ImageSearchResultsController.$inject = ['$scope','$attrs','$location','$route','
  * @param SelectionSetService Selection set service
  * @param Utils Utility functions
  */
-function MapController($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
+angular.module('ngSolr').controller('MapController',
+    ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','SelectionSetService','Utils',
+    function ($scope, $attrs, $location, $log, $route, $routeParams, SolrSearchService, SelectionSetService, Utils) {
 
     var i, lat, lng;
 
@@ -1613,20 +1613,12 @@ function MapController($scope, $attrs, $location, $log, $route, $routeParams, So
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject dependencies
-MapController.$inject = ['$scope','$attrs','$location','$log','$route','$routeParams','SolrSearchService','SelectionSetService','Utils'];;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-
-'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* MapSelectionController                                                       */
+/* MapSelectionController                                                    */
 
 /**
  * Map selection controller.
@@ -1635,7 +1627,9 @@ MapController.$inject = ['$scope','$attrs','$location','$log','$route','$routePa
  * @param $log Log service
  * @param SelectionSetService
  */
-function MapSelectionController($scope, $attrs, $log, SelectionSetService) {
+angular.module('ngSolr').controller('MapSelectionController',
+    ['$scope','$attrs','$log','SelectionSetService',
+    function ($scope, $attrs, $log, SelectionSetService) {
 
     // allow only a single item to be selected at a time
     $scope.singleSelection = true;
@@ -1679,18 +1673,10 @@ function MapSelectionController($scope, $attrs, $log, SelectionSetService) {
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject controller dependencies
-MapSelectionController.$inject = ['$scope','$attrs','$log','SelectionSetService'];
-;
-
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* jshint camelcase:false */
-'use strict';
+
 
 /**
  * Provides auto-complete and extended search support aids.
@@ -1704,184 +1690,179 @@ MapSelectionController.$inject = ['$scope','$attrs','$log','SelectionSetService'
  * @param Utils Utility
  * @see http://jsfiddle.net/DNjSM/17/
  */
-function SearchBoxController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('SearchBoxController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService, Utils) {
 
-    var hash, hintlist, i, item, key, query, result, results, token, trimmed;
+            var hash, hintlist, i, item, key, query, result, results, token, trimmed;
 
-    // the complete list of search hints
-    $scope.hints = [];
+            // the complete list of search hints
+            $scope.hints = [];
 
-    // the subset of hints displayed to the user
-    // @todo is this actually used??
-    $scope.hintlist = [];
+            // the subset of hints displayed to the user
+            // @todo is this actually used??
+            $scope.hintlist = [];
 
-    // the maximum number of hints to display at any moment
-    $scope.maxHints = 10;
+            // the maximum number of hints to display at any moment
+            $scope.maxHints = 10;
 
-    // the minimum number characters that the user should enter before the list
-    // of search hints is displayed
-    $scope.minSearchLength = 3;
+            // the minimum number characters that the user should enter before the list
+            // of search hints is displayed
+            $scope.minSearchLength = 3;
 
-    // find near matches to the user query
-    $scope.nearMatch = false;
+            // find near matches to the user query
+            $scope.nearMatch = false;
 
-    // the name of the main query
-    $scope.queryName = SolrSearchService.defaultQueryName;
+            // the name of the main query
+            $scope.queryName = SolrSearchService.defaultQueryName;
 
-    // when the user submits the query, redirect to the specified URL, with the
-    // query appended, to render the results
-    $scope.redirect = undefined;
+            // when the user submits the query, redirect to the specified URL, with the
+            // query appended, to render the results
+            $scope.redirect = undefined;
 
-    // If true, when a user enters a new query string, the target query will be
-    // replaced with a new query and the user query property will be set, If
-    // false, only the user query and start properties will be changed and the
-    // query results will be reloaded.
-    $scope.resetOnChange = false;
+            // If true, when a user enters a new query string, the target query will be
+            // replaced with a new query and the user query property will be set, If
+            // false, only the user query and start properties will be changed and the
+            // query results will be reloaded.
+            $scope.resetOnChange = false;
 
-    // the field name where search hints are taken from
-    $scope.searchHintsField = 'hints';
+            // the field name where search hints are taken from
+            $scope.searchHintsField = 'hints';
 
-    // the name of the query that returns the list of search hints
-    $scope.searchHintsQuery = 'searchHintsQuery';
+            // the name of the query that returns the list of search hints
+            $scope.searchHintsQuery = 'searchHintsQuery';
 
-    // url to solr core
-    $scope.source = undefined;
+            // url to solr core
+            $scope.source = undefined;
 
-    // the query string provided by the user
-    $scope.userquery = '';
+            // the query string provided by the user
+            $scope.userquery = '';
 
-    ///////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Get the list of matching hints.
-     */
-    $scope.getHintList = function() {
-        $scope.hintlist = $scope.hints.splice(0,10);
-    };
+            /**
+             * Get the list of matching hints.
+             */
+            $scope.getHintList = function () {
+                $scope.hintlist = $scope.hints.splice(0, 10);
+            };
 
-    /**
-     * Update the list of search hints.
-     * @return {Array}
-     */
-    $scope.getHints = function() {
-        hintlist = [];
-        if ($scope.userquery.length >= $scope.minSearchLength) {
-            for (i=0;i<$scope.hints.length, hintlist.length<$scope.maxHints;i++) {
-                token = $scope.hints[i];
-                try {
-                    if (token.indexOf($scope.userquery) > -1) {
-                        hintlist.push(token);
+            /**
+             * Update the list of search hints.
+             * @return {Array}
+             */
+            $scope.getHints = function () {
+                hintlist = [];
+                if ($scope.userquery.length >= $scope.minSearchLength) {
+                    for (i = 0; i < $scope.hints.length, hintlist.length < $scope.maxHints; i++) {
+                        token = $scope.hints[i];
+                        try {
+                            if (token.indexOf($scope.userquery) > -1) {
+                                hintlist.push(token);
+                            }
+                        } catch (err) {
+                            continue;
+                        }
                     }
-                } catch (err) {
-                    continue;
                 }
-            }
-        }
-        return hintlist;
-    };
+                return hintlist;
+            };
 
-    /**
-     * Handle submit click event. Construct a valid Solr query URL from the
-     * user input data, then execute a GET call with that URL.
-     */
-    $scope.handleSubmit = function() {
-        // clean up the user query
-        trimmed = Utils.trim($scope.userquery);
-        if (trimmed === '') {
-            $scope.userquery = '*:*';
-        }
-        // build the query string
-        query = SolrSearchService.getQuery($scope.queryName);
-        if (query === undefined) {
-            query = SolrSearchService.createQuery($scope.source);
-        }
-        query.setNearMatch($scope.nearMatch);
-        query.setUserQuery($scope.userquery);
-        // update the window location
-        hash = query.getHash();
-        if ($scope.redirect) {
-            $window.location.href = $scope.redirect + '#' + hash;
-        } else {
-            $location.path(hash);
-        }
-    };
-
-    /**
-     * Update the controller state.
-     */
-    $scope.handleUpdate = function() {
-        query = SolrSearchService.getQuery($scope.searchHintsQuery);
-        results = query.getFacetCounts();
-        if (results && results.hasOwnProperty('facet_fields')) {
-            // get the hint list, which we expect is already
-            // sorted and contains only unique terms
-            result = results.facet_fields[$scope.searchHintsField];
-            if (result) {
-                // transform all results to lowercase, add to list
-                for (i=0;i<result.length;i+=2) {
-                    item = result[i].toLowerCase();
-                    $scope.hints.push(item);
+            /**
+             * Handle submit click event. Construct a valid Solr query URL from the
+             * user input data, then execute a GET call with that URL.
+             */
+            $scope.handleSubmit = function () {
+                // clean up the user query
+                trimmed = Utils.trim($scope.userquery);
+                if (trimmed === '') {
+                    $scope.userquery = '*:*';
                 }
-            }
-        }
-    };
-
-    /**
-     * Initialize the controller.
-     */
-    $scope.init = function() {
-        // apply configured attributes
-        for (key in $attrs) {
-            if ($scope.hasOwnProperty(key)) {
-                if (key === 'documentsPerPage' || key === 'pagesPerSet') {
-                    $scope[key] = parseInt($attrs[key]);
-                } else if ($attrs[key] === 'true' || $attrs[key] === 'false') {
-                    $scope[key] = $attrs[key] === 'true';
+                // build the query string
+                query = SolrSearchService.getQuery($scope.queryName);
+                if (query === undefined) {
+                    query = SolrSearchService.createQuery($scope.source);
+                }
+                query.setNearMatch($scope.nearMatch);
+                query.setUserQuery($scope.userquery);
+                // update the window location
+                hash = query.getHash();
+                if ($scope.redirect) {
+                    $window.location.href = $scope.redirect + '#' + hash;
                 } else {
-                    $scope[key] = $attrs[key];
+                    $location.path(hash);
                 }
-            }
-        }
-        // handle location change event, update query value
-        $scope.$on('$routeChangeSuccess', function() {
-            hash = ($routeParams.query || '');
-            if (hash !== '') {
-                query = SolrSearchService.getQueryFromHash(hash, $scope.source);
-                $scope.userquery = query.getUserQuery();
-            } else {
-                $scope.userquery = hash;
-            }
-        });
-        // create a query to fetch the list of search hints
-        query = SolrSearchService.createQuery($scope.source);
-        query.setOption('rows', '0');
-        query.setOption('facet', 'true');
-        query.setOption('facet.limit', '-1');
-        query.setOption('facet.field', $scope.searchHintsField);
-        SolrSearchService.setQuery($scope.searchHintsQuery,query);
-        // handle update events on the hints query
-        $scope.$on($scope.searchHintsQuery, function() {
-            $scope.handleUpdate();
-        });
-        // update the hints query
-        SolrSearchService.updateQuery($scope.searchHintsQuery);
-    };
+            };
 
-    // initialize the controller
-    $scope.init();
+            /**
+             * Update the controller state.
+             */
+            $scope.handleUpdate = function () {
+                query = SolrSearchService.getQuery($scope.searchHintsQuery);
+                results = query.getFacetCounts();
+                if (results && results.hasOwnProperty('facet_fields')) {
+                    // get the hint list, which we expect is already
+                    // sorted and contains only unique terms
+                    result = results.facet_fields[$scope.searchHintsField];
+                    if (result) {
+                        // transform all results to lowercase, add to list
+                        for (i = 0; i < result.length; i += 2) {
+                            item = result[i].toLowerCase();
+                            $scope.hints.push(item);
+                        }
+                    }
+                }
+            };
 
-}
+            /**
+             * Initialize the controller.
+             */
+            $scope.init = function () {
+                // apply configured attributes
+                for (key in $attrs) {
+                    if ($scope.hasOwnProperty(key)) {
+                        if (key === 'documentsPerPage' || key === 'pagesPerSet') {
+                            $scope[key] = parseInt($attrs[key]);
+                        } else if ($attrs[key] === 'true' || $attrs[key] === 'false') {
+                            $scope[key] = $attrs[key] === 'true';
+                        } else {
+                            $scope[key] = $attrs[key];
+                        }
+                    }
+                }
+                // handle location change event, update query value
+                $scope.$on('$routeChangeSuccess', function () {
+                    hash = ($routeParams.query || '');
+                    if (hash !== '') {
+                        query = SolrSearchService.getQueryFromHash(hash, $scope.source);
+                        $scope.userquery = query.getUserQuery();
+                    } else {
+                        $scope.userquery = hash;
+                    }
+                });
+                // create a query to fetch the list of search hints
+                query = SolrSearchService.createQuery($scope.source);
+                query.setOption('rows', '0');
+                query.setOption('facet', 'true');
+                query.setOption('facet.limit', '-1');
+                query.setOption('facet.field', $scope.searchHintsField);
+                SolrSearchService.setQuery($scope.searchHintsQuery, query);
+                // handle update events on the hints query
+                $scope.$on($scope.searchHintsQuery, function () {
+                    $scope.handleUpdate();
+                });
+                // update the hints query
+                SolrSearchService.updateQuery($scope.searchHintsQuery);
+            };
 
-// inject controller dependencies
-SearchBoxController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService','Utils'];
-;
+            // initialize the controller
+            $scope.init();
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
+        }]);
 
-'use strict';
+
 
 /**
  * Search history controller. Lists the last N user search queries. Takes the
@@ -1889,7 +1870,8 @@ SearchBoxController.$inject = ['$scope','$attrs','$location','$route','$routePar
  * @param $scope Controller scope
  * @param SolrSearchService Solr search service
  */
-function SearchHistoryController($scope, $attrs, SolrSearchService) {
+angular.module('ngSolr').controller('SearchHistoryController',
+    ['$scope', '$attrs', 'SolrSearchService', function ($scope, $attrs, SolrSearchService) {
 
     var key, newquery, query;
 
@@ -1947,27 +1929,19 @@ function SearchHistoryController($scope, $attrs, SolrSearchService) {
     $scope.setQuery = function(QueryIndex) {
         if (QueryIndex >= 0 && QueryIndex <= $scope.queries.length) {
             query = $scope.queries[QueryIndex];
-            if (query) {
-                // set the query in the search service, then force it to update
-            }
+            //if (query) {
+            //    // set the query in the search service, then force it to update
+            //}
         }
     };
 
     // initialize the controller
     $scope.init();
 
-}
+}]);
 
-// inject controller dependencies
-SearchHistoryController.$inject = ['$scope', '$attrs', 'SolrSearchService'];
-;
-
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* global $ */
-'use strict';
+
 
 /**
  * Directive to add JQuery UI AutoComplete to element
@@ -2044,14 +2018,9 @@ angular
             scope: false
         };
     });
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* jshint camelcase:false */
-'use strict';
+
 
 /**
  * Search box provides an input for user queries, provides search hints related
@@ -2367,19 +2336,13 @@ angular
                     source: '@'
                 },
                 // @todo consider baking the template into the directive instead of using an external file
-                templateUrl: 'js/solr-ajax/directives/searchbox.html',
+                templateUrl: 'js/ngsolr/directives/searchbox.html',
                 transclude: true
             };
         }]
 );
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 
-'use strict';
 
 angular
     .module('ngSolr')
@@ -2527,13 +2490,8 @@ angular
             return text;
         };
     });
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-'use strict';
+
 
 /**
  * Maintains a selection set and notifies listeners when changes occur to the
@@ -2621,14 +2579,9 @@ angular
     return svc;
 
 }]);
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
 /* jshint camelcase:false */
-'use strict';
+
 
 /*---------------------------------------------------------------------------*/
 /* SolrSearchService support classes                                         */
@@ -3010,8 +2963,6 @@ function SolrQuery(Url) {
 /*---------------------------------------------------------------------------*/
 /* SolrSearchService                                                         */
 
-var m = angular.module('Solr', []);
-
 /**
  * Used for managing and executing queries against an Apache Solr/Lucene
  * search index. The service provides shared search configuration for multiple
@@ -3025,276 +2976,268 @@ var m = angular.module('Solr', []);
  * @see http://plnkr.co/edit/ia5b1OcyBD5piP7q8ATr?p=preview
  * @see http://docs.angularjs.org/guide/providers
  */
-m.provider('SolrSearchService', function solrSearchServiceProvider() {
+angular
+    .module('ngSolr')
+    .factory('SolrSearchService', ['$http','$log','$q','$rootScope',
+        function ($http, $log, $q, $rootScope) {
 
-    // the default search query
-    var defaultQuery = function(query) {
-        query.setOption('fl', '*');
-        query.setOption('json.wrf', 'JSON_CALLBACK');
-        query.setOption('rows', 10);
-        query.setOption('wt', 'json');
-        query.setUserQuery('*:*');
-        return query;
-    };
+            // the default search query
+            var defaultQuery = function(query) {
+                query.setOption('fl', '*');
+                query.setOption('json.wrf', 'JSON_CALLBACK');
+                query.setOption('rows', 10);
+                query.setOption('wt', 'json');
+                query.setUserQuery('*:*');
+                return query;
+            };
 
-    /**
-     * Create an instance of the service.
-     * @type {Array}
-     */
-    this.$get = ['$http','$log','$q','$rootScope',function solrSearchServiceFactory($http, $log, $q, $rootScope) {
-        // service instance
-        var svc = {};
+            /**
+             * Set the function that creates the default search query.
+             * @param Query
+             */
+            this.setDefaultQuery = function(Query) {
+                defaultQuery = Query;
+            };
 
-        // name of the default query
-        svc.defaultQueryName = 'defaultQuery';
+            // service instance
+            var svc = {};
 
-        // search queries
-        svc.queries = {};
+            // name of the default query
+            svc.defaultQueryName = 'defaultQuery';
 
-        ///////////////////////////////////////////////////////////////////////////
+            // search queries
+            svc.queries = {};
 
-        /**
-         * Create a default query object.
-         * @param Core Solr core URL, without the action selector or query component
-         * @return {Object} A default query object.
-         */
-        svc.createQuery = function(Core) {
-            // create the base query object, configure it with our default values
-            // and then return it
-            var query = new SolrQuery(Core);
-            return defaultQuery(query);
-        };
+            ///////////////////////////////////////////////////////////////////////////
 
-        /**
-         * Get the query object.
-         * @param Name Query name
-         * @return {Object} The query object or undefined if not found.
-         */
-        svc.getQuery = function(Name) {
-            try {
-                return svc.queries[Name];
-            } catch (Err) {
-                $log.debug('No query named ' + Name + ' available');
-                return undefined;
-            }
-        };
+            /**
+             * Create a default query object.
+             * @param Core Solr core URL, without the action selector or query component
+             * @return {Object} A default query object.
+             */
+            svc.createQuery = function(Core) {
+                // create the base query object, configure it with our default values
+                // and then return it
+                var query = new SolrQuery(Core);
+                return defaultQuery(query);
+            };
 
-        /**
-         * Split the query string up into its constituent parts. Return a
-         * list of parts. The first part is the user query. The remaining
-         * parts are the query parameters. The protocol is that query
-         * parameters are to be preceeded by a space, followed by a + or
-         * - character.
-         * @param Query
-         * ex. *:* +localtype:'Organisation' +function:'Home' -type:'Digital Object' +(fromDate:[ * TO 1973-01-01T00:00:00Z] AND toDate:[1973-12-31T23:59:59Z TO *]) -(something:[range])
-         */
-        svc.getQueryComponents = function(Query) {
-            var parts = [];
-            while (Query.length > 0) {
-                // trim any starting whitespace
-                Query = Query.replace(/^\s\s*/, '');
-                var x = Query.indexOf(' +');
-                var y = Query.indexOf(' -');
-                if (x === -1 && y === -1) {
-                    parts.push(Query); // there are no subsequent parameters
-                    return parts;
-                } else if (x > -1 && (y === -1 || x < y)) {
-                    parts.push(Query.substring(0, x));
-                    Query = Query.substring(x);
-                } else if (y > -1) {
-                    parts.push(Query.substring(0, y));
-                    Query = Query.substring(y);
+            /**
+             * Get the query object.
+             * @param Name Query name
+             * @return {Object} The query object or undefined if not found.
+             */
+            svc.getQuery = function(Name) {
+                try {
+                    return svc.queries[Name];
+                } catch (Err) {
+                    $log.debug('No query named ' + Name + ' available');
+                    return undefined;
                 }
-            }
-            return parts;
-        };
+            };
 
-        /**
-         * Parse the URL hash and return a query object.
-         * @param Hash Window location hash. We assume that the # separator has been removed from the string.
-         * @param CoreUrl URL to Solr core
-         * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
-         */
-        svc.getQueryFromHash = function(Hash, CoreUrl) {
-            // create a default query
-            var query = svc.createQuery(CoreUrl);
-            // break the query up into elements and then set each element
-            // value on the query
-            var hash_elements = decodeURI(Hash).split('&');
-            for (var i=0; i<hash_elements.length; i++) {
-                var element = hash_elements[i];
-                var eparts = element.split('=');
-                // user query and query parameters
-                if (svc.startsWith(element, 'q')) {
-                    var params = svc.getQueryComponents(element.substring(2));
-                    query.setUserQuery(params.shift());
-                    for (var j=0; j<params.length; j++) {
-                        query.addQueryParameter(params[j]);
+            /**
+             * Split the query string up into its constituent parts. Return a
+             * list of parts. The first part is the user query. The remaining
+             * parts are the query parameters. The protocol is that query
+             * parameters are to be preceeded by a space, followed by a + or
+             * - character.
+             * @param Query
+             * ex. *:* +localtype:'Organisation' +function:'Home' -type:'Digital Object' +(fromDate:[ * TO 1973-01-01T00:00:00Z] AND toDate:[1973-12-31T23:59:59Z TO *]) -(something:[range])
+             */
+            svc.getQueryComponents = function(Query) {
+                var parts = [];
+                while (Query.length > 0) {
+                    // trim any starting whitespace
+                    Query = Query.replace(/^\s\s*/, '');
+                    var x = Query.indexOf(' +');
+                    var y = Query.indexOf(' -');
+                    if (x === -1 && y === -1) {
+                        parts.push(Query); // there are no subsequent parameters
+                        return parts;
+                    } else if (x > -1 && (y === -1 || x < y)) {
+                        parts.push(Query.substring(0, x));
+                        Query = Query.substring(x);
+                    } else if (y > -1) {
+                        parts.push(Query.substring(0, y));
+                        Query = Query.substring(y);
                     }
                 }
-                // facets
-                else if (svc.startsWith(element, 'fq')) {
-                    var p = eparts[1].indexOf(':');
-                    var field = eparts[1].substring(0, p);
-                    var value = eparts[1].substring(p + 1);
-                    var facet = new SolrFacet(field, value);
-                    query.addFacet(facet);
+                return parts;
+            };
+
+            /**
+             * Parse the URL hash and return a query object.
+             * @param Hash Window location hash. We assume that the # separator has been removed from the string.
+             * @param CoreUrl URL to Solr core
+             * http://dev02.internal:8080/eac-ajax/app/documents.html#/q=*:*&rows=10&fl=abstract,dobj_proxy_small,fromDate,id,localtype,presentation_url,region,title,toDate&wt=json
+             */
+            svc.getQueryFromHash = function(Hash, CoreUrl) {
+                // create a default query
+                var query = svc.createQuery(CoreUrl);
+                // break the query up into elements and then set each element
+                // value on the query
+                var hash_elements = decodeURI(Hash).split('&');
+                for (var i=0; i<hash_elements.length; i++) {
+                    var element = hash_elements[i];
+                    var eparts = element.split('=');
+                    // user query and query parameters
+                    if (svc.startsWith(element, 'q')) {
+                        var params = svc.getQueryComponents(element.substring(2));
+                        query.setUserQuery(params.shift());
+                        for (var j=0; j<params.length; j++) {
+                            query.addQueryParameter(params[j]);
+                        }
+                    }
+                    // facets
+                    else if (svc.startsWith(element, 'fq')) {
+                        var p = eparts[1].indexOf(':');
+                        var field = eparts[1].substring(0, p);
+                        var value = eparts[1].substring(p + 1);
+                        var facet = new SolrFacet(field, value);
+                        query.addFacet(facet);
+                    }
+                    // query options
+                    else {
+                        var name = eparts[0].replace('&', '');
+                        if (eparts.length===2) {
+                            query.setOption(name, eparts[1]);
+                        } else {
+                            query.setOption(name, '');
+                        }
+                    }
                 }
-                // query options
-                else {
-                    var name = eparts[0].replace('&', '');
-                    if (eparts.length===2) {
-                        query.setOption(name, eparts[1]);
+                // if there is a near match char on the end of the user query
+                // component, strip it then set nearMatch = true on the query
+                // object
+                var userquery = query.getUserQuery();
+                if (userquery.indexOf('~', userquery.length - 1) !== -1) {
+                    userquery = userquery.substring(0, userquery.length-1);
+                    query.setUserQuery(userquery);
+                    query.setNearMatch(true);
+                }
+                // return the query
+                return query;
+            };
+
+            /**
+             * Get the query response.
+             * @param Name Query name
+             * @return {Object} The query response object or undefined if not found.
+             */
+            svc.getResponse = function(Name) {
+                try {
+                    return svc.queries[Name].response;
+                } catch (Err) {
+                    $log.debug('Query ' + Name + ' not found');
+                }
+            };
+
+            /**
+             * Set the function that creates the default query.
+             * @param DefaultQuery
+             */
+            svc.setDefaultQuery = function(DefaultQuery) {
+                defaultQuery = DefaultQuery;
+            };
+
+            /**
+             * Set the query by name.
+             * @param Query Query object
+             * @param Name Query name
+             */
+            svc.setQuery = function(Name, Query) {
+                svc.queries[Name] = Query;
+            };
+
+            /**
+             * Determine if the string s1 starts with the string s2
+             * @param s1 String 1
+             * @param s2 String 2
+             */
+            svc.startsWith = function(s1, s2) {
+                try {
+                    return s1.slice(0, s2.length) === s2;
+                } catch (Err) {}
+                return false;
+            };
+
+            /**
+             * Update all queries.
+             */
+            svc.updateAllQueries = function () {
+                for (var key in svc.queries) {
+                    svc.updateQuery(key);
+                }
+            };
+
+            /**
+             * Update named queries in order.
+             * @param Queries List of query names
+             */
+            svc.updateQueriesInOrder = function(Queries) {
+                var p, q;
+                for (q in Queries) {
+                    if (p === undefined) {
+                        p = svc.updateQuery(q);
                     } else {
-                        query.setOption(name, '');
+                        p.then(svc.updateQuery(q));
                     }
                 }
-            }
-            // if there is a near match char on the end of the user query
-            // component, strip it then set nearMatch = true on the query
-            // object
-            var userquery = query.getUserQuery();
-            if (userquery.indexOf('~', userquery.length - 1) !== -1) {
-                userquery = userquery.substring(0, userquery.length-1);
-                query.setUserQuery(userquery);
-                query.setNearMatch(true);
-            }
-            // return the query
-            return query;
-        };
+            };
 
-        /**
-         * Get the query response.
-         * @param Name Query name
-         * @return {Object} The query response object or undefined if not found.
-         */
-        svc.getResponse = function(Name) {
-            try {
-                return svc.queries[Name].response;
-            } catch (Err) {
-                $log.debug('Query ' + Name + ' not found');
-            }
-        };
-
-        /**
-         * Set the function that creates the default query.
-         * @param DefaultQuery
-         */
-        svc.setDefaultQuery = function(DefaultQuery) {
-            defaultQuery = DefaultQuery;
-        };
-
-        /**
-         * Set the query by name.
-         * @param Query Query object
-         * @param Name Query name
-         */
-        svc.setQuery = function(Name, Query) {
-            svc.queries[Name] = Query;
-        };
-
-        /**
-         * Determine if the string s1 starts with the string s2
-         * @param s1 String 1
-         * @param s2 String 2
-         */
-        svc.startsWith = function(s1, s2) {
-            try {
-                return s1.slice(0, s2.length) === s2;
-            } catch (Err) {}
-            return false;
-        };
-
-        /**
-         * Update all queries.
-         */
-        svc.updateAllQueries = function () {
-            for (var key in svc.queries) {
-                svc.updateQuery(key);
-            }
-        };
-
-        /**
-         * Update named queries in order.
-         * @param Queries List of query names
-         */
-        svc.updateQueriesInOrder = function(Queries) {
-            var p, q;
-            for (q in Queries) {
-                if (p === undefined) {
-                    p = svc.updateQuery(q);
-                } else {
-                    p.then(svc.updateQuery(q));
-                }
-            }
-        };
-
-        /**
-         * Update the named query.
-         * @param QueryName Query name
-         */
-        svc.updateQuery = function(QueryName) {
-            // get the named query, reset error state, get the query url
-            var query = svc.queries[QueryName];
-            var url = query.getSolrQueryUrl();
-            $log.debug('GET ' + QueryName + ': ' + url);
-            // execute the query
-            return $http.jsonp(url).then(
-                // success
-                function (result) {
-                    // set query result values
-                    query.setErrorMessage(null);
-                    var data = result.data;
-                    query.setHighlighting(data.highlighting);
-                    if (data.hasOwnProperty('facet_counts')) {
-                        query.setFacetCounts(data.facet_counts);
+            /**
+             * Update the named query.
+             * @param QueryName Query name
+             */
+            svc.updateQuery = function(QueryName) {
+                // get the named query, reset error state, get the query url
+                var query = svc.queries[QueryName];
+                var url = query.getSolrQueryUrl();
+                $log.debug('GET ' + QueryName + ': ' + url);
+                // execute the query
+                return $http.jsonp(url).then(
+                    // success
+                    function (result) {
+                        // set query result values
+                        query.setErrorMessage(null);
+                        var data = result.data;
+                        query.setHighlighting(data.highlighting);
+                        if (data.hasOwnProperty('facet_counts')) {
+                            query.setFacetCounts(data.facet_counts);
+                        }
+                        query.setResponse(data.response);
+                        query.setResponseHeader(data.responseHeader);
+                        // notify listeners of changes
+                        $rootScope.$broadcast(QueryName);
+                    },
+                    // error
+                    function () {
+                        var msg = 'Could not get search results from server';
+                        $log.error(msg);
+                        // set query result values
+                        var response = {};
+                        response.numFound = 0;
+                        response.start = 0;
+                        response.docs = [];
+                        query.setErrorMessage(msg);
+                        query.setFacetCounts([]);
+                        query.setHighlighting({});
+                        query.setResponse(response);
+                        query.setResponseHeader({});
+                        // notify listeners of changes
+                        $rootScope.$broadcast(QueryName);
                     }
-                    query.setResponse(data.response);
-                    query.setResponseHeader(data.responseHeader);
-                    // notify listeners of changes
-                    $rootScope.$broadcast(QueryName);
-                },
-                // error
-                function () {
-                    var msg = 'Could not get search results from server';
-                    $log.error(msg);
-                    // set query result values
-                    var response = {};
-                    response.numFound = 0;
-                    response.start = 0;
-                    response.docs = [];
-                    query.setErrorMessage(msg);
-                    query.setFacetCounts([]);
-                    query.setHighlighting({});
-                    query.setResponse(response);
-                    query.setResponseHeader({});
-                    // notify listeners of changes
-                    $rootScope.$broadcast(QueryName);
-                }
-            );
-        };
+                );
+            };
 
-        // return the service instance
-        return svc;
-    }];
+            // return the service instance
+            return svc;
 
-    /**
-     * Set the function that creates the default search query.
-     * @param Query
-     */
-    this.setDefaultQuery = function(Query) {
-        defaultQuery = Query;
-    };
+}]);
 
-}); // SolrSearchServiceProvider
 
-;
 
-/**
- * This file is subject to the terms and conditions defined in the
- * 'LICENSE.txt' file, which is part of this source code package.
- */
-'use strict';
 
 /**
  * Utility functions used across the application.

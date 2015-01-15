@@ -16,7 +16,11 @@
  * @param SolrSearchService Solr search service
  * @param Utils Utilities module
  */
-function DateFacetController($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
+angular
+    .module('ngSolr')
+    .controller('DateFacetController',
+        ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils',
+        function ($scope, $attrs, $location, $route, $routeParams, SolrSearchService, Utils) {
 
     var date, dateRange, endDateQuery, endDateResults, end_value, end_year,
         f, hash, i, item, query, start_value, start_year, startDateQuery,
@@ -224,7 +228,4 @@ function DateFacetController($scope, $attrs, $location, $route, $routeParams, So
     // initialize the controller
     $scope.init();
 
-}
-
-// inject controller dependencies
-DateFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','SolrSearchService','Utils'];
+}]);

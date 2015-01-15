@@ -9,8 +9,11 @@ module.exports = function (grunt) {
                 'copy:dist',
                 'cssmin:dist',
                 'concat:app',
+                'sed:dist_use_strict',
+                'concat:dist',
                 'uglify',
-                'htmlbuild:dist'
+                'jshint:dist',
+                'template'
             ]);
         }
     );

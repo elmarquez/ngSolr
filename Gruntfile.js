@@ -17,9 +17,13 @@ module.exports = function (grunt) {
     grunt.config('pkg', grunt.file.readJSON('package.json'));
 
     // Set global options
-    grunt.config('bower_components', 'vendor');
+    grunt.config('bower_components','vendor');
     grunt.config('buildTimeStamp', new Date().toISOString());
     grunt.config('conf','conf');
-    grunt.config('dist', 'dist');
-    grunt.config('src', 'src');
+    grunt.config('dist','dist');
+    grunt.config('src','src');
+
+    // load application manifest
+    var manifest = grunt.file.readJSON('conf/manifest.json');
+    grunt.config.set('manifest', manifest);
 };

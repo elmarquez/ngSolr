@@ -6,5 +6,5 @@
 module.exports = function (grunt) {
     grunt.registerTask('serve',
         'Start web server and serve the application',
-        ['build','connect','watch']);
+        ['compile','connect::keepalive']);
 };

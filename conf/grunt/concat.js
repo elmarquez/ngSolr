@@ -4,7 +4,8 @@
 module.exports = {
     app: {
         options: {
-            separator: ';\n\n'
+            separator: '\n',
+            stripBanners: true
         },
         src: [
             '<%= src %>/ngsolr/app.js',
@@ -12,5 +13,12 @@ module.exports = {
             '!<%= src %>/ngsolr/app/*.js'
         ],
         dest: '<%= dist %>/ngsolr.js'
+    },
+    dist: {
+        src: [
+            '<%= src %>/ngsolr/banner.js',
+            'dist/ngsolr.js'
+        ],
+        dest: 'dist/ngsolr.js'
     }
 };

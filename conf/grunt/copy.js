@@ -11,6 +11,12 @@ module.exports = {
                 dest: '<%= dist %>/examples'
             },
             {
+                cwd: '<%= src %>/ngsolr',
+                expand: true,
+                src: ['**/*', '!**/banner.js'],
+                dest: '<%= dist %>/examples/js/ngsolr'
+            },
+            {
                 cwd: '<%= bower_components %>',
                 expand: true,
                 src: ['**/*'],

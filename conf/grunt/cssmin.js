@@ -8,7 +8,7 @@ module.exports = {
                 '<%= grunt.template.today("yyyy-mm-dd") %> */'
         },
         files: {
-            '<%= dist %>/examples/css/<%= pkg.name %>.min.css': [
+            '<%= dist %>/examples/css/ngsolr.min.css': [
                 '<%= src %>/examples/css/*.css'
             ]
         }

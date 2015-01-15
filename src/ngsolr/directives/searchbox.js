@@ -319,7 +319,7 @@ angular
                     source: '@'
                 },
                 // @todo consider baking the template into the directive instead of using an external file
-                templateUrl: 'js/solr-ajax/directives/searchbox.html',
+                templateUrl: 'js/ngsolr/directives/searchbox.html',
                 transclude: true
             };
         }]

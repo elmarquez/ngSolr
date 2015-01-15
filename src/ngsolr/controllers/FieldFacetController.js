@@ -21,7 +21,11 @@
  * @param $window
  * @param SolrSearchService Solr search service
  */
-function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
+angular
+    .module('ngSolr')
+    .controller('FieldFacetController',
+        ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService',
+        function ($scope, $attrs, $location, $route, $routeParams, $window, SolrSearchService) {
 
     var count, f, facet, facet_fields, facets, facet_query, hash, i, key, name, query, results, s, selected_values, value;
 
@@ -186,7 +190,4 @@ function FieldFacetController($scope, $attrs, $location, $route, $routeParams, $
     // initialize the controller
     $scope.init();
 
-}
-
-// inject dependencies
-FieldFacetController.$inject = ['$scope','$attrs','$location','$route','$routeParams','$window','SolrSearchService'];
+}]);

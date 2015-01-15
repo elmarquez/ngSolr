@@ -6,7 +6,7 @@
 'use strict';
 
 /*---------------------------------------------------------------------------*/
-/* MapSelectionController                                                       */
+/* MapSelectionController                                                    */
 
 /**
  * Map selection controller.
@@ -15,7 +15,9 @@
  * @param $log Log service
  * @param SelectionSetService
  */
-function MapSelectionController($scope, $attrs, $log, SelectionSetService) {
+angular.module('ngSolr').controller('MapSelectionController',
+    ['$scope','$attrs','$log','SelectionSetService',
+    function ($scope, $attrs, $log, SelectionSetService) {
 
     // allow only a single item to be selected at a time
     $scope.singleSelection = true;
@@ -59,7 +61,4 @@ function MapSelectionController($scope, $attrs, $log, SelectionSetService) {
     // initialize the controller
     $scope.init();
 
-}
-
-// inject controller dependencies
-MapSelectionController.$inject = ['$scope','$attrs','$log','SelectionSetService'];
+}]);
