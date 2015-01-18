@@ -5,9 +5,9 @@ ngSolr is a family of JavaScript components that makes it easy to construct
 document, image and location based search interfaces on top of an Apache
 Solr/Lucene index.
 
-A live demo is available at (www.davismarques.com/ngsolr)[www.davismarques.com/ngsolr].
 Clone the repo and look at the dist/examples folder for working search examples
-that you can customize.
+that you can customize. A demo is available online at
+http://www.davismarques.com/projects/ngsolr.
 
 
 Dependencies
@@ -29,7 +29,7 @@ Install or Build from Source
 
 Use Bower to install ngSolr as a dependency for your project folder:
 
-    bower install -S ngsolr
+    bower install ngsolr
 
 To build the library and examples from source, clone the project repository to
 your local system. Install all project compile and run-time dependencies:
@@ -63,7 +63,7 @@ location.html) runs a single-page Javascript application that is responsible
 for executing search actions and displaying results. The application uses
 configuration values specified in the HTML to determine where to send its
 queries. In particular, the "data-source" attribute tells the application what
-the URL for your Solr core is. Set the "data-source" attribute to the URL to
+the URL for your Solr core is. Set the "data-source" attribute to the URL of
 your Solr core.
 
     ex. data-source="http://example.com:8080/path/to/my/solr/core"
