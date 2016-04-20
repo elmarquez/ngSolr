@@ -2335,8 +2335,7 @@ angular
                     searchHintsField: '@',
                     source: '@'
                 },
-                // @todo consider baking the template into the directive instead of using an external file
-                templateUrl: 'js/ngsolr/directives/searchbox.html',
+                template: '<form><div id="inputs" class="input-group"><input id="query" type="text" placeholder="{{placeHolder}}" ng-model="userQuery" autocomplete="off" /><div class="input-group-btn"><button id="submit" type="button" class="btn btn-default" ng-click="handleSubmit()">Search</button></div></div><div id="hints" ng-show="showHints"><ul id="list"><li ng-repeat="hint in hints" ng-mousedown="selectHint($index,true);handleSubmit()" ng-class="{\'selected\':hint.selected}">{{hint.title}}</li></ul><div id="message" ng-show="showMessage">{{message}}</div></div></form>',
                 transclude: true
             };
         }]

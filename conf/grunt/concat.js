@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Concatenate files together.
  */

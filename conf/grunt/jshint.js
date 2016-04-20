@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Lint JavaScript source files to identify errors and poor code
  * implementation.
@@ -12,7 +14,7 @@ module.exports = {
     ],
     src: [
         'Gruntfile.js',
-        '<%= src %>/**/*.js',
+        '<%= src %>/ngsolr/**/*.js',
         '!<%= src %>/examples/js/**/*.js'
     ],
     test: {
