@@ -18,7 +18,6 @@ app.constant('Solr', {
         var f = query.createFacet('location_0_coordinate', '*');
         query.addFacet(f);
         query.setOption('fl', '*');
-        query.setOption('json.wrf', 'JSON_CALLBACK');
         query.setOption('rows', '5000');
         query.setOption('sort', 'title+asc');
         query.setOption('wt', 'json');
@@ -2977,13 +2976,12 @@ function SolrQuery(Url) {
  */
 angular
     .module('ngSolr')
-    .factory('SolrSearchService', ['$http','$log','$q','$rootScope',
-        function ($http, $log, $q, $rootScope) {
+    .factory('SolrSearchService', ['$http','$log','$q','$rootScope', '$sce',
+        function ($http, $log, $q, $rootScope, $sce) {
 
             // the default search query
             var defaultQuery = function(query) {
                 query.setOption('fl', '*');
-                query.setOption('json.wrf', 'JSON_CALLBACK');
                 query.setOption('rows', 10);
                 query.setOption('wt', 'json');
                 query.setUserQuery('*:*');
@@ -3195,7 +3193,7 @@ angular
                 var url = query.getSolrQueryUrl();
                 $log.debug('GET ' + QueryName + ': ' + url);
                 // execute the query
-                return $http.jsonp(url).then(
+                return $http.jsonp($sce.trustAsResourceUrl(url), {jsonpCallbackParam: 'json.wrf'}).then(
                     // success
                     function (result) {
                         // set query result values
@@ -3211,9 +3209,9 @@ angular
                         $rootScope.$broadcast(QueryName);
                     },
                     // error
-                    function () {
+                    function (error) {
                         var msg = 'Could not get search results from server';
-                        $log.error(msg);
+                        $log.error(msg +' -> ' + error);
                         // set query result values
                         var response = {};
                         response.numFound = 0;
@@ -3234,7 +3232,6 @@ angular
             return svc;
 
 }]);
-
 
 
 
