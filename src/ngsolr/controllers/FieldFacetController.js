@@ -124,6 +124,7 @@ angular
             if (f.field.indexOf($scope.field) > -1) {
                 $scope.selected = true;
                 s = f.value.replace(/([\(\[\)\]])+/g,'');
+                s = s.replace(/\*/g, ' '); // Replace stars added when searching
                 selected_values.push(s);
                 // break;
             }
