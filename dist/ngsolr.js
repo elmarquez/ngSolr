@@ -875,10 +875,11 @@ angular.module('ngSolr').controller('FacetSelectionController',
      */
     $scope.remove = function(Index) {
         query = SolrSearchService.getQuery($scope.target);
+        var oldHash = query.getHash();
         query.removeFacetByIndex(Index);
         // change window location
         hash = query.getHash();
-        $location.path(hash);
+        $location.path($location.path().replace(oldHash, hash));
     };
 
     /**
@@ -999,10 +1000,15 @@ angular
         facet = query.createFacet(name, value);
         // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) === -1) {
+            var oldHash = query.getHash();
             query.addFacet(facet);
             // change window location
             hash = query.getHash();
-            $location.path(hash);
+            if (!$location.path()) {
+              $location.path(hash);
+            } else {
+              $location.path($location.path().replace(oldHash, hash));
+            }
         }
         // @see https://github.com/angular/angular.js/issues/1179
         $event.preventDefault();
