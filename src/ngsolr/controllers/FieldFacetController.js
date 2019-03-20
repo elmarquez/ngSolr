@@ -84,12 +84,13 @@ angular
         name = $scope.field;
         // ISSUE #27 replace all space characters with * to ensure that Solr matches
         // on the space value
-        value = '(' + $scope.items[Index].value.split(' ').join('*') + ')';
+        value = '(' + $scope.items[Index].value.replace(new RegExp(":", 'g'),' ').split(' ').join('*') + ')';
         facet = query.createFacet(name, value);
         // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) === -1) {
             var oldHash = query.getHash();
             query.addFacet(facet);
+            query.options.start = 0;
             // change window location
             hash = query.getHash();
             if (!$location.path()) {
