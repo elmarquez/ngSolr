@@ -87,10 +87,11 @@ angular
      */
     $scope.handleSetPage = function(Start) {
         var query = SolrSearchService.getQuery($scope.queryName);
+        var oldHash = query.getHash();
         query.setOption('start', Start * $scope.documentsPerPage);
         if ($scope.updateLocationOnChange) {
             var hash = query.getHash();
-            $location.path(hash);
+            $location.path($location.path().replace(oldHash, hash));
             $window.scrollTo(0, 0);
         } else {
             $scope.loading = true;

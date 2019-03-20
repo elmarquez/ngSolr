@@ -18,7 +18,6 @@ app.constant('Solr', {
         var f = query.createFacet('location_0_coordinate', '*');
         query.addFacet(f);
         query.setOption('fl', '*');
-        query.setOption('json.wrf', 'JSON_CALLBACK');
         query.setOption('rows', '5000');
         query.setOption('sort', 'title+asc');
         query.setOption('wt', 'json');
@@ -705,10 +704,11 @@ angular
      */
     $scope.handleSetPage = function(Start) {
         var query = SolrSearchService.getQuery($scope.queryName);
+        var oldHash = query.getHash();
         query.setOption('start', Start * $scope.documentsPerPage);
         if ($scope.updateLocationOnChange) {
             var hash = query.getHash();
-            $location.path(hash);
+            $location.path($location.path().replace(oldHash, hash));
             $window.scrollTo(0, 0);
         } else {
             $scope.loading = true;
@@ -876,10 +876,11 @@ angular.module('ngSolr').controller('FacetSelectionController',
      */
     $scope.remove = function(Index) {
         query = SolrSearchService.getQuery($scope.target);
+        var oldHash = query.getHash();
         query.removeFacetByIndex(Index);
         // change window location
         hash = query.getHash();
-        $location.path(hash);
+        $location.path($location.path().replace(oldHash, hash));
     };
 
     /**
@@ -996,14 +997,20 @@ angular
         name = $scope.field;
         // ISSUE #27 replace all space characters with * to ensure that Solr matches
         // on the space value
-        value = '(' + $scope.items[Index].value.split(' ').join('*') + ')';
+        value = '(' + $scope.items[Index].value.replace(new RegExp(":", 'g'),' ').split(' ').join('*') + ')';
         facet = query.createFacet(name, value);
         // check to see if the selected facet is already in the list
         if ($scope.facets.indexOf(facet) === -1) {
+            var oldHash = query.getHash();
             query.addFacet(facet);
+            query.options.start = 0;
             // change window location
             hash = query.getHash();
-            $location.path(hash);
+            if (!$location.path()) {
+              $location.path(hash);
+            } else {
+              $location.path($location.path().replace(oldHash, hash));
+            }
         }
         // @see https://github.com/angular/angular.js/issues/1179
         $event.preventDefault();
@@ -1036,6 +1043,7 @@ angular
             if (f.field.indexOf($scope.field) > -1) {
                 $scope.selected = true;
                 s = f.value.replace(/([\(\[\)\]])+/g,'');
+                s = s.replace(/\*/g, ' '); // Replace stars added when searching
                 selected_values.push(s);
                 // break;
             }
@@ -2977,13 +2985,12 @@ function SolrQuery(Url) {
  */
 angular
     .module('ngSolr')
-    .factory('SolrSearchService', ['$http','$log','$q','$rootScope',
-        function ($http, $log, $q, $rootScope) {
+    .factory('SolrSearchService', ['$http','$log','$q','$rootScope', '$sce',
+        function ($http, $log, $q, $rootScope, $sce) {
 
             // the default search query
             var defaultQuery = function(query) {
                 query.setOption('fl', '*');
-                query.setOption('json.wrf', 'JSON_CALLBACK');
                 query.setOption('rows', 10);
                 query.setOption('wt', 'json');
                 query.setUserQuery('*:*');
@@ -3195,7 +3202,7 @@ angular
                 var url = query.getSolrQueryUrl();
                 $log.debug('GET ' + QueryName + ': ' + url);
                 // execute the query
-                return $http.jsonp(url).then(
+                return $http.jsonp($sce.trustAsResourceUrl(url), {jsonpCallbackParam: 'json.wrf'}).then(
                     // success
                     function (result) {
                         // set query result values
@@ -3211,9 +3218,9 @@ angular
                         $rootScope.$broadcast(QueryName);
                     },
                     // error
-                    function () {
+                    function (error) {
                         var msg = 'Could not get search results from server';
-                        $log.error(msg);
+                        $log.error(msg +' -> ' + error);
                         // set query result values
                         var response = {};
                         response.numFound = 0;
@@ -3234,7 +3241,6 @@ angular
             return svc;
 
 }]);
-
 
 
 

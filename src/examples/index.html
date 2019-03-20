@@ -92,7 +92,7 @@
                 <div class="panel-body">
                     <ul class="items unstyled">
                         <li class="facet" ng-repeat="item in items">
-                            <i class="icon-tag"></i>
+                            <i class="fa fa-tag"></i>
                             <a ng-click="remove($index)">
                                 <span class="value">{{item | prettyFacetLabel | swapFacetLabels}}</span>
                             </a>
@@ -119,9 +119,10 @@
                 </div>
             </div>
 
+            <!-- Check why ngHide is not evaluating correctly. When selected (false/true) && exclusive(false), it evaluates to true. Using false as default.-->
             <div class="panel panel-default"
                 ng-controller="FieldFacetController"
-                ng-hide="selected && exclusive"
+                ng-hide="selected && false"
                 data-exclusive="false"
                 data-field="function"
                 data-source="https://data.esrc.unimelb.edu.au/solr/FACP"

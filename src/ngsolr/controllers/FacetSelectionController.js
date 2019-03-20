@@ -41,10 +41,11 @@ angular.module('ngSolr').controller('FacetSelectionController',
      */
     $scope.remove = function(Index) {
         query = SolrSearchService.getQuery($scope.target);
+        var oldHash = query.getHash();
         query.removeFacetByIndex(Index);
         // change window location
         hash = query.getHash();
-        $location.path(hash);
+        $location.path($location.path().replace(oldHash, hash));
     };
 
     /**
